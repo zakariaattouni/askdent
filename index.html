@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة طب الأسنان المعرفية</title>
-    <!-- تضمين Tailwind CSS الاصدار الرابع من خلال المتصفح مباشرة -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
@@ -28,7 +27,6 @@
                 <button id="navLogoutBtn" onclick="doctorLogout()" class="hidden bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer">🚪 خروج</button>
             </div>
         </div>
-
         <!-- واجهة تسجيل الدخول -->
         <div id="loginTab" class="bg-white rounded-2xl shadow-md p-6 md:p-10 border border-slate-200">
             <div class="text-center mb-8 pb-6 border-b border-slate-100">
@@ -48,38 +46,31 @@
                 <button onclick="doctorLogin()" id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg text-sm shadow-md cursor-pointer transition">دخول إلى المنصة</button>
                 <div class="text-center pt-2 border-t border-slate-100">
                     <p class="text-xs text-slate-500">ليس لديك حساب؟ <button onclick="switchTab('register')" class="text-blue-600 font-bold hover:underline cursor-pointer">سجّل الآن</button></p>
-                </div>
-            </div>
+                </div>            </div>
         </div>
-
-        <!-- واجهة المستخلص المعرفي الفوري والموجز (تم حل مشكلة التداخل هنا) -->
+        <!-- واجهة الموجز الطبي المعرفي -->
         <div id="userTab" class="hidden bg-white rounded-2xl shadow-md p-4 md:p-10 border border-slate-200">
             <div class="text-center mb-6 pb-4 border-b border-slate-100">
                 <div class="flex items-center justify-center gap-2 mb-2">
                     <span class="text-2xl">📚</span>
-                    <h1 class="text-xl md:text-2xl font-bold text-blue-600">المستخلص الطبي الفوري والمستقل</h1>
+                    <h1 class="text-xl md:text-2xl font-bold text-blue-600">الموجز الطبي المعرفي</h1>
                 </div>
                 <p id="welcomeUser" class="text-xs text-slate-500">مرحباً بك دكتور، اكتب مصطلح البحث أو السؤال الإكلينيكي لاستخراج الإجابة فوراً.</p>
                 <div id="refsCount" class="text-xs text-green-600 mt-2 hidden">📚 المراجع المفهرسة سحابياً: <span id="refsNumber">0</span></div>
             </div>
             
-            <!-- حاوية الدردشة المرنة التي تحتفظ بارتفاع ثابت ومناسب للهواتف -->
+            <!-- حاوية الدردشة -->
             <div id="chatContainer" class="flex flex-col h-[480px] md:h-[520px] border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
-                <!-- مساحة الرسائل الممتدة -->
-                <div id="chatMessages" class="flex-1 overflow-y-auto p-3 md:p-4 space-y-4">
-                    <!-- واجهة نظيفة تماماً بدون أي رسائل ترحيبية افتراضية داخل الصندوق -->
-                </div>
+                <div id="chatMessages" class="flex-1 overflow-y-auto p-3 md:p-4 space-y-4"></div>
                 
-                <!-- شريط الإدخال المحسن والمحمي من الخروج عن الحدود أو التداخل -->
                 <div class="border-t border-slate-200 bg-white p-3">
                     <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="text" id="chatQuestion" placeholder="اكتب المرض، العَرَض، أو المصطلح الطبي..." class="flex-1 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-xs md:text-sm focus:ring-2 focus:ring-blue-500" onkeypress="if(event.key==='Enter') sendChatMessage()">
-                        <button id="chatSendBtn" onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-lg shadow-sm cursor-pointer transition text-xs md:text-sm whitespace-nowrap">بحث واستخلاص</button>
+                        <input type="text" id="chatQuestion" placeholder="اكتب المرض، العَرَض، أو المصطلح الطبي..." class="flex-1 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-sm md:text-base focus:ring-2 focus:ring-blue-500" onkeypress="if(event.key==='Enter') sendChatMessage()">
+                        <button id="chatSendBtn" onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-lg shadow-sm cursor-pointer transition text-sm md:text-base whitespace-nowrap">بحث واستخلاص</button>
                     </div>
                 </div>
             </div>
         </div>
-
         <!-- واجهة تسجيل حساب جديد -->
         <div id="registerTab" class="hidden bg-white rounded-2xl shadow-md p-6 md:p-10 border border-slate-200">
             <div class="text-center mb-6 pb-4 border-b border-slate-100">
@@ -102,11 +93,9 @@
                 <button onclick="submitDoctorRegistration()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg text-sm shadow-md cursor-pointer transition">تقديم طلب التسجيل</button>
                 <div class="text-center pt-2 border-t border-slate-100">
                     <p class="text-xs text-slate-500">لديك حساب؟ <button onclick="switchTab('login')" class="text-blue-600 font-bold hover:underline cursor-pointer">سجّل الدخول</button></p>
-                </div>
-            </div>
+                </div>            </div>
         </div>
-
-        <!-- لوحة الإدارة والتحكم في المراجع (تراخيص وأدوات السحابة) -->
+        <!-- لوحة الإدارة -->
         <div id="adminTab" class="hidden space-y-8">
             <div class="bg-white rounded-2xl p-4 md:p-6 border border-slate-200 shadow-md">
                 <h2 id="formTitle" class="text-sm md:text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>➕</span> إضافة / تعديل مرجع طبي للمنصة</h2>
@@ -130,9 +119,8 @@
                     <button id="saveBtn" onclick="saveDocument()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded text-xs font-bold shadow-sm cursor-pointer">حفظ سحابي مؤكد</button>
                 </div>
             </div>
-
             <div class="bg-white rounded-2xl p-4 md:p-6 border border-slate-200 shadow-md">
-                <h2 class="text-sm md:text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>👥</span> طلبات وتraخيص الأطباء</h2>
+                <h2 class="text-sm md:text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>👥</span> طلبات وتراخيص الأطباء</h2>
                 <div class="overflow-x-auto">
                     <table class="w-full text-right text-xs text-slate-600 min-w-[500px]">
                         <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
@@ -142,7 +130,6 @@
                     </table>
                 </div>
             </div>
-
             <div class="bg-white rounded-2xl p-4 md:p-6 border border-slate-200 shadow-md">
                 <h2 class="text-sm md:text-md font-bold text-slate-700 mb-4 flex items-center gap-2"><span>📂</span> المراجع المتاحة الحالية في الـ Firebase</h2>
                 <div class="overflow-x-auto">
@@ -152,17 +139,21 @@
                         </thead>
                         <tbody id="filesTableBody"><tr><td colspan="3" class="px-4 py-4 text-center text-slate-400">جاري تحميل مراجعك...</td></tr></tbody>
                     </table>
-                </div>
-            </div>
+                </div>            </div>
         </div>
     </div>
-
     <!-- مكتبات Firebase v8 -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-        
+        // ----------------------------------------------
+        // الإصلاح: التأكد من تهيئة pdf.js بشكل آمن
+        // ----------------------------------------------
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        } else {
+            console.warn("PDF.js لم يتم تحميله بشكل صحيح، وظيفة رفع PDF لن تعمل.");
+        }
         const firebaseConfig = {
             apiKey: "AIzaSyDdpSqPSOMteKvZKKWMYKyGUuLuW44aKoM",
             authDomain: "askdent-532f4.firebaseapp.com",
@@ -172,21 +163,27 @@
             messagingSenderId: "310490517111",
             appId: "1:310490517111:web:655b527b64a766f05e4072"
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        
+        let db;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+        } catch(e) {
+            console.error("فشل تهيئة Firebase:", e);
+            alert("خطأ في الاتصال بقاعدة البيانات، بعض الوظائف قد لا تعمل.");
+            db = null;
+        }
         
         let articlesMap = {};
         const adminPassword = "salem1959";
         let currentLoggedInDoctor = null;
         let isReadingFile = false;
-
         function saveSession(doctorName) {
             localStorage.setItem('dentai_session', JSON.stringify({
                 doctor: doctorName,
                 timestamp: Date.now()
             }));
         }
-
         function loadSession() {
             try {
                 const session = localStorage.getItem('dentai_session');
@@ -197,12 +194,11 @@
             } catch (e) { console.error(e); }
             return null;
         }
-
         function clearSession() {
             localStorage.removeItem('dentai_session');
         }
-
         function switchTab(tab) {
+            // التحقق من صحة الجلسة قبل فتح تبويب المستخدم
             if (tab === 'user' && !currentLoggedInDoctor) {
                 const savedDoctor = loadSession();
                 if (savedDoctor) {
@@ -212,29 +208,47 @@
                     tab = 'login';
                 }
             }
-            ['loginTab', 'userTab', 'registerTab', 'adminTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
-            document.getElementById(tab + 'Tab').classList.remove('hidden');
-            const navStates = { 'login': 'navLoginBtn', 'user': 'navLoginBtn', 'register': 'navRegisterBtn', 'admin': 'navAdminBtn' };
-            ['navLoginBtn', 'navRegisterBtn', 'navAdminBtn'].forEach(id => {
-                document.getElementById(id).className = "bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300";
+            // إخفاء جميع التبويبات
+            const tabs = ['loginTab', 'userTab', 'registerTab', 'adminTab'];
+            tabs.forEach(t => {
+                const el = document.getElementById(t);
+                if (el) el.classList.add('hidden');
             });
-            if (navStates[tab]) document.getElementById(navStates[tab]).className = "bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm";
-            if (currentLoggedInDoctor) {
-                document.getElementById('navLogoutBtn').classList.remove('hidden');
-                document.getElementById('navLoginBtn').classList.add('hidden');
-            } else {
-                document.getElementById('navLogoutBtn').classList.add('hidden');
-                document.getElementById('navLoginBtn').classList.remove('hidden');
+            const activeTab = document.getElementById(tab + 'Tab');
+            if (activeTab) activeTab.classList.remove('hidden');
+            
+            // تحديث شكل أزرار الهيدر
+            const navBtns = ['navLoginBtn', 'navRegisterBtn', 'navAdminBtn'];
+            navBtns.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) btn.className = "bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300";
+            });
+            if (tab === 'login') document.getElementById('navLoginBtn').className = "bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm";
+            else if (tab === 'register') document.getElementById('navRegisterBtn').className = "bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm";
+            else if (tab === 'admin') document.getElementById('navAdminBtn').className = "bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm";
+            
+            // إظهار/إخفاء زر الخروج
+            const logoutBtn = document.getElementById('navLogoutBtn');
+            if (logoutBtn) {
+                if (currentLoggedInDoctor) logoutBtn.classList.remove('hidden');
+                else logoutBtn.classList.add('hidden');
             }
         }
-
         function checkAdminAccess() {
             const pass = prompt("كلمة مرور الإدارة الأكاديمية:");
-            if (pass === adminPassword) { switchTab('admin'); fetchUploadedFiles(); fetchRegisteredDoctors(); }
+            if (pass === adminPassword) { 
+                switchTab('admin'); 
+                if (db) {
+                    fetchUploadedFiles(); 
+                    fetchRegisteredDoctors();
+                } else {
+                    alert("⚠️ لا يمكن الوصول إلى قاعدة البيانات حالياً.");
+                }
+            }
             else if (pass !== null) alert("كلمة المرور خاطئة!");
         }
-
         async function doctorLogin() {
+            if (!db) { alert("❌ خطأ في الاتصال بقاعدة البيانات، حاول لاحقاً."); return; }
             const name = document.getElementById('loginName').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
             const loginBtn = document.getElementById('loginBtn');
@@ -252,12 +266,12 @@
                 saveSession(matched.name);
                 
                 document.getElementById('welcomeUser').innerText = `مرحباً د. ${matched.name}، اطرح سؤالك الإكلينيكي مباشرة.`;
-                document.getElementById('loginName').value = ''; document.getElementById('loginPassword').value = '';
-                await loadArticles(); switchTab('user');
+                document.getElementById('loginName').value = ''; document.getElementById('loginPassword').value = '';                
+                await loadArticles(); 
+                switchTab('user');
             } catch (e) { alert("خطأ سحابي: " + e.message); }
             finally { loginBtn.disabled = false; loginBtn.innerText = "دخول إلى المنصة"; }
         }
-
         function doctorLogout() {
             if (!confirm("هل تريد تسجيل الخروج؟")) return;
             currentLoggedInDoctor = null;
@@ -265,104 +279,202 @@
             document.getElementById('chatMessages').innerHTML = '';
             switchTab('login');
         }
-
         async function loadArticles() {
+            if (!db) return;
             articlesMap = {};
             try {
                 const snapshot = await db.collection('medical_docs').get();
                 snapshot.forEach(doc => { articlesMap[doc.id] = { title: doc.data().title, content: doc.data().content }; });
                 const rc = document.getElementById('refsCount'), rn = document.getElementById('refsNumber');
-                if (rc && rn) { rn.textContent = snapshot.size; if (snapshot.size > 0) rc.classList.remove('hidden'); }
+                if (rc && rn) { rn.textContent = snapshot.size; if (snapshot.size > 0) rc.classList.remove('hidden'); else rc.classList.add('hidden'); }
             } catch (e) { console.error("خطأ مزامنة الملفات:", e); }
         }
-
-        function sendChatMessage() {
+        // ============================================
+        // محرك البحث الذكي المتقدم (بدون تغيير)
+        // ============================================
+        class AdvancedArabicSearchEngine {
+            constructor(articlesMap) {
+                this.articles = articlesMap;
+                this.arabicStopWords = new Set([
+                    'من', 'إلى', 'في', 'عن', 'على', 'مع', 'ك', 'ل', 'ب', 'ف', 'ثم', 'أو', 'أم',
+                    'ال', 'هذا', 'هذه', 'ذلك', 'تلك', 'الذي', 'التي', 'الذين', 'اللواتي',
+                    'هو', 'هي', 'هما', 'هم', 'هن', 'أنا', 'نحن', 'أنت', 'أنتم', 'أنتن',
+                    'كان', 'كانت', 'يكون', 'تكون', 'قد', 'سوف', 'س', 'ما', 'لا', 'لم', 'لن',
+                    'هل', 'أين', 'متى', 'كيف', 'لماذا', 'ماذا', 'أي', 'كل', 'جميع',
+                    'بعض', 'عدة', 'كثير', 'قليل', 'هناك', 'حيث', 'لأن', 'لكي', 'حتى',
+                    'أن', 'إن', 'أنه', 'إنه', 'و', 'أو', 'ثم', 'لكن'
+                ]);
+                this.medicalSynonyms = {
+                    'رحى': ['رحى', 'ضرس', 'طاحنة', 'مولار'],
+                    'ثالثة': ['ثالثة', 'ثالث', 'عقل', 'الضرس الثالث'],
+                    'ضرس العقل': ['ضرس العقل', 'الرحى الثالثة', 'الرحى الثالثة', 'ضرس ثالث'],
+                    'بزوغ': ['بزوغ', 'ظهور', 'طلوع', 'خروج', 'نمو'],
+                    'لثة': ['لثة', 'لثّة', 'صماخ'],
+                    'أسنان': ['أسنان', 'سن', 'ضرس', 'ناجذ'],
+                    'رضيع': ['رضيع', 'طفل', 'صغير', 'مولود'],
+                    'تنظيف': ['تنظيف', 'نظافة', 'عناية', 'غسل']
+                };
+                this.contextKeywords = {
+                    'adult_dental': ['عقل', 'ثالثة', 'ثالث', 'بلوغ', 'مراهق', 'بالغ', '18', '20', '25', '30'],
+                    'infant_dental': ['رضيع', 'طفل', 'صغير', 'لثة', 'حليب', 'مؤقت', 'أولي', '6 أشهر', 'سنة']
+                };
+            }
+            normalizeArabicText(text) {
+                return text.replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي').replace(/ء/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+            }
+            tokenize(text) {
+                const normalized = this.normalizeArabicText(text);
+                return normalized.split(/[\s،,._\-\/\(\)\[\]{}:""''؛]+/).filter(token => token.length > 2 && !this.arabicStopWords.has(token) && !/^[0-9]+$/.test(token));
+            }
+            expandQueryTerms(query) {
+                const tokens = this.tokenize(query);
+                const expandedTokens = new Set(tokens);
+                tokens.forEach(token => {
+                    for (const [key, synonyms] of Object.entries(this.medicalSynonyms)) {
+                        if (synonyms.includes(token) || key.includes(token)) {
+                            synonyms.forEach(syn => expandedTokens.add(syn));
+                            expandedTokens.add(key);
+                        }
+                    }
+                });
+                return Array.from(expandedTokens);
+            }
+            detectContext(query) {
+                const normalizedQuery = this.normalizeArabicText(query);
+                let adultScore = 0, infantScore = 0;
+                this.contextKeywords.adult_dental.forEach(keyword => { if (normalizedQuery.includes(keyword)) adultScore += 10; });
+                this.contextKeywords.infant_dental.forEach(keyword => { if (normalizedQuery.includes(keyword)) infantScore += 10; });
+                return adultScore > infantScore ? 'adult' : infantScore > adultScore ? 'infant' : 'general';
+            }
+            calculateExactMatchScore(query, sentence) {
+                const normalizedQuery = this.normalizeArabicText(query);
+                const normalizedSentence = this.normalizeArabicText(sentence);
+                if (normalizedSentence.includes(normalizedQuery)) return 100;
+                const queryWords = this.tokenize(query);
+                let matchCount = 0, positionScore = 0;
+                queryWords.forEach((word, index) => {
+                    const position = normalizedSentence.indexOf(word);
+                    if (position !== -1) { matchCount++; positionScore += (100 - position) / 100; }
+                });
+                if (matchCount === queryWords.length) return 80 + (positionScore * 20);
+                return (matchCount / queryWords.length) * 60;
+            }
+            getBigrams(text) {
+                const words = this.tokenize(text);
+                const bigrams = [];
+                for (let i = 0; i < words.length - 1; i++) bigrams.push(words[i] + ' ' + words[i+1]);
+                return bigrams;
+            }
+            search(query) {
+                const results = [];
+                const queryContext = this.detectContext(query);
+                const expandedTerms = this.expandQueryTerms(query);
+                const normalizedQuery = this.normalizeArabicText(query);
+                for (const id in this.articles) {
+                    const doc = this.articles[id];
+                    const sentences = doc.content.split(/[.\n،؛]+/);
+                    sentences.forEach(sentence => {
+                        const cleanSentence = sentence.trim();
+                        if (cleanSentence.length < 15 || cleanSentence.length > 500) return;
+                        const normalizedSentence = this.normalizeArabicText(cleanSentence);
+                        const sentenceContext = this.detectContext(cleanSentence);
+                        if (queryContext !== 'general' && sentenceContext !== 'general' && queryContext !== sentenceContext) return;
+                        let score = 0;
+                        let exactMatchScore = this.calculateExactMatchScore(query, cleanSentence);
+                        score += exactMatchScore * 2;
+                        expandedTerms.forEach(term => { if (normalizedSentence.includes(term)) score += 30; });
+                        const queryBigrams = this.getBigrams(query);
+                        queryBigrams.forEach(bigram => { if (normalizedSentence.includes(bigram)) score += 50; });
+                        if (queryContext === 'adult' && this.contextKeywords.adult_dental.some(k => normalizedSentence.includes(k))) score += 40;
+                        if (queryContext === 'infant' && this.contextKeywords.infant_dental.some(k => normalizedSentence.includes(k))) score += 40;
+                        if (score > 20) {
+                            const confidence = Math.min(Math.round((score / 300) * 100), 100);
+                            results.push({ title: doc.title, text: cleanSentence, score: score, confidence: confidence, exactMatchScore: exactMatchScore });
+                        }
+                    });
+                }
+                return results.sort((a,b) => {
+                    if (Math.abs(b.exactMatchScore - a.exactMatchScore) > 20) return b.exactMatchScore - a.exactMatchScore;
+                    return b.score - a.score;
+                });
+            }
+        }
+        function detectQueryType(query) {
+            const q = query.toLowerCase();
+            if (q.includes('ما هو') || q.includes('ما هي') || q.includes('عرّف') || q.includes('تعريف')) return 'definition';
+            if (q.includes('علاج') || q.includes('معالجة') || q.includes('دواء') || q.includes('كيف نعالج')) return 'treatment';
+            if (q.includes('أعراض') || q.includes('علامات') || q.includes('كيف يظهر') || q.includes('ألم')) return 'symptoms';
+            return 'general';
+        }
+        function getUniqueSources(results) {
+            const sources = new Set();
+            results.forEach(r => { if (r.title) sources.add(r.title); });
+            return Array.from(sources).slice(0,3);
+        }
+        function generateCoherentAnswer(query, results) {
+            if (results.length === 0) return "";
+            const filteredResults = results.filter(r => r.confidence > 30);
+            if (filteredResults.length === 0) return "";
+            const sortedResults = filteredResults.sort((a,b) => b.confidence - a.confidence);
+            const topResults = sortedResults.slice(0,2);
+            let coherentText = "";
+            const usedSentences = new Set();
+            const queryType = detectQueryType(query);
+            const intros = {
+                'definition': 'بناءً على المراجع الطبية المتاحة، ',
+                'treatment': 'وفقاً للمصادر الطبية، ',
+                'symptoms': 'تشير المراجع إلى أن ',
+                'general': 'من خلال المراجع المتاحة، '
+            };
+            coherentText = intros[queryType] || intros.general;
+            let sentenceCount = 0;
+            for (const result of topResults) {
+                if (sentenceCount >= 2) break;
+                let sentence = result.text.trim();
+                if (usedSentences.has(sentence) || sentence.length < 20 || sentence.length > 300) continue;
+                sentence = sentence.replace(/^[""]|[""]$/g, '').trim();
+                if (sentenceCount === 0) coherentText += sentence;
+                else {
+                    const connectors = ['. كما ', '. بالإضافة إلى ذلك، ', '. ومن الجدير بالذكر أن '];
+                    coherentText += connectors[sentenceCount % connectors.length] + sentence.charAt(0).toLowerCase() + sentence.slice(1);
+                }
+                usedSentences.add(sentence);
+                sentenceCount++;
+            }
+            if (!coherentText.endsWith('.')) coherentText += '.';
+            return coherentText;
+        }
+        function sendChatMessage() {            
             if (!currentLoggedInDoctor) { switchTab('login'); return; }
             const questionInput = document.getElementById('chatQuestion');
             const query = questionInput.value.trim();
             if (!query) return;
-
             if (Object.keys(articlesMap).length === 0) {
                 alert("⚠️ لا توجد مراجع مرفوعة بالمنصة للبحث بداخلها حالياً.");
                 return;
             }
-
             const chatMessages = document.getElementById('chatMessages');
             const userMsg = document.createElement('div');
             userMsg.className = 'flex justify-end';
-            userMsg.innerHTML = `<div class="bg-blue-600 text-white rounded-lg p-3 max-w-[85%] shadow-sm"><p class="text-xs md:text-sm">${query}</p></div>`;
+            userMsg.innerHTML = `<div class="bg-blue-600 text-white rounded-lg p-3 max-w-[85%] shadow-sm"><p class="text-sm md:text-base font-medium">${query}</p></div>`;
             chatMessages.appendChild(userMsg);
-            
             questionInput.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            const stopWords = ['ما', 'ماهو', 'ماذا', 'هو', 'هي', 'في', 'عند', 'من', 'على', 'إلى', 'تم', 'عن'];
-            const searchTerms = query.toLowerCase()
-                .split(/[\s،,._\-\/]+/)
-                .filter(t => t.length > 1 && !stopWords.includes(t));
-
-            const highPriorityRoots = ['أول', 'اول', 'بزوغ', 'يظهر', 'ظهور', 'يبدأ', 'عمر', 'شهر', 'سنسن'];
-            let snippets = [];
-
-            for (const id in articlesMap) {
-                const doc = articlesMap[id];
-                const sentences = doc.content.split(/[.\n،]+/);
-                
-                sentences.forEach(sentence => {
-                    const cleanSentence = sentence.trim();
-                    if (cleanSentence.length < 15) return; 
-
-                    let matchCount = 0;
-                    let hasHighPriorityWord = false;
-
-                    searchTerms.forEach(term => {
-                        if (cleanSentence.toLowerCase().includes(term)) matchCount++;
-                    });
-
-                    highPriorityRoots.forEach(root => {
-                        if (cleanSentence.toLowerCase().includes(root)) hasHighPriorityWord = true;
-                    });
-
-                    if (matchCount > 0) {
-                        let score = matchCount * 20; 
-                        if (hasHighPriorityWord) score += 60; 
-                        if (query.length > 4 && cleanSentence.toLowerCase().includes(query.toLowerCase())) score += 100;
-
-                        snippets.push({
-                            title: doc.title,
-                            text: cleanSentence,
-                            score: score
-                        });
-                    }
-                });
-            }
-
-            snippets.sort((a, b) => b.score - a.score);
-
+            const searchEngine = new AdvancedArabicSearchEngine(articlesMap);
+            const results = searchEngine.search(query);
             let answerHTML = "";
-            if (snippets.length > 0) {
-                answerHTML += `<p class="font-bold text-blue-700 text-xs mb-2">📍 الخلاصة الإكلينيكية المباشرة:</p>`;
-                const uniqueTexts = new Set();
-                let count = 0;
-
-                for (let i = 0; i < snippets.length; i++) {
-                    if (count >= 2) break;
-                    const res = snippets[i];
-                    
-                    if (!uniqueTexts.has(res.text)) {
-                        uniqueTexts.add(res.text);
-                        answerHTML += `
-                            <div class="mb-2 p-2.5 bg-slate-50 border-r-4 border-blue-500 rounded-l text-xs text-slate-700 leading-relaxed">
-                                <span class="block font-bold text-slate-400 text-[10px] mb-0.5">[المصدر الأكاديمي: ${res.title}]</span>
-                                🔍 ".. ${res.text} .."
-                            </div>`;
-                        count++;
-                    }
-                }
+            if (results.length > 0) {
+                const coherentAnswer = generateCoherentAnswer(query, results);
+                answerHTML += `<p class="font-bold text-blue-800 text-sm mb-2">📍 الإجابة المستخلصة:</p>`;
+                answerHTML += `<div class="p-3 bg-slate-50 border-r-4 border-blue-600 rounded-l text-sm md:text-base text-slate-800 leading-relaxed">
+                                    <p class="text-slate-800">${coherentAnswer}</p>
+                                    <div class="mt-3 pt-2 border-t border-slate-200 text-xs text-slate-500">
+                                        📚 المصادر: ${getUniqueSources(results).join(' • ')}
+                                    </div>
+                                </div>`;
             } else {
-                answerHTML = `<p class="text-amber-700 font-medium text-xs">⚠️ لم يتم العثور على سطر محدد يجيب على السؤال بدقة داخل المراجع المرفوعة.</p>`;
+                answerHTML = `<p class="text-amber-800 font-semibold text-sm">⚠️ لم يتم العثور على معلومات كافية للإجابة على سؤالك. جرب استخدام مصطلحات أكثر تحديداً.</p>`;
             }
-
             setTimeout(() => {
                 const botMsg = document.createElement('div');
                 botMsg.className = 'flex justify-start';
@@ -371,8 +483,8 @@
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }, 150);
         }
-
         async function submitDoctorRegistration() {
+            if (!db) { alert("❌ خطأ في قاعدة البيانات."); return; }
             const name = document.getElementById('regName').value.trim();
             const password = document.getElementById('regPassword').value.trim();
             const passwordConfirm = document.getElementById('regPasswordConfirm').value.trim();
@@ -387,7 +499,7 @@
                 switchTab('login');
             } catch (e) { alert("خطأ: " + e.message); }
         }
-
+        // استخراج النص من الملفات بشكل آمن
         document.getElementById('fileInput').addEventListener('change', async function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -409,6 +521,7 @@
                     };
                     reader.readAsText(file);
                 } else if (file.type === "application/pdf") {
+                    if (typeof pdfjsLib === 'undefined') throw new Error("مكتبة PDF غير محملة");
                     const fr = new FileReader();
                     fr.onload = async function() {
                         try {
@@ -421,16 +534,16 @@
                                 text += t.items.map(it => it.str).join(" ") + "\n";
                             }
                             docContent.value = text;
-                            isReadingFile = false; saveBtn.disabled = false;
                             readingStatus.innerHTML = `✅ جاهز (${pdf.numPages} صفحة)`;
-                        } catch (err) { alert("خطأ في تحليل الـ PDF: " + err.message); isReadingFile = false; saveBtn.disabled = false; }
+                        } catch (err) { alert("خطأ في تحليل الـ PDF: " + err.message); }
+                        finally { isReadingFile = false; saveBtn.disabled = false; }
                     };
                     fr.readAsArrayBuffer(file);
                 } else { alert("الملفات النصية و PDF فقط هي المدعومة حالياً."); isReadingFile = false; saveBtn.disabled = false; }
             } catch (err) { alert("خطأ: " + err.message); isReadingFile = false; saveBtn.disabled = false; }
         });
-
         async function saveDocument() {
+            if (!db) { alert("قاعدة البيانات غير متصلة."); return; }
             if (isReadingFile) { alert("⏳ يرجى الانتظار حتى تنتهي معالجة وقراءة الملف!"); return; }
             const id = document.getElementById('currentDocId').value;
             const title = document.getElementById('docTitle').value.trim();
@@ -439,19 +552,15 @@
             const saveBtn = document.getElementById('saveBtn');
             saveBtn.innerText = "جاري الحفظ السحابي المباشر..."; saveBtn.disabled = true;
             try {
-                if (id) {
-                    await db.collection('medical_docs').doc(id).set({ title, content, updatedAt: new Date() }, { merge: true });
-                    alert("✅ تم تحديث المرجع الطبي بنجاح بسحابة Firebase!");
-                } else {
-                    await db.collection('medical_docs').add({ title, content, createdAt: new Date() });
-                    alert("✅ تم رفع وحفظ المرجع الطبي بنجاح إلى Firebase!");
-                }
+                if (id) await db.collection('medical_docs').doc(id).set({ title, content, updatedAt: new Date() }, { merge: true });
+                else await db.collection('medical_docs').add({ title, content, createdAt: new Date() });
+                alert("✅ تم حفظ المرجع بنجاح!");
                 resetForm(); await fetchUploadedFiles(); await loadArticles();
             } catch (err) { alert("❌ فشل الحفظ: " + err.message); }
             finally { saveBtn.innerText = "حفظ سحابي مؤكد"; saveBtn.disabled = false; }
         }
-
         async function fetchUploadedFiles() {
+            if (!db) return;
             const tbody = document.getElementById('filesTableBody');
             tbody.innerHTML = "";
             try {
@@ -466,8 +575,8 @@
                 });
             } catch (e) { console.error(e); }
         }
-
         async function fetchRegisteredDoctors() {
+            if (!db) return;
             const tbody = document.getElementById('doctorsTableBody');
             tbody.innerHTML = "";
             try {
@@ -483,18 +592,17 @@
                 });
             } catch (e) { console.error(e); }
         }
-
         async function toggleDoctorStatus(id, newStatus) {
+            if (!db) return;
             try { await db.collection('doctors_registry').doc(id).update({ status: newStatus }); alert(`✅ تم التحديث إلى: ${newStatus}`); fetchRegisteredDoctors(); }
             catch (e) { alert("خطأ: " + e.message); }
         }
-
         async function deleteDoctorRequest(id) {
+            if (!db) return;
             if (!confirm("هل تريد حذف هذا الطبيب من السجل؟")) return;
             try { await db.collection('doctors_registry').doc(id).delete(); alert("✅ تم الحذف بنجاح"); fetchRegisteredDoctors(); }
             catch (e) { alert("خطأ: " + e.message); }
         }
-
         function editDocument(id, t, c) {
             document.getElementById('currentDocId').value = id;
             document.getElementById('docTitle').value = decodeURIComponent(t);
@@ -504,13 +612,12 @@
             document.getElementById('cancelBtn').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
         async function deleteDocument(id) {
+            if (!db) return;
             if (!confirm("هل تريد حذف هذا المرجع نهائياً؟")) return;
             try { await db.collection('medical_docs').doc(id).delete(); alert("✅ تم حذف المرجع"); fetchUploadedFiles(); loadArticles(); }
             catch (e) { alert("خطأ: " + e.message); }
         }
-
         function resetForm() {
             document.getElementById('currentDocId').value = "";
             document.getElementById('docTitle').value = "";
@@ -522,7 +629,7 @@
             document.getElementById('readingStatus').innerHTML = '';
             isReadingFile = false;
         }
-
+        // بدء التشغيل
         window.addEventListener('DOMContentLoaded', () => {
             const savedDoctor = loadSession();
             if (savedDoctor) {
