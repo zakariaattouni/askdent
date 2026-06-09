@@ -19,7 +19,7 @@
             <div class="flex gap-2">
                 <button id="navLoginBtn" onclick="switchTab('login')" class="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-sm">🔐 دخول طبيب</button>
                 <button id="navRegisterBtn" onclick="switchTab('register')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">📝 تسجيل طبيب</button>
-                <button id="navAdminBtn" onclick="checkAdminAccess()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">️ لوحة الإدارة</button>
+                <button id="navAdminBtn" onclick="checkAdminAccess()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">⚙️ لوحة الإدارة</button>
                 <button id="navLogoutBtn" onclick="doctorLogout()" class="hidden bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer">🚪 خروج</button>
             </div>
         </div>
@@ -48,7 +48,7 @@
 
         <div id="userTab" class="hidden bg-white rounded-2xl shadow-md p-6 md:p-10 border border-slate-200">
             <div class="text-center mb-6 pb-4 border-b border-slate-100">                <div class="flex items-center justify-center gap-2 mb-2">
-                    <span class="text-2xl"></span>
+                    <span class="text-2xl">🦷</span>
                     <h1 class="text-2xl font-bold text-blue-600">المستخلص الطبي الموسوعي</h1>
                 </div>
                 <p id="welcomeUser" class="text-xs text-slate-500">مرحباً بك، اطرح سؤالك الإكلينيكي مباشرة.</p>
@@ -109,7 +109,6 @@
                         <label class="block text-xs font-semibold mb-1 text-slate-600">مفتاح Gemini API:</label>
                         <input type="password" id="geminiApiKey" placeholder="الصق المفتاح هنا..." class="w-full px-3 py-2.5 bg-white border border-purple-200 rounded outline-none text-xs focus:ring-2 focus:ring-purple-500">
                         <p class="text-xs text-slate-500 mt-1">💡 احصل على مفتاح مجاني من: <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-purple-600 hover:underline">Google AI Studio</a></p>
-                        <p class="text-xs text-amber-600 mt-1">⚠️ الحد المجاني: 1500 طلب/يوم. إذا ظهر خطأ 429، انتظر حتى الغد.</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span id="apiKeyStatus" class="text-xs font-bold"></span>
@@ -144,9 +143,9 @@
                 </div>
             </div>
             <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-md">
-                <h2 class="text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span></span> طلبات الأطباء</h2>
-                <div class="overflow-x-auto">                    <table class="w-full text-right text-xs text-slate-600">
-                        <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
+                <h2 class="text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>👥</span> طلبات الأطباء</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right text-xs text-slate-600">                        <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
                             <tr><th class="px-4 py-3">الاسم</th><th class="px-4 py-3">كلمة السر</th><th class="px-4 py-3">الحالة</th><th class="px-4 py-3 text-center">التحكم</th></tr>
                         </thead>
                         <tbody id="doctorsTableBody"><tr><td colspan="4" class="px-4 py-4 text-center text-slate-400">لا توجد طلبات.</td></tr></tbody>
@@ -186,7 +185,6 @@
         let currentLoggedInDoctor = null;
         let isReadingFile = false;
 
-        // ===== نظام الجلسة المستمرة =====
         function saveSession(doctorName) {
             localStorage.setItem('dentai_session', JSON.stringify({
                 doctor: doctorName,
@@ -194,9 +192,9 @@
             }));
         }
 
-        function loadSession() {            try {
-                const session = localStorage.getItem('dentai_session');
-                if (session) {
+        function loadSession() {
+            try {
+                const session = localStorage.getItem('dentai_session');                if (session) {
                     const data = JSON.parse(session);
                     return data.doctor;
                 }
@@ -213,7 +211,6 @@
         }
 
         function switchTab(tab) {
-            // منع الوصول لواجهة الدردشة بدون جلسة
             if (tab === 'user' && !currentLoggedInDoctor) {
                 const savedDoctor = loadSession();
                 if (savedDoctor) {
@@ -243,10 +240,10 @@
                 const apiKeyInput = document.getElementById('geminiApiKey');
                 const apiKeyStatus = document.getElementById('apiKeyStatus');
                 if (apiKeyInput) apiKeyInput.value = savedKey;
-                if (apiKeyStatus) {                    if (savedKey) {
+                if (apiKeyStatus) {
+                    if (savedKey) {
                         apiKeyStatus.innerHTML = '<span class="text-green-600">✅ المفتاح محفوظ</span>';
-                    } else {
-                        apiKeyStatus.innerHTML = '<span class="text-red-600">⚠️ لم يتم حفظ المفتاح بعد</span>';
+                    } else {                        apiKeyStatus.innerHTML = '<span class="text-red-600">⚠️ لم يتم حفظ المفتاح بعد</span>';
                     }
                 }
             }
@@ -269,13 +266,13 @@
             }
             
             if (apiKey.length < 10) {
-                alert("⚠️ المفتاح قصير جداً!\n\nتأكد من نسخ المفتاح كاملاً من Google AI Studio");
+                alert("⚠️ المفتاح قصير جداً!");
                 return;
             }
             
             localStorage.setItem('gemini_api_key', apiKey);
             apiKeyStatus.innerHTML = '<span class="text-green-600">✅ تم حفظ المفتاح بنجاح</span>';
-            alert("✅ تم حفظ مفتاح Gemini API بنجاح!\n\nملاحظة: المفتاح دائم ولا يتغير. الحد المجاني 1500 طلب/يوم يتجدد تلقائياً.");
+            alert("✅ تم حفظ المفتاح بنجاح!");
         }
 
         function toggleApiKeyVisibility() {
@@ -292,11 +289,10 @@
             try {
                 const snapshot = await db.collection('doctors_registry').where('name', '==', name).get();
                 if (snapshot.empty) { alert("❌ الاسم غير مسجل."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }
-                let matched = null;                snapshot.forEach(doc => { const d = doc.data(); if (d.password === password) matched = { id: doc.id, ...d }; });
+                let matched = null;
+                snapshot.forEach(doc => { const d = doc.data(); if (d.password === password) matched = { id: doc.id, ...d }; });
                 if (!matched) { alert("❌ كلمة السر خاطئة."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }
-                if (matched.status !== "مفعل ومصرح") { alert("⏳ الحساب لم يُفعّل بعد."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }
-                
-                // حفظ الجلسة
+                if (matched.status !== "مفعل ومصرح") { alert("⏳ الحساب لم يُفعّل بعد."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }                
                 currentLoggedInDoctor = matched.name;
                 saveSession(matched.name);
                 
@@ -308,7 +304,7 @@
         }
 
         function doctorLogout() {
-            if (!confirm("هل تريد تسجيل الخروج؟\n\nسيتم إنهاء جلستك الحالية.")) return;
+            if (!confirm("هل تريد تسجيل الخروج؟")) return;
             currentLoggedInDoctor = null;
             clearSession();
             document.getElementById('chatMessages').innerHTML = '<div class="flex justify-start"><div class="bg-white border border-slate-200 rounded-lg p-3 max-w-[80%] shadow-sm"><p class="text-sm text-slate-700">مرحباً! أنا مساعدك الطبي.</p></div></div>';
@@ -341,11 +337,11 @@
             const question = questionInput.value.trim();
             if (!question) return;
             if (Object.keys(articlesMap).length === 0) {
-                alert("⚠️ لا توجد مراجع متاحة. أضف مراجع من لوحة الإدارة أولاً.");                return;
+                alert("⚠️ لا توجد مراجع متاحة.");
+                return;
             }
             const GEMINI_API_KEY = getGeminiApiKey();
-            if (!GEMINI_API_KEY) {
-                alert("⚠️ لم يتم إعداد مفتاح Gemini API!\n\nيرجى الذهاب إلى لوحة الإدارة وحفظ المفتاح.");
+            if (!GEMINI_API_KEY) {                alert("⚠️ لم يتم حفظ مفتاح Gemini API!");
                 return;
             }
             
@@ -376,7 +372,8 @@ ${allDocs}
 الإجابة:`;
 
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                // استخدام النموذج المستقر gemini-1.5-flash بدلاً من gemini-2.0-flash
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -390,8 +387,12 @@ ${allDocs}
                     const errMsg = errData.error?.message || 'خطأ غير معروف';
                     
                     if (response.status === 429) {
-                        throw new Error("تم تجاوز الحد المجاني اليومي (1500 طلب). يرجى الانتظار حتى الغد أو استخدام مفتاح API آخر.");                    }
-                    throw new Error(`HTTP ${response.status}: ${errMsg}`);
+                        throw new Error("⏳ تم تجاوز الحد المجاني اليومي (1500 طلب). يرجى الانتظار حتى الغد أو استخدام مفتاح API آخر.");
+                    } else if (response.status === 400) {
+                        throw new Error("❌ طلب غير صالح. تأكد من صحة المفتاح والنموذج المستخدم.");
+                    } else if (response.status === 403) {                        throw new Error("🚫 الوصول مرفوض. تأكد من تفعيل Gemini API في Google Cloud Console.");
+                    }
+                    throw new Error(`خطأ ${response.status}: ${errMsg}`);
                 }
 
                 const data = await response.json();
@@ -410,13 +411,7 @@ ${allDocs}
                 console.error("خطأ Gemini:", error);
                 const botMsg = document.createElement('div');
                 botMsg.className = 'flex justify-start';
-                
-                let errorMsg = error.message;
-                if (error.message.includes('تجاوز الحد')) {
-                    errorMsg = `⏳ ${error.message}`;
-                }
-                
-                botMsg.innerHTML = `<div class="bg-red-50 border border-red-200 rounded-lg p-3 max-w-[80%]"><p class="text-sm text-red-800"> ${errorMsg}</p></div>`;
+                botMsg.innerHTML = `<div class="bg-red-50 border border-red-200 rounded-lg p-3 max-w-[80%]"><p class="text-sm text-red-800">❌ ${error.message}</p></div>`;
                 chatMessages.appendChild(botMsg);
             }
 
@@ -434,17 +429,17 @@ ${allDocs}
             if (password.length < 4) { alert("كلمة السر يجب أن تكون 4 أحرف على الأقل."); return; }
             try {
                 const existing = await db.collection('doctors_registry').where('name', '==', name).get();
-                if (!existing.empty) { alert("️ الاسم مسجل مسبقاً."); return; }
+                if (!existing.empty) { alert("⚠️ الاسم مسجل مسبقاً."); return; }
                 await db.collection('doctors_registry').add({ name, password, status: "معلق وبانتظار التفعيل", timestamp: new Date() });
                 alert("✅ تم التسجيل! انتظر تفعيل الإدارة.");
                 document.getElementById('regName').value = ""; document.getElementById('regPassword').value = ""; document.getElementById('regPasswordConfirm').value = "";
                 switchTab('login');
-            } catch (e) { alert("خطأ: " + e.message); }        }
+            } catch (e) { alert("خطأ: " + e.message); }
+        }
 
         document.getElementById('fileInput').addEventListener('change', async function(e) {
             const file = e.target.files[0];
-            if (!file) return;
-            const docTitle = document.getElementById('docTitle');
+            if (!file) return;            const docTitle = document.getElementById('docTitle');
             const docContent = document.getElementById('docContent');
             const readingStatus = document.getElementById('readingStatus');
             const saveBtn = document.getElementById('saveBtn');
@@ -476,7 +471,7 @@ ${allDocs}
                             docContent.value = text;
                             isReadingFile = false; saveBtn.disabled = false;
                             readingStatus.innerHTML = `✅ ${pdf.numPages} صفحة`;
-                            alert(`✅ تم قراءة ${pdf.numPages} صفحة! اضغط "حفظ سحابي مؤكد"`);
+                            alert(`✅ تم قراءة ${pdf.numPages} صفحة!`);
                         } catch (err) { alert("خطأ PDF: " + err.message); isReadingFile = false; saveBtn.disabled = false; }
                     };
                     fr.readAsArrayBuffer(file);
@@ -488,12 +483,12 @@ ${allDocs}
             if (isReadingFile) { alert("⏳ انتظر حتى تكتمل القراءة!"); return; }
             const id = document.getElementById('currentDocId').value;
             const title = document.getElementById('docTitle').value.trim();
-            const content = document.getElementById('docContent').value.trim();            if (!title) { alert("⚠️ العنوان فارغ!"); return; }
+            const content = document.getElementById('docContent').value.trim();
+            if (!title) { alert("⚠️ العنوان فارغ!"); return; }
             if (!content) { alert("⚠️ المحتوى فارغ!"); return; }
             if (content.length < 10) { alert("⚠️ النص قصير جداً."); return; }
             const saveBtn = document.getElementById('saveBtn');
-            saveBtn.innerText = "جاري الحفظ..."; saveBtn.disabled = true;
-            try {
+            saveBtn.innerText = "جاري الحفظ..."; saveBtn.disabled = true;            try {
                 if (id) {
                     await db.collection('medical_docs').doc(id).set({ title, content, updatedAt: new Date() }, { merge: true });
                     alert("✅ تم التحديث!");
@@ -538,11 +533,11 @@ ${allDocs}
                 });
             } catch (e) { console.error(e); }
         }
+
         async function toggleDoctorStatus(id, newStatus) {
             try { await db.collection('doctors_registry').doc(id).update({ status: newStatus }); alert(`✅ ${newStatus}`); fetchRegisteredDoctors(); }
             catch (e) { alert("خطأ: " + e.message); }
         }
-
         async function deleteDoctorRequest(id) {
             if (!confirm("حذف الطلب؟")) return;
             try { await db.collection('doctors_registry').doc(id).delete(); alert("✅ تم الحذف"); fetchRegisteredDoctors(); }
@@ -577,7 +572,6 @@ ${allDocs}
             isReadingFile = false;
         }
 
-        // ===== عند تحميل الصفحة: استعادة الجلسة =====
         window.addEventListener('DOMContentLoaded', () => {
             const savedDoctor = loadSession();
             if (savedDoctor) {
@@ -586,7 +580,8 @@ ${allDocs}
                 loadArticles();
                 switchTab('user');
             } else {
-                switchTab('login');                loadArticles();
+                switchTab('login');
+                loadArticles();
             }
         });
     </script>
