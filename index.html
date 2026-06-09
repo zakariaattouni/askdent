@@ -13,12 +13,12 @@
     <div class="w-full max-w-4xl mx-auto">
         <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex-wrap gap-3">
             <div class="flex items-center gap-2">
-                <span class="text-xl">🦷</span>
+                <span class="text-xl"></span>
                 <span class="font-bold text-blue-600 text-sm md:text-base">DentAI الموسوعية</span>
             </div>
             <div class="flex gap-2">
-                <button id="navLoginBtn" onclick="switchTab('login')" class="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-sm">🔐 دخول طبيب</button>
-                <button id="navRegisterBtn" onclick="switchTab('register')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300"> تسجيل طبيب</button>
+                <button id="navLoginBtn" onclick="switchTab('login')" class="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-sm"> دخول طبيب</button>
+                <button id="navRegisterBtn" onclick="switchTab('register')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">📝 تسجيل طبيب</button>
                 <button id="navAdminBtn" onclick="checkAdminAccess()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">⚙️ لوحة الإدارة</button>
                 <button id="navLogoutBtn" onclick="doctorLogout()" class="hidden bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer">🚪 خروج</button>
             </div>
@@ -71,13 +71,13 @@
             </div>
             <div id="chatLoading" class="hidden text-center my-4">
                 <div class="inline-block animate-spin rounded-full h-6 w-6 border-4 border-blue-600 border-t-transparent mb-2"></div>
-                <p class="text-xs text-blue-600">جاري تحليل المراجع وتوليد الإجابة...</p>
+                <p class="text-xs text-blue-600">جاري تحليل المراجع وتوليد الإجابة عبر Gemini AI...</p>
             </div>
         </div>
 
         <div id="registerTab" class="hidden bg-white rounded-2xl shadow-md p-6 md:p-10 border border-slate-200">
             <div class="text-center mb-6 pb-4 border-b border-slate-100">
-                <h2 class="text-xl font-bold text-blue-600 mb-1">📝 تسجيل حساب طبيب جديد</h2>
+                <h2 class="text-xl font-bold text-blue-600 mb-1"> تسجيل حساب طبيب جديد</h2>
                 <p class="text-xs text-slate-500">أنشئ حسابك بالاسم وكلمة السر.</p>
             </div>
             <div class="space-y-4 max-w-md mx-auto">
@@ -100,6 +100,27 @@
         </div>
 
         <div id="adminTab" class="hidden space-y-8">
+            <!-- قسم إعدادات Gemini API -->
+            <div class="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6 border border-purple-200 shadow-md">
+                <h2 class="text-md font-bold text-purple-600 mb-4 flex items-center gap-2">
+                    <span>🤖</span> إعدادات الذكاء الاصطناعي (Gemini API)
+                </h2>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1 text-slate-600">مفتاح Gemini API:</label>
+                        <input type="password" id="geminiApiKey" placeholder="AIzaSy..." class="w-full px-3 py-2.5 bg-white border border-purple-200 rounded outline-none text-xs focus:ring-2 focus:ring-purple-500">
+                        <p class="text-xs text-slate-500 mt-1">💡 احصل على مفتاح مجاني من: <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-purple-600 hover:underline">Google AI Studio</a></p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="apiKeyStatus" class="text-xs font-bold"></span>
+                    </div>
+                    <div class="flex gap-2 justify-end">
+                        <button onclick="toggleApiKeyVisibility()" class="bg-slate-100 hover:bg-slate-200 border border-slate-300 px-4 py-2 rounded text-xs font-bold text-slate-700 cursor-pointer">👁️ إظهار/إخفاء</button>
+                        <button onclick="saveGeminiApiKey()" class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded text-xs font-bold shadow-sm cursor-pointer"> حفظ المفتاح</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-md">
                 <h2 id="formTitle" class="text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>➕</span> إضافة / تعديل مرجع طبي</h2>
                 <input type="hidden" id="currentDocId">
@@ -123,9 +144,8 @@
                 </div>
             </div>
             <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-md">
-                <h2 class="text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span></span> طلبات الأطباء</h2>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right text-xs text-slate-600">
+                <h2 class="text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>👥</span> طلبات الأطباء</h2>
+                <div class="overflow-x-auto">                    <table class="w-full text-right text-xs text-slate-600">
                         <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
                             <tr><th class="px-4 py-3">الاسم</th><th class="px-4 py-3">كلمة السر</th><th class="px-4 py-3">الحالة</th><th class="px-4 py-3 text-center">التحكم</th></tr>
                         </thead>
@@ -145,7 +165,8 @@
                 </div>
             </div>
         </div>
-    </div>    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
@@ -165,23 +186,68 @@
         let currentLoggedInDoctor = null;
         let isReadingFile = false;
 
+        function getGeminiApiKey() {
+            return localStorage.getItem('gemini_api_key') || '';
+        }
+
         function switchTab(tab) {
             if (tab === 'user' && !currentLoggedInDoctor) tab = 'login';
             ['loginTab', 'userTab', 'registerTab', 'adminTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
             document.getElementById(tab + 'Tab').classList.remove('hidden');
-            const navStates = { 'login': 'navLoginBtn', 'user': 'navLoginBtn', 'register': 'navRegisterBtn', 'admin': 'navAdminBtn' };
-            ['navLoginBtn', 'navRegisterBtn', 'navAdminBtn'].forEach(id => {
+            const navStates = { 'login': 'navLoginBtn', 'user': 'navLoginBtn', 'register': 'navRegisterBtn', 'admin': 'navAdminBtn' };            ['navLoginBtn', 'navRegisterBtn', 'navAdminBtn'].forEach(id => {
                 document.getElementById(id).className = "bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300";
             });
             if (navStates[tab]) document.getElementById(navStates[tab]).className = "bg-blue-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition shadow-sm";
             if (currentLoggedInDoctor) document.getElementById('navLogoutBtn').classList.remove('hidden');
             else document.getElementById('navLogoutBtn').classList.add('hidden');
+
+            if (tab === 'admin') {
+                const savedKey = getGeminiApiKey();
+                const apiKeyInput = document.getElementById('geminiApiKey');
+                const apiKeyStatus = document.getElementById('apiKeyStatus');
+                if (apiKeyInput) apiKeyInput.value = savedKey;
+                if (apiKeyStatus) {
+                    if (savedKey) {
+                        apiKeyStatus.innerHTML = '<span class="text-green-600">✅ المفتاح محفوظ</span>';
+                    } else {
+                        apiKeyStatus.innerHTML = '<span class="text-red-600">⚠️ لم يتم حفظ المفتاح بعد</span>';
+                    }
+                }
+            }
         }
 
         function checkAdminAccess() {
             const pass = prompt("كلمة مرور الإدارة:");
             if (pass === adminPassword) { switchTab('admin'); fetchUploadedFiles(); fetchRegisteredDoctors(); }
             else if (pass !== null) alert("كلمة المرور خاطئة!");
+        }
+
+        function saveGeminiApiKey() {
+            const apiKeyInput = document.getElementById('geminiApiKey');
+            const apiKeyStatus = document.getElementById('apiKeyStatus');
+            const apiKey = apiKeyInput.value.trim();
+            
+            if (!apiKey) {
+                alert("️ يرجى إدخال مفتاح Gemini API!");
+                return;
+            }
+            
+            if (!apiKey.startsWith('AIzaSy')) {
+                alert("⚠️ المفتاح غير صالح! يجب أن يبدأ بـ AIzaSy");
+                return;
+            }
+            
+            localStorage.setItem('gemini_api_key', apiKey);
+            apiKeyStatus.innerHTML = '<span class="text-green-600">✅ تم حفظ المفتاح بنجاح</span>';
+            alert("✅ تم حفظ مفتاح Gemini API بنجاح!");
+        }
+
+        function toggleApiKeyVisibility() {
+            const apiKeyInput = document.getElementById('geminiApiKey');            if (apiKeyInput.type === 'password') {
+                apiKeyInput.type = 'text';
+            } else {
+                apiKeyInput.type = 'password';
+            }
         }
 
         async function doctorLogin() {
@@ -194,7 +260,8 @@
                 const snapshot = await db.collection('doctors_registry').where('name', '==', name).get();
                 if (snapshot.empty) { alert("❌ الاسم غير مسجل."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }
                 let matched = null;
-                snapshot.forEach(doc => { const d = doc.data(); if (d.password === password) matched = { id: doc.id, ...d }; });                if (!matched) { alert("❌ كلمة السر خاطئة."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }
+                snapshot.forEach(doc => { const d = doc.data(); if (d.password === password) matched = { id: doc.id, ...d }; });
+                if (!matched) { alert("❌ كلمة السر خاطئة."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }
                 if (matched.status !== "مفعل ومصرح") { alert("⏳ الحساب لم يُفعّل بعد."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }
                 currentLoggedInDoctor = matched.name;
                 document.getElementById('welcomeUser').innerText = `مرحباً د. ${matched.name}`;
@@ -225,81 +292,92 @@
         async function sendChatMessage() {
             if (!currentLoggedInDoctor) { switchTab('login'); return; }
             const questionInput = document.getElementById('chatQuestion');
-            const question = questionInput.value.trim();
-            if (!question) return;
+            const question = questionInput.value.trim();            if (!question) return;
             if (Object.keys(articlesMap).length === 0) {
                 alert("⚠️ لا توجد مراجع متاحة. أضف مراجع من لوحة الإدارة أولاً.");
                 return;
             }
+            const GEMINI_API_KEY = getGeminiApiKey();
+            if (!GEMINI_API_KEY) {
+                alert("⚠️ لم يتم إعداد مفتاح Gemini API!\n\nيرجى:\n1. الذهاب إلى لوحة الإدارة\n2. إدخال مفتاح Gemini API\n3. حفظ المفتاح\n\nاحصل على مفتاح مجاني من: https://aistudio.google.com/app/apikey");
+                return;
+            }
+            
             const chatMessages = document.getElementById('chatMessages');
             const loading = document.getElementById('chatLoading');
             const sendBtn = document.getElementById('chatSendBtn');
+            
             const userMsg = document.createElement('div');
             userMsg.className = 'flex justify-end';
             userMsg.innerHTML = `<div class="bg-blue-600 text-white rounded-lg p-3 max-w-[80%] shadow-sm"><p class="text-sm">${question}</p></div>`;
             chatMessages.appendChild(userMsg);
-            questionInput.value = ''; sendBtn.disabled = true;
+            
+            questionInput.value = ''; 
+            sendBtn.disabled = true;
             loading.classList.remove('hidden');
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             const allDocs = Object.values(articlesMap).join('\n\n---\n\n');
-            const prompt = `أنت مساعد طبي متخصص في طب الأسنان. أجب بفقرة واحدة مركزة (3-5 أسطر) من النص المرفق فقط.\n\nالمراجع:\n${allDocs}\n\nالسؤال: ${question}\n\nالإجابة:`;
-            // محاولة الاتصال بـ Hugging Face مع retry
-            let answer = null;
-            const models = [
-                "Qwen/Qwen2.5-7B-Instruct",
-                "mistralai/Mistral-7B-Instruct-v0.3",
-                "HuggingFaceH4/zephyr-7b-beta"
-            ];
+            
+            const prompt = `أنت مساعد طبي متخصص في طب الأسنان. لديك المراجع الطبية التالية:
 
-            for (let model of models) {
-                try {
-                    const response = await fetch(`https://api-inference.huggingface.co/models/${model}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            inputs: prompt, 
-                            parameters: { max_new_tokens: 250, temperature: 0.2, return_full_text: false }
-                        })
-                    });
-                    if (!response.ok) {
-                        const errText = await response.text();
-                        console.warn(`نموذج ${model} فشل:`, response.status, errText);
-                        continue;
-                    }
-                    const data = await response.json();
-                    if (data && data[0] && data[0].generated_text) {
-                        answer = data[0].generated_text.trim();
-                        break;
-                    }
-                } catch (e) {
-                    console.warn(`خطأ في ${model}:`, e);
-                    continue;
+${allDocs}
+
+بناءً على هذه المراجع فقط، أجب على السؤال التالي بفقرة واحدة مركزة ومختصرة جداً (3-5 أسطر كحد أقصى) باللغة العربية:
+
+السؤال: ${question}
+
+الإجابة:`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { maxOutputTokens: 300, temperature: 0.2 }
+                    })
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(`HTTP ${response.status}: ${errData.error?.message || 'خطأ غير معروف'}`);                }
+
+                const data = await response.json();
+                let answer = "عذراً، لم أتمكن من توليد إجابة.";
+                
+                if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) {
+                    answer = data.candidates[0].content.parts[0].text.trim();
                 }
+
+                const botMsg = document.createElement('div');
+                botMsg.className = 'flex justify-start';
+                botMsg.innerHTML = `<div class="bg-white border border-slate-200 rounded-lg p-3 max-w-[80%] shadow-sm"><p class="text-sm text-slate-700 whitespace-pre-line">${answer}</p></div>`;
+                chatMessages.appendChild(botMsg);
+
+            } catch (error) {
+                console.error("خطأ Gemini:", error);
+                const botMsg = document.createElement('div');
+                botMsg.className = 'flex justify-start';
+                botMsg.innerHTML = `<div class="bg-red-50 border border-red-200 rounded-lg p-3 max-w-[80%]"><p class="text-sm text-red-800">❌ خطأ في الاتصال: ${error.message}</p></div>`;
+                chatMessages.appendChild(botMsg);
             }
 
-            const botMsg = document.createElement('div');
-            botMsg.className = 'flex justify-start';
-            if (answer) {
-                botMsg.innerHTML = `<div class="bg-white border border-slate-200 rounded-lg p-3 max-w-[80%] shadow-sm"><p class="text-sm text-slate-700 whitespace-pre-line">${answer}</p></div>`;
-            } else {
-                botMsg.innerHTML = `<div class="bg-amber-50 border border-amber-200 rounded-lg p-3 max-w-[80%]"><p class="text-sm text-amber-800">⚠️ السيرفر السحابي مشغول حالياً. يرجى المحاولة بعد دقيقة أو إضافة مراجع أكثر تحديداً.</p></div>`;
-            }
-            chatMessages.appendChild(botMsg);
             sendBtn.disabled = false;
             loading.classList.add('hidden');
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
         async function submitDoctorRegistration() {
-            const name = document.getElementById('regName').value.trim();            const password = document.getElementById('regPassword').value.trim();
+            const name = document.getElementById('regName').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
             const passwordConfirm = document.getElementById('regPasswordConfirm').value.trim();
             if (!name || !password || !passwordConfirm) { alert("يرجى تعبئة جميع الحقول."); return; }
             if (password !== passwordConfirm) { alert("كلمة السر غير متطابقة!"); return; }
             if (password.length < 4) { alert("كلمة السر يجب أن تكون 4 أحرف على الأقل."); return; }
             try {
                 const existing = await db.collection('doctors_registry').where('name', '==', name).get();
-                if (!existing.empty) { alert("️ الاسم مسجل مسبقاً."); return; }
+                if (!existing.empty) { alert("⚠️ الاسم مسجل مسبقاً."); return; }
                 await db.collection('doctors_registry').add({ name, password, status: "معلق وبانتظار التفعيل", timestamp: new Date() });
                 alert("✅ تم التسجيل! انتظر تفعيل الإدارة.");
                 document.getElementById('regName').value = ""; document.getElementById('regPassword').value = ""; document.getElementById('regPasswordConfirm').value = "";
@@ -312,8 +390,7 @@
             if (!file) return;
             const docTitle = document.getElementById('docTitle');
             const docContent = document.getElementById('docContent');
-            const readingStatus = document.getElementById('readingStatus');
-            const saveBtn = document.getElementById('saveBtn');
+            const readingStatus = document.getElementById('readingStatus');            const saveBtn = document.getElementById('saveBtn');
             docTitle.value = file.name.split('.').slice(0, -1).join('.');
             isReadingFile = true; saveBtn.disabled = true;
             readingStatus.innerHTML = '⏳ جاري القراءة...';
@@ -341,7 +418,8 @@
                             }
                             docContent.value = text;
                             isReadingFile = false; saveBtn.disabled = false;
-                            readingStatus.innerHTML = `✅ ${pdf.numPages} صفحة`;                            alert(`✅ تم قراءة ${pdf.numPages} صفحة! اضغط "حفظ سحابي مؤكد"`);
+                            readingStatus.innerHTML = `✅ ${pdf.numPages} صفحة`;
+                            alert(`✅ تم قراءة ${pdf.numPages} صفحة! اضغط "حفظ سحابي مؤكد"`);
                         } catch (err) { alert("خطأ PDF: " + err.message); isReadingFile = false; saveBtn.disabled = false; }
                     };
                     fr.readAsArrayBuffer(file);
@@ -355,14 +433,13 @@
             const title = document.getElementById('docTitle').value.trim();
             const content = document.getElementById('docContent').value.trim();
             if (!title) { alert("⚠️ العنوان فارغ!"); return; }
-            if (!content) { alert("️ المحتوى فارغ! ارفع ملفاً أو الصق نصاً."); return; }
-            if (content.length < 10) { alert("️ النص قصير جداً."); return; }
+            if (!content) { alert("⚠️ المحتوى فارغ!"); return; }
+            if (content.length < 10) { alert("⚠️ النص قصير جداً."); return; }
             const saveBtn = document.getElementById('saveBtn');
             saveBtn.innerText = "جاري الحفظ..."; saveBtn.disabled = true;
             try {
                 if (id) {
-                    await db.collection('medical_docs').doc(id).set({ title, content, updatedAt: new Date() }, { merge: true });
-                    alert("✅ تم التحديث!");
+                    await db.collection('medical_docs').doc(id).set({ title, content, updatedAt: new Date() }, { merge: true });                    alert("✅ تم التحديث!");
                 } else {
                     await db.collection('medical_docs').add({ title, content, createdAt: new Date() });
                     alert("✅ تم الحفظ في Firebase!");
@@ -390,7 +467,8 @@
 
         async function fetchRegisteredDoctors() {
             const tbody = document.getElementById('doctorsTableBody');
-            tbody.innerHTML = "";            try {
+            tbody.innerHTML = "";
+            try {
                 const snapshot = await db.collection('doctors_registry').get();
                 if (snapshot.empty) { tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-400">لا طلبات.</td></tr>'; return; }
                 snapshot.forEach(doc => {
@@ -410,8 +488,7 @@
         }
 
         async function deleteDoctorRequest(id) {
-            if (!confirm("حذف الطلب؟")) return;
-            try { await db.collection('doctors_registry').doc(id).delete(); alert("✅ تم الحذف"); fetchRegisteredDoctors(); }
+            if (!confirm("حذف الطلب؟")) return;            try { await db.collection('doctors_registry').doc(id).delete(); alert("✅ تم الحذف"); fetchRegisteredDoctors(); }
             catch (e) { alert("خطأ: " + e.message); }
         }
 
@@ -439,7 +516,8 @@
             document.getElementById('formTitle').innerHTML = "<span>➕</span> إضافة / تعديل مرجع طبي";
             document.getElementById('saveBtn').innerText = "حفظ سحابي مؤكد";
             document.getElementById('cancelBtn').classList.add('hidden');
-            document.getElementById('readingStatus').innerHTML = '';            isReadingFile = false;
+            document.getElementById('readingStatus').innerHTML = '';
+            isReadingFile = false;
         }
 
         window.addEventListener('DOMContentLoaded', () => { switchTab('login'); loadArticles(); });
