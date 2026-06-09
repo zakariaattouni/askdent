@@ -4,26 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة طب الأسنان المعرفية</title>
+    <!-- تضمين Tailwind CSS الاصدار الرابع من خلال المتصفح مباشرة -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Tajawal', sans-serif; }</style>
+    <style>
+        body { font-family: 'Tajawal', sans-serif; }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen p-4 md:p-8">
+<body class="bg-slate-50 text-slate-800 min-h-screen p-3 md:p-8">
     <div class="w-full max-w-4xl mx-auto">
+        
+        <!-- الهيدر العلوي المتجاوب -->
         <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex-wrap gap-3">
             <div class="flex items-center gap-2">
                 <span class="text-xl">🦷</span>
                 <span class="font-bold text-blue-600 text-sm md:text-base">منصة طب الأسنان المعرفية</span>
             </div>
-            <div class="flex gap-2">
-                <button id="navLoginBtn" onclick="switchTab('login')" class="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-sm">🔐 دخول طبيب</button>
-                <button id="navRegisterBtn" onclick="switchTab('register')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">📝 تسجيل طبيب</button>
-                <button id="navAdminBtn" onclick="checkAdminAccess()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">⚙️ لوحة الإدارة</button>
-                <button id="navLogoutBtn" onclick="doctorLogout()" class="hidden bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer">🚪 خروج</button>
+            <div class="flex gap-2 flex-wrap">
+                <button id="navLoginBtn" onclick="switchTab('login')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-sm">🔐 دخول طبيب</button>
+                <button id="navRegisterBtn" onclick="switchTab('register')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">📝 تسجيل طبيب</button>
+                <button id="navAdminBtn" onclick="checkAdminAccess()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">⚙️ لوحة الإدارة</button>
+                <button id="navLogoutBtn" onclick="doctorLogout()" class="hidden bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer">🚪 خروج</button>
             </div>
         </div>
 
+        <!-- واجهة تسجيل الدخول -->
         <div id="loginTab" class="bg-white rounded-2xl shadow-md p-6 md:p-10 border border-slate-200">
             <div class="text-center mb-8 pb-6 border-b border-slate-100">
                 <div class="text-5xl mb-3">🔐</div>
@@ -46,40 +52,39 @@
             </div>
         </div>
 
-        <div id="userTab" class="hidden bg-white rounded-2xl shadow-md p-6 md:p-10 border border-slate-200">
+        <!-- واجهة المستخلص المعرفي الفوري والموجز (تم حل مشكلة التداخل هنا) -->
+        <div id="userTab" class="hidden bg-white rounded-2xl shadow-md p-4 md:p-10 border border-slate-200">
             <div class="text-center mb-6 pb-4 border-b border-slate-100">
                 <div class="flex items-center justify-center gap-2 mb-2">
                     <span class="text-2xl">📚</span>
-                    <h1 class="text-2xl font-bold text-blue-600">المستخلص الطبي الفوري والمستقل</h1>
+                    <h1 class="text-xl md:text-2xl font-bold text-blue-600">المستخلص الطبي الفوري والمستقل</h1>
                 </div>
                 <p id="welcomeUser" class="text-xs text-slate-500">مرحباً بك دكتور، اكتب مصطلح البحث أو السؤال الإكلينيكي لاستخراج الإجابة فوراً.</p>
                 <div id="refsCount" class="text-xs text-green-600 mt-2 hidden">📚 المراجع المفهرسة سحابياً: <span id="refsNumber">0</span></div>
             </div>
-            <div id="chatContainer" class="flex flex-col h-[500px] border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
-                <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4">
-                    <div class="flex justify-start">
-                        <div class="bg-white border border-slate-200 rounded-lg p-3 max-w-[80%] shadow-sm">
-                            <p class="text-sm text-slate-700">مرحباً دكتور! تم الاستغناء عن مفاتيح الذكاء الاصطناعي بنجاح. يمكنك الآن كتابة أي سؤال أو كلمة مفتاحية (مثل: Pain, Diagnosis, Extraction) وسأقوم بفحص مراجعك الطبية فوراً وعرض الفقرات المطابقة بكفاءة تامة وبدون انقطاع.</p>
-                        </div>
-                    </div>
+            
+            <!-- حاوية الدردشة المرنة التي تحتفظ بارتفاع ثابت ومناسب للهواتف -->
+            <div id="chatContainer" class="flex flex-col h-[480px] md:h-[520px] border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
+                <!-- مساحة الرسائل الممتدة -->
+                <div id="chatMessages" class="flex-1 overflow-y-auto p-3 md:p-4 space-y-4">
+                    <!-- واجهة نظيفة تماماً بدون أي رسائل ترحيبية افتراضية داخل الصندوق -->
                 </div>
+                
+                <!-- شريط الإدخال المحسن والمحمي من الخروج عن الحدود أو التداخل -->
                 <div class="border-t border-slate-200 bg-white p-3">
-                    <div class="flex gap-2">
-                        <input type="text" id="chatQuestion" placeholder="اكتب المرض، العَرَض، أو المصطلح الطبي هنا..." class="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none text-sm focus:ring-2 focus:ring-blue-500" onkeypress="if(event.key==='Enter') sendChatMessage()">
-                        <button id="chatSendBtn" onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2 rounded-lg shadow-sm cursor-pointer transition text-sm">بحث واستخلاص</button>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="chatQuestion" placeholder="اكتب المرض، العَرَض، أو المصطلح الطبي..." class="flex-1 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-xs md:text-sm focus:ring-2 focus:ring-blue-500" onkeypress="if(event.key==='Enter') sendChatMessage()">
+                        <button id="chatSendBtn" onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-lg shadow-sm cursor-pointer transition text-xs md:text-sm whitespace-nowrap">بحث واستخلاص</button>
                     </div>
                 </div>
-            </div>
-            <div id="chatLoading" class="hidden text-center my-4">
-                <div class="inline-block animate-spin rounded-full h-6 w-6 border-4 border-blue-600 border-t-transparent mb-2"></div>
-                <p class="text-xs text-blue-600">جاري قراءة وتحليل المستندات المرفوعة داخلياً...</p>
             </div>
         </div>
 
+        <!-- واجهة تسجيل حساب جديد -->
         <div id="registerTab" class="hidden bg-white rounded-2xl shadow-md p-6 md:p-10 border border-slate-200">
             <div class="text-center mb-6 pb-4 border-b border-slate-100">
                 <h2 class="text-xl font-bold text-blue-600 mb-1">📝 تسجيل حساب طبيب جديد</h2>
-                <p class="text-xs text-slate-500">أنشئ حسابك بالاسم وكلمة السر.</p>
+                <p class="text-xs text-slate-500">أنشئ حسابك بالاسم وكلمة السر المعتمدة.</p>
             </div>
             <div class="space-y-4 max-w-md mx-auto">
                 <div>
@@ -101,9 +106,10 @@
             </div>
         </div>
 
+        <!-- لوحة الإدارة والتحكم في المراجع (تراخيص وأدوات السحابة) -->
         <div id="adminTab" class="hidden space-y-8">
-            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-md">
-                <h2 id="formTitle" class="text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>➕</span> إضافة / تعديل مرجع طبي للمنصة</h2>
+            <div class="bg-white rounded-2xl p-4 md:p-6 border border-slate-200 shadow-md">
+                <h2 id="formTitle" class="text-sm md:text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>➕</span> إضافة / تعديل مرجع طبي للمنصة</h2>
                 <input type="hidden" id="currentDocId">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
@@ -125,10 +131,10 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-md">
-                <h2 class="text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>👥</span> طلبات وتراخيص الأطباء</h2>
+            <div class="bg-white rounded-2xl p-4 md:p-6 border border-slate-200 shadow-md">
+                <h2 class="text-sm md:text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>👥</span> طلبات وتraخيص الأطباء</h2>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-right text-xs text-slate-600">
+                    <table class="w-full text-right text-xs text-slate-600 min-w-[500px]">
                         <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
                             <tr><th class="px-4 py-3">الاسم</th><th class="px-4 py-3">كلمة السر</th><th class="px-4 py-3">الحالة</th><th class="px-4 py-3 text-center">التحكم</th></tr>
                         </thead>
@@ -137,10 +143,10 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-md">
-                <h2 class="text-md font-bold text-slate-700 mb-4 flex items-center gap-2"><span>📂</span> المراجع المتاحة الحالية بالـ Firebase</h2>
+            <div class="bg-white rounded-2xl p-4 md:p-6 border border-slate-200 shadow-md">
+                <h2 class="text-sm md:text-md font-bold text-slate-700 mb-4 flex items-center gap-2"><span>📂</span> المراجع المتاحة الحالية في الـ Firebase</h2>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-right text-xs text-slate-600">
+                    <table class="w-full text-right text-xs text-slate-600 min-w-[500px]">
                         <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
                             <tr><th class="px-4 py-3">العنوان</th><th class="px-4 py-3">الحجم البنيوي</th><th class="px-4 py-3 text-center">الإجراءات</th></tr>
                         </thead>
@@ -151,6 +157,7 @@
         </div>
     </div>
 
+    <!-- مكتبات Firebase v8 -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
@@ -209,9 +216,9 @@
             document.getElementById(tab + 'Tab').classList.remove('hidden');
             const navStates = { 'login': 'navLoginBtn', 'user': 'navLoginBtn', 'register': 'navRegisterBtn', 'admin': 'navAdminBtn' };
             ['navLoginBtn', 'navRegisterBtn', 'navAdminBtn'].forEach(id => {
-                document.getElementById(id).className = "bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300";
+                document.getElementById(id).className = "bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300";
             });
-            if (navStates[tab]) document.getElementById(navStates[tab]).className = "bg-blue-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition shadow-sm";
+            if (navStates[tab]) document.getElementById(navStates[tab]).className = "bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm";
             if (currentLoggedInDoctor) {
                 document.getElementById('navLogoutBtn').classList.remove('hidden');
                 document.getElementById('navLoginBtn').classList.add('hidden');
@@ -244,7 +251,7 @@
                 currentLoggedInDoctor = matched.name;
                 saveSession(matched.name);
                 
-                document.getElementById('welcomeUser').innerText = `مرحباً د. ${matched.name}`;
+                document.getElementById('welcomeUser').innerText = `مرحباً د. ${matched.name}، اطرح سؤالك الإكلينيكي مباشرة.`;
                 document.getElementById('loginName').value = ''; document.getElementById('loginPassword').value = '';
                 await loadArticles(); switchTab('user');
             } catch (e) { alert("خطأ سحابي: " + e.message); }
@@ -255,7 +262,7 @@
             if (!confirm("هل تريد تسجيل الخروج؟")) return;
             currentLoggedInDoctor = null;
             clearSession();
-            document.getElementById('chatMessages').innerHTML = '<div class="flex justify-start"><div class="bg-white border border-slate-200 rounded-lg p-3 max-w-[80%] shadow-sm"><p class="text-sm text-slate-700">مرحباً! أنا مساعدك الطبي الفوري.</p></div></div>';
+            document.getElementById('chatMessages').innerHTML = '';
             switchTab('login');
         }
 
@@ -269,7 +276,6 @@
             } catch (e) { console.error("خطأ مزامنة الملفات:", e); }
         }
 
-        // محرك البحث والاستخلاص المباشر والذكي المستقل تماماً عن مفاتيح الخوادم الخارجية
         function sendChatMessage() {
             if (!currentLoggedInDoctor) { switchTab('login'); return; }
             const questionInput = document.getElementById('chatQuestion');
@@ -284,64 +290,86 @@
             const chatMessages = document.getElementById('chatMessages');
             const userMsg = document.createElement('div');
             userMsg.className = 'flex justify-end';
-            userMsg.innerHTML = `<div class="bg-blue-600 text-white rounded-lg p-3 max-w-[80%] shadow-sm"><p class="text-sm">${query}</p></div>`;
+            userMsg.innerHTML = `<div class="bg-blue-600 text-white rounded-lg p-3 max-w-[85%] shadow-sm"><p class="text-xs md:text-sm">${query}</p></div>`;
             chatMessages.appendChild(userMsg);
             
             questionInput.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // معالجة كلمات البحث
-            const searchTerms = query.toLowerCase().split(/\s+/).filter(t => t.length > 2);
-            let results = [];
+            const stopWords = ['ما', 'ماهو', 'ماذا', 'هو', 'هي', 'في', 'عند', 'من', 'على', 'إلى', 'تم', 'عن'];
+            const searchTerms = query.toLowerCase()
+                .split(/[\s،,._\-\/]+/)
+                .filter(t => t.length > 1 && !stopWords.includes(t));
 
-            // البحث الذكي داخل كل مرجع طبي متاح
+            const highPriorityRoots = ['أول', 'اول', 'بزوغ', 'يظهر', 'ظهور', 'يبدأ', 'عمر', 'شهر', 'سنسن'];
+            let snippets = [];
+
             for (const id in articlesMap) {
                 const doc = articlesMap[id];
-                const paragraphs = doc.content.split(/\n+/);
+                const sentences = doc.content.split(/[.\n،]+/);
                 
-                paragraphs.forEach(para => {
-                    if (!para.trim()) return;
-                    let matches = 0;
+                sentences.forEach(sentence => {
+                    const cleanSentence = sentence.trim();
+                    if (cleanSentence.length < 15) return; 
+
+                    let matchCount = 0;
+                    let hasHighPriorityWord = false;
+
                     searchTerms.forEach(term => {
-                        if (para.toLowerCase().includes(term)) matches++;
+                        if (cleanSentence.toLowerCase().includes(term)) matchCount++;
                     });
-                    
-                    if (matches > 0 || para.toLowerCase().includes(query.toLowerCase())) {
-                        results.push({
+
+                    highPriorityRoots.forEach(root => {
+                        if (cleanSentence.toLowerCase().includes(root)) hasHighPriorityWord = true;
+                    });
+
+                    if (matchCount > 0) {
+                        let score = matchCount * 20; 
+                        if (hasHighPriorityWord) score += 60; 
+                        if (query.length > 4 && cleanSentence.toLowerCase().includes(query.toLowerCase())) score += 100;
+
+                        snippets.push({
                             title: doc.title,
-                            text: para.trim(),
-                            score: matches + (para.toLowerCase().includes(query.toLowerCase()) ? 3 : 0)
+                            text: cleanSentence,
+                            score: score
                         });
                     }
                 });
             }
 
-            // ترتيب النتائج حسب الأكثر تطابقاً وملاءمة
-            results.sort((a, b) => b.score - a.score);
+            snippets.sort((a, b) => b.score - a.score);
 
             let answerHTML = "";
-            if (results.length > 0) {
-                answerHTML += `<p class="font-bold text-blue-700 mb-2">📚 الفقرات المستخلصة من مراجعك الأكاديمية (${results.length} تطابق):</p>`;
-                // جلب أفضل 4 فقرات مطابقة لعدم ملء الشاشة بنصوص طويلة
-                results.slice(0, 4).forEach((res, index) => {
-                    answerHTML += `
-                        <div class="mb-3 p-2.5 bg-slate-50 border-r-4 border-blue-500 rounded-l text-xs text-slate-700">
-                            <span class="block font-bold text-slate-500 mb-1">[المرجع: ${res.title}]</span>
-                            ${res.text}
-                        </div>`;
-                });
+            if (snippets.length > 0) {
+                answerHTML += `<p class="font-bold text-blue-700 text-xs mb-2">📍 الخلاصة الإكلينيكية المباشرة:</p>`;
+                const uniqueTexts = new Set();
+                let count = 0;
+
+                for (let i = 0; i < snippets.length; i++) {
+                    if (count >= 2) break;
+                    const res = snippets[i];
+                    
+                    if (!uniqueTexts.has(res.text)) {
+                        uniqueTexts.add(res.text);
+                        answerHTML += `
+                            <div class="mb-2 p-2.5 bg-slate-50 border-r-4 border-blue-500 rounded-l text-xs text-slate-700 leading-relaxed">
+                                <span class="block font-bold text-slate-400 text-[10px] mb-0.5">[المصدر الأكاديمي: ${res.title}]</span>
+                                🔍 ".. ${res.text} .."
+                            </div>`;
+                        count++;
+                    }
+                }
             } else {
-                answerHTML = `<p class="text-amber-700 font-medium">⚠️ لم يتم العثور على فقرات مطابقة مباشرة للبحث داخل مستنداتك المرفوعة الحالية. يرجى تجربة كلمات مفتاحية أخرى أو مراجعة النص في لوحة التحكم.</p>`;
+                answerHTML = `<p class="text-amber-700 font-medium text-xs">⚠️ لم يتم العثور على سطر محدد يجيب على السؤال بدقة داخل المراجع المرفوعة.</p>`;
             }
 
-            // إرسال الرد فوراً وبدون رتوش أو تأخير الخادم
             setTimeout(() => {
                 const botMsg = document.createElement('div');
                 botMsg.className = 'flex justify-start';
-                botMsg.innerHTML = `<div class="bg-white border border-slate-200 rounded-lg p-3.5 max-w-[85%] shadow-sm">${answerHTML}</div>`;
+                botMsg.innerHTML = `<div class="bg-white border border-slate-200 rounded-lg p-3.5 max-w-[90%] shadow-sm">${answerHTML}</div>`;
                 chatMessages.appendChild(botMsg);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 300);
+            }, 150);
         }
 
         async function submitDoctorRegistration() {
@@ -360,7 +388,6 @@
             } catch (e) { alert("خطأ: " + e.message); }
         }
 
-        // قراءة ومعالجة ملفات PDF / TXT
         document.getElementById('fileInput').addEventListener('change', async function(e) {
             const file = e.target.files[0];
             if (!file) return;
