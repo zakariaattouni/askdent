@@ -20,7 +20,7 @@
             <div class="flex gap-2" id="navButtons">
                 <button id="navLoginBtn" onclick="switchTab('login')" class="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-sm">🔐 دخول طبيب</button>
                 <button id="navRegisterBtn" onclick="switchTab('register')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">📝 تسجيل طبيب</button>
-                <button id="navAdminBtn" onclick="checkAdminAccess()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">️ لوحة الإدارة</button>
+                <button id="navAdminBtn" onclick="checkAdminAccess()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">⚙️ لوحة الإدارة</button>
                 <button id="navLogoutBtn" onclick="doctorLogout()" class="hidden bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer">🚪 خروج</button>
             </div>
         </div>
@@ -122,8 +122,9 @@
                     </div>
                 </div>
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold mb-1 text-slate-600">محتوى النص الطبي تفصيلياً:</label>
-                    <textarea id="docContent" rows="6" placeholder="الصق النصوص هنا مباشرة أو انتظر قراءتها التلقائية من الـ PDF..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded outline-none text-xs text-slate-800 resize-none focus:ring-1 focus:ring-blue-500"></textarea>
+                    <label class="block text-xs font-semibold mb-1 text-slate-600">محتوى النص الطبي تفصيلياً: <span id="readingStatus" class="text-blue-600 text-xs"></span></label>
+                    <textarea id="docContent" rows="6" placeholder="الصق النصوص هنا مباشرة أو ارفع ملف PDF/TXT ليتم قراءته تلقائياً..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded outline-none text-xs text-slate-800 resize-none focus:ring-1 focus:ring-blue-500"></textarea>
+                    <p class="text-xs text-slate-500 mt-1">💡 ملاحظة: إذا رفعت ملفاً، انتظر حتى يكتمل تحميل النص قبل الضغط على حفظ.</p>
                 </div>
                 <div class="flex gap-2 justify-end">
                     <button id="cancelBtn" onclick="resetForm()" class="hidden bg-slate-100 hover:bg-slate-200 border border-slate-300 px-4 py-2 rounded text-xs font-bold text-slate-700 cursor-pointer">إلغاء</button>
@@ -144,11 +145,11 @@
                         </thead>
                         <tbody id="doctorsTableBody">
                             <tr><td colspan="4" class="px-4 py-4 text-center text-slate-400">لا توجد طلبات معلقة حالياً.</td></tr>
-                        </tbody>
-                    </table>                </div>
+                        </tbody>                    </table>
+                </div>
             </div>
             <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-md">
-                <h2 class="text-md font-bold text-slate-700 mb-4 flex items-center gap-2"><span></span> المراجع والمقالات الحالية في النظام</h2>
+                <h2 class="text-md font-bold text-slate-700 mb-4 flex items-center gap-2"><span>📂</span> المراجع والمقالات الحالية في النظام</h2>
                 <div class="overflow-x-auto">
                     <table class="w-full text-right text-xs text-slate-600">
                         <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
@@ -187,14 +188,15 @@
         let articlesMap = {};
         const adminPassword = "salem1959";
         let currentLoggedInDoctor = null;
+        let isReadingFile = false;
 
         function switchTab(tab) {
             if (tab === 'user' && !currentLoggedInDoctor) { tab = 'login'; }
             const tabs = ['loginTab', 'userTab', 'registerTab', 'adminTab'];
             tabs.forEach(t => document.getElementById(t).classList.add('hidden'));
             document.getElementById(tab + 'Tab').classList.remove('hidden');
-
-            const navStates = { 'login': 'navLoginBtn', 'user': 'navLoginBtn', 'register': 'navRegisterBtn', 'admin': 'navAdminBtn' };            ['navLoginBtn', 'navRegisterBtn', 'navAdminBtn'].forEach(id => {
+            const navStates = { 'login': 'navLoginBtn', 'user': 'navLoginBtn', 'register': 'navRegisterBtn', 'admin': 'navAdminBtn' };
+            ['navLoginBtn', 'navRegisterBtn', 'navAdminBtn'].forEach(id => {
                 document.getElementById(id).className = "bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300";
             });
             if (navStates[tab]) { document.getElementById(navStates[tab]).className = "bg-blue-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition shadow-sm"; }
@@ -241,9 +243,9 @@
         }
 
         async function loadArticles() {
-            articlesMap = {};
-            try {
-                const snapshot = await db.collection('medical_docs').get();                snapshot.forEach(doc => { articlesMap[doc.id] = doc.data().content; });
+            articlesMap = {};            try {
+                const snapshot = await db.collection('medical_docs').get();
+                snapshot.forEach(doc => { articlesMap[doc.id] = doc.data().content; });
             } catch (error) { console.error(error); }
         }
         
@@ -290,9 +292,9 @@
             }
         }
         
-        async function submitDoctorRegistration() {
-            const name = document.getElementById('regName').value.trim();
-            const password = document.getElementById('regPassword').value.trim();            const passwordConfirm = document.getElementById('regPasswordConfirm').value.trim();
+        async function submitDoctorRegistration() {            const name = document.getElementById('regName').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const passwordConfirm = document.getElementById('regPasswordConfirm').value.trim();
             if (!name || !password || !passwordConfirm) { alert("يرجى تعبئة جميع الحقول."); return; }
             if (password !== passwordConfirm) { alert("كلمة السر وتأكيدها غير متطابقين!"); return; }
             if (password.length < 4) { alert("يجب أن تكون كلمة السر 4 أحرف على الأقل."); return; }
@@ -308,55 +310,109 @@
             } catch (e) { alert("خطأ: " + e.message); }
         }
 
+        // معالجة رفع الملفات بشكل صحيح
         document.getElementById('fileInput').addEventListener('change', async function(e) {
             const file = e.target.files[0];
             if (!file) return;
-            document.getElementById('docTitle').value = file.name.split('.').slice(0, -1).join('.');
+            
+            const docTitle = document.getElementById('docTitle');
             const docContent = document.getElementById('docContent');
-            docContent.value = "";
-            if (file.type === "text/plain") {
-                const reader = new FileReader();
-                reader.onload = function(evt) { docContent.value = evt.target.result; };
-                reader.readAsText(file);
-            } else if (file.type === "application/pdf") {
-                const fileReader = new FileReader();
-                fileReader.onload = async function() {
-                    const typedarray = new Uint8Array(this.result);
-                    try {
-                        const pdf = await pdfjsLib.getDocument(typedarray).promise;
-                        let textContent = "";
-                        for (let i = 1; i <= pdf.numPages; i++) {
-                            const page = await pdf.getPage(i);
-                            const textObj = await page.getTextContent();
-                            textContent += textObj.items.map(item => item.str).join(" ") + "\n";
+            const readingStatus = document.getElementById('readingStatus');
+            const saveBtn = document.getElementById('saveBtn');
+            
+            // تعيين العنوان تلقائياً
+            docTitle.value = file.name.split('.').slice(0, -1).join('.');
+            
+            // تعطيل الحفظ أثناء القراءة
+            isReadingFile = true;
+            saveBtn.disabled = true;
+            readingStatus.innerHTML = '⏳ جاري قراءة الملف...';
+            docContent.value = '';
+            docContent.placeholder = 'جاري القراءة...';
+            
+            try {
+                if (file.type === "text/plain") {
+                    const reader = new FileReader();
+                    reader.onload = function(evt) { 
+                        docContent.value = evt.target.result;
+                        isReadingFile = false;
+                        saveBtn.disabled = false;
+                        readingStatus.innerHTML = '✅ تم تحميل النص';
+                        docContent.placeholder = 'تم تحميل الملف بنجاح';
+                    };
+                    reader.readAsText(file);
+                } else if (file.type === "application/pdf") {                    const fileReader = new FileReader();
+                    fileReader.onload = async function() {
+                        try {
+                            const typedarray = new Uint8Array(this.result);
+                            const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                            let textContent = "";
+                            
+                            for (let i = 1; i <= pdf.numPages; i++) {
+                                readingStatus.innerHTML = `⏳ جاري القراءة... الصفحة ${i} من ${pdf.numPages}`;
+                                const page = await pdf.getPage(i);
+                                const textObj = await page.getTextContent();
+                                textContent += textObj.items.map(item => item.str).join(" ") + "\n";
+                            }
+                            
+                            docContent.value = textContent;
+                            isReadingFile = false;
+                            saveBtn.disabled = false;
+                            readingStatus.innerHTML = `✅ تم تحميل ${pdf.numPages} صفحة`;
+                            docContent.placeholder = 'تم تحميل الملف بنجاح';
+                            alert(`✅ تم قراءة ${pdf.numPages} صفحة من الـ PDF بنجاح!\nالآن يمكنك الضغط على "حفظ سحابي مؤكد"`);
+                        } catch (error) { 
+                            alert("❌ خطأ في قراءة الـ PDF: " + error.message);
+                            isReadingFile = false;
+                            saveBtn.disabled = false;
+                            readingStatus.innerHTML = '❌ خطأ في القراءة';
                         }
-                        docContent.value = textContent;
-                    } catch (error) { alert("خطأ في قراءة الـ PDF."); }
-                };
-                fileReader.readAsArrayBuffer(file);
+                    };
+                    fileReader.readAsArrayBuffer(file);
+                } else {
+                    alert("⚠️ نوع الملف غير مدعوم. يرجى استخدام PDF أو TXT");
+                    isReadingFile = false;
+                    saveBtn.disabled = false;
+                    readingStatus.innerHTML = '';
+                }
+            } catch (error) {
+                alert("خطأ: " + error.message);
+                isReadingFile = false;
+                saveBtn.disabled = false;
+                readingStatus.innerHTML = '❌ خطأ';
             }
         });
 
-        // الدالة المصححة - تتحقق من الحقول بشكل صحيح
         async function saveDocument() {
-            const id = document.getElementById('currentDocId').value;
-            const titleEl = document.getElementById('docTitle');
-            const contentEl = document.getElementById('docContent');            
-            const title = titleEl ? titleEl.value : '';
-            const content = contentEl ? contentEl.value : '';
+            // التحقق من أن القراءة اكتملت
+            if (isReadingFile) {
+                alert("⏳ يرجى الانتظار حتى يكتمل قراءة الملف قبل الحفظ!");
+                return;
+            }
             
-            console.log("العنوان الخام:", JSON.stringify(title));
-            console.log("المحتوى الخام:", JSON.stringify(content));
+            const id = document.getElementById('currentDocId').value;            const titleEl = document.getElementById('docTitle');
+            const contentEl = document.getElementById('docContent');
             
-            if (!title || title.trim().length === 0) { 
+            const title = titleEl ? titleEl.value.trim() : '';
+            const content = contentEl ? contentEl.value.trim() : '';
+            
+            console.log("العنوان:", JSON.stringify(title));
+            console.log("المحتوى:", JSON.stringify(content));
+            console.log("طول المحتوى:", content.length);
+            
+            if (!title || title.length === 0) { 
                 alert("⚠️ حقل العنوان فارغ. يرجى كتابة عنوان المرجع.");
                 if (titleEl) titleEl.focus();
                 return; 
             }
-            if (!content || content.trim().length === 0) { 
-                alert("⚠️ حقل النص فارغ. يرجى كتابة محتوى المرجع.");
+            if (!content || content.length === 0) { 
+                alert("⚠️ حقل النص فارغ. يرجى كتابة محتوى المرجع أو رفع ملف PDF/TXT.");
                 if (contentEl) contentEl.focus();
                 return; 
+            }
+            if (content.length < 10) {
+                alert("⚠️ النص قصير جداً (أقل من 10 أحرف). يرجى التأكد من صحة المحتوى.");
+                return;
             }
             
             const saveBtn = document.getElementById('saveBtn');
@@ -365,10 +421,10 @@
             
             try {
                 if (id) {
-                    await db.collection('medical_docs').doc(id).set({ title: title.trim(), content: content.trim(), updatedAt: new Date() }, { merge: true });
+                    await db.collection('medical_docs').doc(id).set({ title: title, content: content, updatedAt: new Date() }, { merge: true });
                     alert("✅ تم تحديث المرجع بنجاح!");
                 } else {
-                    const docRef = await db.collection('medical_docs').add({ title: title.trim(), content: content.trim(), createdAt: new Date() });
+                    const docRef = await db.collection('medical_docs').add({ title: title, content: content, createdAt: new Date() });
                     console.log("✅ Document ID:", docRef.id);
                     alert("✅ تم حفظ المرجع بنجاح في Firebase!");
                 }
@@ -383,14 +439,14 @@
                 saveBtn.disabled = false;
             }
         }
-
         async function fetchUploadedFiles() {
             const tbody = document.getElementById('filesTableBody');
             tbody.innerHTML = "";
             try {
                 const snapshot = await db.collection('medical_docs').get();
                 if (snapshot.empty) { tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-slate-400">لا يوجد مراجع مخزنة.</td></tr>`; return; }
-                snapshot.forEach(doc => {                    const data = doc.data();
+                snapshot.forEach(doc => {
+                    const data = doc.data();
                     const tr = document.createElement('tr');
                     tr.className = "border-b border-slate-200 hover:bg-slate-50";
                     tr.innerHTML = `
@@ -433,13 +489,13 @@
                 });
             } catch (e) { console.error(e); }
         }
-
         async function toggleDoctorStatus(id, newStatus) {
             try {
                 await db.collection('doctors_registry').doc(id).update({ status: newStatus, updatedAt: new Date() });
                 alert(`✅ تم التحديث إلى: ${newStatus}`);
                 fetchRegisteredDoctors();
-            } catch (e) { alert("خطأ: " + e.message); }        }
+            } catch (e) { alert("خطأ: " + e.message); }
+        }
 
         async function deleteDoctorRequest(id) {
             if(!confirm("هل تريد حذف هذا الطلب؟")) return;
@@ -478,8 +534,9 @@
             document.getElementById('formTitle').innerHTML = "<span>➕</span> إضافة / تعديل مرجع طبي";
             document.getElementById('saveBtn').innerText = "حفظ سحابي مؤكد";
             document.getElementById('cancelBtn').classList.add('hidden');
+            document.getElementById('readingStatus').innerHTML = '';
+            isReadingFile = false;
         }
-
         window.addEventListener('DOMContentLoaded', () => {
             switchTab('login');
             loadArticles();
