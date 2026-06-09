@@ -13,11 +13,11 @@
     <div class="w-full max-w-4xl mx-auto">
         <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex-wrap gap-3">
             <div class="flex items-center gap-2">
-                <span class="text-xl"></span>
+                <span class="text-xl">🦷</span>
                 <span class="font-bold text-blue-600 text-sm md:text-base">DentAI الموسوعية</span>
             </div>
             <div class="flex gap-2">
-                <button id="navLoginBtn" onclick="switchTab('login')" class="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-sm"> دخول طبيب</button>
+                <button id="navLoginBtn" onclick="switchTab('login')" class="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-sm">🔐 دخول طبيب</button>
                 <button id="navRegisterBtn" onclick="switchTab('register')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">📝 تسجيل طبيب</button>
                 <button id="navAdminBtn" onclick="checkAdminAccess()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">⚙️ لوحة الإدارة</button>
                 <button id="navLogoutBtn" onclick="doctorLogout()" class="hidden bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer">🚪 خروج</button>
@@ -77,7 +77,7 @@
 
         <div id="registerTab" class="hidden bg-white rounded-2xl shadow-md p-6 md:p-10 border border-slate-200">
             <div class="text-center mb-6 pb-4 border-b border-slate-100">
-                <h2 class="text-xl font-bold text-blue-600 mb-1"> تسجيل حساب طبيب جديد</h2>
+                <h2 class="text-xl font-bold text-blue-600 mb-1">📝 تسجيل حساب طبيب جديد</h2>
                 <p class="text-xs text-slate-500">أنشئ حسابك بالاسم وكلمة السر.</p>
             </div>
             <div class="space-y-4 max-w-md mx-auto">
@@ -100,7 +100,6 @@
         </div>
 
         <div id="adminTab" class="hidden space-y-8">
-            <!-- قسم إعدادات Gemini API -->
             <div class="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6 border border-purple-200 shadow-md">
                 <h2 class="text-md font-bold text-purple-600 mb-4 flex items-center gap-2">
                     <span>🤖</span> إعدادات الذكاء الاصطناعي (Gemini API)
@@ -108,7 +107,7 @@
                 <div class="space-y-3">
                     <div>
                         <label class="block text-xs font-semibold mb-1 text-slate-600">مفتاح Gemini API:</label>
-                        <input type="password" id="geminiApiKey" placeholder="AIzaSy..." class="w-full px-3 py-2.5 bg-white border border-purple-200 rounded outline-none text-xs focus:ring-2 focus:ring-purple-500">
+                        <input type="password" id="geminiApiKey" placeholder="الصق المفتاح هنا..." class="w-full px-3 py-2.5 bg-white border border-purple-200 rounded outline-none text-xs focus:ring-2 focus:ring-purple-500">
                         <p class="text-xs text-slate-500 mt-1">💡 احصل على مفتاح مجاني من: <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-purple-600 hover:underline">Google AI Studio</a></p>
                     </div>
                     <div class="flex items-center gap-2">
@@ -116,7 +115,7 @@
                     </div>
                     <div class="flex gap-2 justify-end">
                         <button onclick="toggleApiKeyVisibility()" class="bg-slate-100 hover:bg-slate-200 border border-slate-300 px-4 py-2 rounded text-xs font-bold text-slate-700 cursor-pointer">👁️ إظهار/إخفاء</button>
-                        <button onclick="saveGeminiApiKey()" class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded text-xs font-bold shadow-sm cursor-pointer"> حفظ المفتاح</button>
+                        <button onclick="saveGeminiApiKey()" class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded text-xs font-bold shadow-sm cursor-pointer">💾 حفظ المفتاح</button>
                     </div>
                 </div>
             </div>
@@ -144,9 +143,9 @@
                 </div>
             </div>
             <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-md">
-                <h2 class="text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>👥</span> طلبات الأطباء</h2>
-                <div class="overflow-x-auto">                    <table class="w-full text-right text-xs text-slate-600">
-                        <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
+                <h2 class="text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span></span> طلبات الأطباء</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right text-xs text-slate-600">                        <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
                             <tr><th class="px-4 py-3">الاسم</th><th class="px-4 py-3">كلمة السر</th><th class="px-4 py-3">الحالة</th><th class="px-4 py-3 text-center">التحكم</th></tr>
                         </thead>
                         <tbody id="doctorsTableBody"><tr><td colspan="4" class="px-4 py-4 text-center text-slate-400">لا توجد طلبات.</td></tr></tbody>
@@ -194,8 +193,8 @@
             if (tab === 'user' && !currentLoggedInDoctor) tab = 'login';
             ['loginTab', 'userTab', 'registerTab', 'adminTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
             document.getElementById(tab + 'Tab').classList.remove('hidden');
-            const navStates = { 'login': 'navLoginBtn', 'user': 'navLoginBtn', 'register': 'navRegisterBtn', 'admin': 'navAdminBtn' };            ['navLoginBtn', 'navRegisterBtn', 'navAdminBtn'].forEach(id => {
-                document.getElementById(id).className = "bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300";
+            const navStates = { 'login': 'navLoginBtn', 'user': 'navLoginBtn', 'register': 'navRegisterBtn', 'admin': 'navAdminBtn' };
+            ['navLoginBtn', 'navRegisterBtn', 'navAdminBtn'].forEach(id => {                document.getElementById(id).className = "bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300";
             });
             if (navStates[tab]) document.getElementById(navStates[tab]).className = "bg-blue-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition shadow-sm";
             if (currentLoggedInDoctor) document.getElementById('navLogoutBtn').classList.remove('hidden');
@@ -232,14 +231,15 @@
                 return;
             }
             
-            if (!apiKey.startsWith('AIzaSy')) {
-                alert("⚠️ المفتاح غير صالح! يجب أن يبدأ بـ AIzaSy");
+            // قبول أي مفتاح بطول معقول (Google تغير الصيغ)
+            if (apiKey.length < 10) {
+                alert("⚠️ المفتاح قصير جداً!\n\nتأكد من نسخ المفتاح كاملاً من Google AI Studio");
                 return;
             }
             
             localStorage.setItem('gemini_api_key', apiKey);
             apiKeyStatus.innerHTML = '<span class="text-green-600">✅ تم حفظ المفتاح بنجاح</span>';
-            alert("✅ تم حفظ مفتاح Gemini API بنجاح!");
+            alert("✅ تم حفظ مفتاح Gemini API بنجاح!\n\nالآن يمكنك استخدام الدردشة الطبية.");
         }
 
         function toggleApiKeyVisibility() {
@@ -262,7 +262,7 @@
                 let matched = null;
                 snapshot.forEach(doc => { const d = doc.data(); if (d.password === password) matched = { id: doc.id, ...d }; });
                 if (!matched) { alert("❌ كلمة السر خاطئة."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }
-                if (matched.status !== "مفعل ومصرح") { alert("⏳ الحساب لم يُفعّل بعد."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }
+                if (matched.status !== "مفعل ومصرح") { alert(" الحساب لم يُفعّل بعد."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }
                 currentLoggedInDoctor = matched.name;
                 document.getElementById('welcomeUser').innerText = `مرحباً د. ${matched.name}`;
                 document.getElementById('loginName').value = ''; document.getElementById('loginPassword').value = '';
