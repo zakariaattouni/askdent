@@ -175,26 +175,31 @@
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         
-        // إعدادات Firebase الخاصة بالمشروع
+        // إعدادات Firebase المحدّثة الخاصة بالمشروع
         const firebaseConfig = {
             apiKey: "AIzaSyDdpSqPSOMteKvZKKWMYKyGUuLuW44aKoM",
             authDomain: "askdent-532f4.firebaseapp.com",
+            databaseURL: "https://askdent-532f4-default-rtdb.firebaseio.com",
             projectId: "askdent-532f4",
             storageBucket: "askdent-532f4.firebasestorage.app",
             messagingSenderId: "310490517111",
-            appId: "1:310490517111:web:e79caa5d4afc3dbe5e4072"
+            appId: "1:310490517111:web:655b527b64a766f05e4072"
         };
         
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         
+        console.log("✅ Firebase تم تهيئته بنجاح");
+        console.log("Project ID:", firebaseConfig.projectId);
+        console.log("Database URL:", firebaseConfig.databaseURL);
+        
         let articlesMap = {};
-        const adminPassword = "salem1959";
-        let currentLoggedInDoctor = null;
+        const adminPassword = "salem1959";        let currentLoggedInDoctor = null;
 
         function switchTab(tab) {
             if (tab === 'user' && !currentLoggedInDoctor) {
-                tab = 'login';            }
+                tab = 'login';
+            }
             const tabs = ['loginTab', 'userTab', 'registerTab', 'adminTab'];
             tabs.forEach(t => document.getElementById(t).classList.add('hidden'));
             document.getElementById(tab + 'Tab').classList.remove('hidden');
@@ -238,11 +243,11 @@
 
             if (!name || !password) {
                 alert("يرجى إدخال اسم المستخدم وكلمة السر.");
-                return;
-            }
+                return;            }
 
             loginBtn.disabled = true;
             loginBtn.innerText = "جاري التحقق...";
+
             try {
                 const snapshot = await db.collection('doctors_registry')
                     .where('name', '==', name)
@@ -286,12 +291,13 @@
                 alert(`✅ أهلاً بك د. ${matchedDoctor.name}! تم تسجيل الدخول بنجاح.`);
 
             } catch (e) {
-                alert("خطأ في الاتصال: " + e.message);
-            } finally {
+                console.error("❌ خطأ في تسجيل الدخول:", e);
+                alert("خطأ في الاتصال: " + e.message);            } finally {
                 loginBtn.disabled = false;
                 loginBtn.innerText = "دخول إلى المنصة";
             }
         }
+
         function doctorLogout() {
             if (!confirm("هل تريد تسجيل الخروج من حسابك؟")) return;
             currentLoggedInDoctor = null;
@@ -313,7 +319,9 @@
                     const data = doc.data();
                     articlesMap[doc.id] = data.content;
                 });
-            } catch (error) { console.error("خطأ الاتصال بـ Firebase:", error); }
+            } catch (error) { 
+                console.error("خطأ تحميل المراجع:", error);
+            }
         }
         
         async function sendChatMessage() {
@@ -333,15 +341,15 @@
             userMsgDiv.className = 'flex justify-end';
             userMsgDiv.innerHTML = `<div class="bg-blue-600 text-white rounded-lg p-3 max-w-[80%] shadow-sm"><p class="text-sm">${question}</p></div>`;
             chatMessages.appendChild(userMsgDiv);
-            
-            questionInput.value = '';
+                        questionInput.value = '';
             sendBtn.disabled = true;
             loading.classList.remove('hidden');
             chatMessages.scrollTop = chatMessages.scrollHeight;
             
             const allDocs = Object.values(articlesMap).join('\n\n---\n\n');
             const fullPrompt = `<|im_start|>system\nأنت مساعد طبي أكاديمي موجز في طب الأسنان. أجب بفقرة واحدة مركزة ومختصرة جداً من النصوص المرفقة حصراً.<|im_end|>\n<|im_start|>user\nالمراجع الطبية:\n${allDocs}\n\nالسؤال: ${question}<|im_end|>\n<|im_start|>assistant\n`;
-                        try {
+            
+            try {
                 const response = await fetch("https://api-inference.huggingface.co/models/Qwen/Qwen2.5-7B-Instruct", {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -382,15 +390,15 @@
                 return;
             }
             if (password !== passwordConfirm) {
-                alert("كلمة السر وتأكيدها غير متطابقين!");
-                return;
+                alert("كلمة السر وتأكيدها غير متطابقين!");                return;
             }
             if (password.length < 4) {
                 alert("يجب أن تكون كلمة السر 4 أحرف على الأقل.");
                 return;
             }
 
-            try {                const existing = await db.collection('doctors_registry').where('name', '==', name).get();
+            try {
+                const existing = await db.collection('doctors_registry').where('name', '==', name).get();
                 if (!existing.empty) {
                     alert("⚠️ هذا الاسم مسجل مسبقاً في النظام. يرجى اختيار اسم آخر أو تسجيل الدخول.");
                     return;
@@ -408,6 +416,7 @@
                 document.getElementById('regPasswordConfirm').value = "";
                 switchTab('login');
             } catch (e) {
+                console.error("خطأ في التسجيل:", e);
                 alert("خطأ في تسجيل الطلب: " + e.message);
             }
         }
@@ -430,8 +439,7 @@
                     const typedarray = new Uint8Array(this.result);
                     try {
                         const pdf = await pdfjsLib.getDocument(typedarray).promise;
-                        let textContent = "";
-                        for (let i = 1; i <= pdf.numPages; i++) {
+                        let textContent = "";                        for (let i = 1; i <= pdf.numPages; i++) {
                             const page = await pdf.getPage(i);
                             const textObj = await page.getTextContent();
                             textContent += textObj.items.map(item => item.str).join(" ") + "\n";
@@ -439,7 +447,8 @@
                         docContent.value = textContent;
                         docContent.placeholder = "اكتمل تفريغ النص بنجاح وعليك الضغط على زر حفظ سحابي مؤكد.";
                     } catch (error) { alert("خطأ فك تشفير الـ PDF."); }
-                };                fileReader.readAsArrayBuffer(file);
+                };
+                fileReader.readAsArrayBuffer(file);
             }
         });
 
@@ -447,23 +456,40 @@
             const id = document.getElementById('currentDocId').value;
             const title = document.getElementById('docTitle').value.trim();
             const content = document.getElementById('docContent').value.trim();
-            if (!title || !content) { alert("يرجى تعبئة حقل العنوان والنص للمرجع."); return; }
+            
+            if (!title || !content) { 
+                alert("يرجى تعبئة حقل العنوان والنص للمرجع."); 
+                return; 
+            }
+            
             const saveBtn = document.getElementById('saveBtn');
             saveBtn.innerText = "جاري الحفظ الفعلي السحابي...";
             saveBtn.disabled = true;
+            
             try {
                 if (id) {
-                    await db.collection('medical_docs').doc(id).set({ title, content }, { merge: true });
+                    await db.collection('medical_docs').doc(id).set({ 
+                        title: title, 
+                        content: content,
+                        updatedAt: new Date()
+                    }, { merge: true });
                     alert("✅ تم تعديل وتحديث بيانات المرجع الطبي بنجاح في Firebase!");
                 } else {
-                    await db.collection('medical_docs').add({ title, content });
+                    const docRef = await db.collection('medical_docs').add({ 
+                        title: title, 
+                        content: content,
+                        createdAt: new Date()
+                    });
+                    console.log("✅ Document ID:", docRef.id);
                     alert("✅ تم حفظ ورفع المرجع الطبي بنجاح إلى قاعدة بيانات Firebase!");
                 }
+                
                 resetForm();
                 await fetchUploadedFiles();
                 await loadArticles();
-            } catch (error) { 
-                alert("❌ خطأ سحابي صريح: " + error.message); 
+                
+            } catch (error) {                 console.error("خطأ سحابي:", error);
+                alert("❌ خطأ سحابي: " + error.message); 
             } finally {
                 saveBtn.innerText = "حفظ سحابي مؤكد";
                 saveBtn.disabled = false;
@@ -475,7 +501,12 @@
             tbody.innerHTML = "";
             try {
                 const snapshot = await db.collection('medical_docs').get();
-                if (snapshot.empty) { tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-slate-400">لا يوجد مراجع مخزنة سحابياً.</td></tr>`; return; }
+                
+                if (snapshot.empty) { 
+                    tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-slate-400">لا يوجد مراجع مخزنة سحابياً.</td></tr>`; 
+                    return; 
+                }
+                
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     const tr = document.createElement('tr');
@@ -488,8 +519,12 @@
                             <button onclick="deleteDocument('${doc.id}')" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded hover:bg-red-600 hover:text-white transition cursor-pointer text-xs">حذف</button>
                         </td>
                     `;
-                    tbody.appendChild(tr);                });
-            } catch (e) { alert("خطأ جلب الملفات: " + e.message); }
+                    tbody.appendChild(tr);
+                });
+            } catch (e) { 
+                console.error("خطأ جلب الملفات:", e);
+                alert("خطأ جلب الملفات: " + e.message); 
+            }
         }
 
         async function fetchRegisteredDoctors() {
@@ -497,9 +532,12 @@
             tbody.innerHTML = "";
             try {
                 const snapshot = await db.collection('doctors_registry').get();
-                if(snapshot.empty) { tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-4 text-center text-slate-400">لا توجد طلبات تسجيل في السحابة حالياً.</td></tr>`; return; }
                 
-                snapshot.forEach(doc => {
+                if(snapshot.empty) { 
+                    tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-4 text-center text-slate-400">لا توجد طلبات تسجيل في السحابة حالياً.</td></tr>`; 
+                    return; 
+                }
+                                snapshot.forEach(doc => {
                     const data = doc.data();
                     const tr = document.createElement('tr');
                     tr.className = "border-b border-slate-200 hover:bg-slate-50";
@@ -519,15 +557,24 @@
                     `;
                     tbody.appendChild(tr);
                 });
-            } catch (e) { console.error(e); }
+            } catch (e) { 
+                console.error("خطأ جلب الأطباء:", e);
+                alert("خطأ في جلب الأطباء: " + e.message);
+            }
         }
 
         async function toggleDoctorStatus(id, newStatus) {
             try {
-                await db.collection('doctors_registry').doc(id).update({ status: newStatus });
+                await db.collection('doctors_registry').doc(id).update({ 
+                    status: newStatus,
+                    updatedAt: new Date()
+                });
                 alert(`✅ تم تحديث حالة الطبيب بنجاح إلى: ${newStatus}`);
                 fetchRegisteredDoctors();
-            } catch (e) { alert("خطأ في تعديل الحالة: " + e.message); }
+            } catch (e) { 
+                console.error("خطأ في تعديل الحالة:", e);
+                alert("خطأ في تعديل الحالة: " + e.message); 
+            }
         }
 
         async function deleteDoctorRequest(id) {
@@ -536,8 +583,11 @@
                 await db.collection('doctors_registry').doc(id).delete();
                 alert("✅ تم حذف طلب التسجيل.");
                 fetchRegisteredDoctors();
-            } catch (e) { alert("خطأ: " + e.message); }
-        }
+            } catch (e) { 
+                console.error("خطأ في الحذف:", e);
+                alert("خطأ: " + e.message); 
+            }        }
+
         function editDocument(id, titleEncoded, contentEncoded) {
             document.getElementById('currentDocId').value = id;
             document.getElementById('docTitle').value = decodeURIComponent(titleEncoded);
@@ -555,7 +605,10 @@
                 alert("✅ تم الحذف بنجاح من قاعدة البيانات!");
                 fetchUploadedFiles();
                 loadArticles();
-            } catch (error) { alert("خطأ أثناء الحذف: " + error.message); }
+            } catch (error) { 
+                console.error("خطأ أثناء الحذف:", error);
+                alert("خطأ أثناء الحذف: " + error.message); 
+            }
         }
 
         function resetForm() {
