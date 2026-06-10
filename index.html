@@ -14,7 +14,6 @@
 <body class="bg-slate-50 text-slate-800 min-h-screen p-3 md:p-8">
     <div class="w-full max-w-4xl mx-auto">
         
-        <!-- الهيدر العلوي المتجاوب -->
         <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex-wrap gap-3">
             <div class="flex items-center gap-2">
                 <span class="text-xl">🦷</span>
@@ -31,7 +30,6 @@
                 </a>
             </div>
         </div>
-        <!-- واجهة تسجيل الدخول -->
         <div id="loginTab" class="bg-white rounded-2xl shadow-md p-6 md:p-10 border border-slate-200">
             <div class="text-center mb-8 pb-6 border-b border-slate-100">
                 <div class="text-5xl mb-3">🔐</div>
@@ -47,11 +45,12 @@
                     <label class="block text-xs font-semibold mb-1 text-slate-600">كلمة السر:</label>
                     <input type="password" id="loginPassword" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded text-sm outline-none focus:ring-2 focus:ring-blue-500" onkeypress="if(event.key==='Enter') doctorLogin()">
                 </div>
-                <button onclick="doctorLogin()" id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg text-sm shadow-md cursor-pointer transition">دخول إلى المنصة</button>                <div class="text-center pt-2 border-t border-slate-100">
+                <button onclick="doctorLogin()" id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg text-sm shadow-md cursor-pointer transition">دخول إلى المنصة</button>
+                <div class="text-center pt-2 border-t border-slate-100">
                     <p class="text-xs text-slate-500">ليس لديك حساب؟ <button onclick="switchTab('register')" class="text-blue-600 font-bold hover:underline cursor-pointer">سجّل الآن</button></p>
-                </div>            </div>
+                </div>
+            </div>
         </div>
-        <!-- واجهة الموجز الطبي المعرفي -->
         <div id="userTab" class="hidden bg-white rounded-2xl shadow-md p-4 md:p-10 border border-slate-200">
             <div class="text-center mb-6 pb-4 border-b border-slate-100">
                 <div class="flex items-center justify-center gap-2 mb-2">
@@ -62,7 +61,6 @@
                 <div id="refsCount" class="text-xs text-green-600 mt-2 hidden">📚 المراجع المفهرسة سحابياً: <span id="refsNumber">0</span></div>
             </div>
             
-            <!-- حاوية الدردشة -->
             <div id="chatContainer" class="flex flex-col h-[480px] md:h-[520px] border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
                 <div id="chatMessages" class="flex-1 overflow-y-auto p-3 md:p-4 space-y-4"></div>
                 
@@ -74,7 +72,6 @@
                 </div>
             </div>
         </div>
-        <!-- واجهة تسجيل حساب جديد -->
         <div id="registerTab" class="hidden bg-white rounded-2xl shadow-md p-6 md:p-10 border border-slate-200">
             <div class="text-center mb-6 pb-4 border-b border-slate-100">
                 <h2 class="text-xl font-bold text-blue-600 mb-1">📝 تسجيل حساب طبيب جديد</h2>
@@ -96,8 +93,9 @@
                 <button onclick="submitDoctorRegistration()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg text-sm shadow-md cursor-pointer transition">تقديم طلب التسجيل</button>
                 <div class="text-center pt-2 border-t border-slate-100">
                     <p class="text-xs text-slate-500">لديك حساب؟ <button onclick="switchTab('login')" class="text-blue-600 font-bold hover:underline cursor-pointer">سجّل الدخول</button></p>
-                </div>            </div>        </div>
-        <!-- لوحة الإدارة -->
+                </div>
+            </div>
+        </div>
         <div id="adminTab" class="hidden space-y-8">
             <div class="bg-white rounded-2xl p-4 md:p-6 border border-slate-200 shadow-md">
                 <h2 id="formTitle" class="text-sm md:text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>➕</span> إضافة / تعديل مرجع طبي للمنصة</h2>
@@ -141,15 +139,13 @@
                         </thead>
                         <tbody id="filesTableBody"><tr><td colspan="3" class="px-4 py-4 text-center text-slate-400">جاري تحميل مراجعك...</td></tr></tbody>
                     </table>
-                </div>            </div>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- مكتبات Firebase v8 -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        // ----------------------------------------------
-        // الإصلاح: التأكد من تهيئة pdf.js بشكل آمن
-        // ----------------------------------------------
         if (typeof pdfjsLib !== 'undefined') {
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         } else {
@@ -179,6 +175,7 @@
         const adminPassword = "salem1959";
         let currentLoggedInDoctor = null;
         let isReadingFile = false;
+
         function saveSession(doctorName) {
             localStorage.setItem('dentai_session', JSON.stringify({
                 doctor: doctorName,
@@ -194,11 +191,11 @@
                 }
             } catch (e) { console.error(e); }
             return null;
-        }        function clearSession() {
+        }
+        function clearSession() {
             localStorage.removeItem('dentai_session');
         }
         function switchTab(tab) {
-            // التحقق من صحة الجلسة قبل فتح تبويب المستخدم
             if (tab === 'user' && !currentLoggedInDoctor) {
                 const savedDoctor = loadSession();
                 if (savedDoctor) {
@@ -208,7 +205,6 @@
                     tab = 'login';
                 }
             }
-            // إخفاء جميع التبويبات
             const tabs = ['loginTab', 'userTab', 'registerTab', 'adminTab'];
             tabs.forEach(t => {
                 const el = document.getElementById(t);
@@ -217,7 +213,6 @@
             const activeTab = document.getElementById(tab + 'Tab');
             if (activeTab) activeTab.classList.remove('hidden');
             
-            // تحديث شكل أزرار الهيدر
             const navBtns = ['navLoginBtn', 'navRegisterBtn', 'navAdminBtn'];
             navBtns.forEach(id => {
                 const btn = document.getElementById(id);
@@ -227,7 +222,6 @@
             else if (tab === 'register') document.getElementById('navRegisterBtn').className = "bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm";
             else if (tab === 'admin') document.getElementById('navAdminBtn').className = "bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm";
             
-            // إظهار/إخفاء زر الخروج
             const logoutBtn = document.getElementById('navLogoutBtn');
             if (logoutBtn) {
                 if (currentLoggedInDoctor) logoutBtn.classList.remove('hidden');
@@ -243,7 +237,8 @@
                     fetchRegisteredDoctors();
                 } else {
                     alert("⚠️ لا يمكن الوصول إلى قاعدة البيانات حالياً.");
-                }            }
+                }
+            }
             else if (pass !== null) alert("كلمة المرور خاطئة!");
         }
         async function doctorLogin() {
@@ -288,11 +283,13 @@
                 if (rc && rn) { rn.textContent = snapshot.size; if (snapshot.size > 0) rc.classList.remove('hidden'); else rc.classList.add('hidden'); }
             } catch (e) { console.error("خطأ مزامنة الملفات:", e); }
         }
+
         // ============================================
-        // محرك البحث الذكي المتقدم (بدون تغيير)
+        // محرك البحث الذكي المتقدم
         // ============================================
         class AdvancedArabicSearchEngine {
-            constructor(articlesMap) {                this.articles = articlesMap;
+            constructor(articlesMap) { 
+                this.articles = articlesMap;
                 this.arabicStopWords = new Set([
                     'من', 'إلى', 'في', 'عن', 'على', 'مع', 'ك', 'ل', 'ب', 'ف', 'ثم', 'أو', 'أم',
                     'ال', 'هذا', 'هذه', 'ذلك', 'تلك', 'الذي', 'التي', 'الذين', 'اللواتي',
@@ -309,7 +306,7 @@
                     'بزوغ': ['بزوغ', 'ظهور', 'طلوع', 'خروج', 'نمو'],
                     'لثة': ['لثة', 'لثّة', 'صماخ'],
                     'أسنان': ['أسنان', 'سن', 'ضرس', 'ناجذ'],
-                    'رضيع': ['رضيع', 'طفل', 'صغير', 'مولود'],
+                    'رضيع': ['رضيع', 'طفل', 'صغير', 'لثة', 'حليب', 'مؤقت', 'أولي', '6 أشهر', 'سنة'],
                     'تنظيف': ['تنظيف', 'نظافة', 'عناية', 'غسل']
                 };
                 this.contextKeywords = {
@@ -366,13 +363,14 @@
                 const results = [];
                 const queryContext = this.detectContext(query);
                 const expandedTerms = this.expandQueryTerms(query);
-                const normalizedQuery = this.normalizeArabicText(query);
                 for (const id in this.articles) {
                     const doc = this.articles[id];
-                    const sentences = doc.content.split(/[.\n،؛]+/);
+                    // تم التغيير للتقسيم بالسطر (\n) بدلاً من علامات الترقيم القصيرة لمنع بتر الجمل الطويلة
+                    const sentences = doc.content.split(/\n+/);
                     sentences.forEach(sentence => {
                         const cleanSentence = sentence.trim();
-                        if (cleanSentence.length < 15 || cleanSentence.length > 500) return;
+                        // تم رفع الحد الأقصى لطول الفقرة المقبولة إلى 1500 حرف لاستيعاب النصوص الطويلة
+                        if (cleanSentence.length < 10 || cleanSentence.length > 1500) return;
                         const normalizedSentence = this.normalizeArabicText(cleanSentence);
                         const sentenceContext = this.detectContext(cleanSentence);
                         if (queryContext !== 'general' && sentenceContext !== 'general' && queryContext !== sentenceContext) return;
@@ -384,7 +382,7 @@
                         queryBigrams.forEach(bigram => { if (normalizedSentence.includes(bigram)) score += 50; });
                         if (queryContext === 'adult' && this.contextKeywords.adult_dental.some(k => normalizedSentence.includes(k))) score += 40;
                         if (queryContext === 'infant' && this.contextKeywords.infant_dental.some(k => normalizedSentence.includes(k))) score += 40;
-                        if (score > 20) {
+                        if (score > 15) {
                             const confidence = Math.min(Math.round((score / 300) * 100), 100);
                             results.push({ title: doc.title, text: cleanSentence, score: score, confidence: confidence, exactMatchScore: exactMatchScore });
                         }
@@ -395,6 +393,7 @@
                 });
             }
         }
+
         function detectQueryType(query) {
             const q = query.toLowerCase();
             if (q.includes('ما هو') || q.includes('ما هي') || q.includes('عرّف') || q.includes('تعريف')) return 'definition';
@@ -407,39 +406,59 @@
             results.forEach(r => { if (r.title) sources.add(r.title); });
             return Array.from(sources).slice(0,3);
         }
+
+        // تحويل محتوى الـ Markdown الأساسي ليعرض بشكل طبيعي ومنسق في شاشة الدردشة
+        function formatMarkdownToHTML(text) {
+            let html = text;
+            html = html.replace(/###\s+(.*)/g, '<h4 class="font-bold text-blue-700 text-md mt-3 mb-1">$1</h4>');
+            html = html.replace(/\*\*\s*(.*?)\s*\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>');
+            html = html.replace(/^\*\s+(.*)/gm, '<li class="list-disc list-inside mr-2 text-slate-700">$1</li>');
+            return html.split('\n').join('<br>');
+        }
+
+        // التعديل الرئيسي: توسيع الإجابة وجلب الفقرات الكافية بناءً على الطلب
         function generateCoherentAnswer(query, results) {
             if (results.length === 0) return "";
-            const filteredResults = results.filter(r => r.confidence > 30);
+            const filteredResults = results.filter(r => r.confidence > 15);
             if (filteredResults.length === 0) return "";
+            
             const sortedResults = filteredResults.sort((a,b) => b.confidence - a.confidence);
-            const topResults = sortedResults.slice(0,2);
+            // زيادة عدد النتائج المدمجة من النتيجة الأولى المباشرة والنتائج المكملة الشبيهة
+            const topResults = sortedResults.slice(0, 5); 
             let coherentText = "";
             const usedSentences = new Set();
             const queryType = detectQueryType(query);
+            
             const intros = {
                 'definition': 'بناءً على المراجع الطبية المتاحة، ',
-                'treatment': 'وفقاً للمصادر الطبية، ',
+                'treatment': 'وفقاً للمصادر الطبية المعتمدة، ',
                 'symptoms': 'تشير المراجع إلى أن ',
-                'general': 'من خلال المراجع المتاحة، '
+                'general': 'من واقع البيانات والمرجعيات المخزنة: '
             };
             coherentText = intros[queryType] || intros.general;
+            coherentText += "<br>";
+
             let sentenceCount = 0;
             for (const result of topResults) {
-                if (sentenceCount >= 2) break;
+                // السماح بجلب ما يصل إلى 10 فقرات متتالية بدلاً من جملتين فقط لإعطاء إجابة شاملة وافية
+                if (sentenceCount >= 10) break;
                 let sentence = result.text.trim();
-                if (usedSentences.has(sentence) || sentence.length < 20 || sentence.length > 300) continue;
+                if (usedSentences.has(sentence) || sentence.length < 10) continue;
+                
                 sentence = sentence.replace(/^[""]|[""]$/g, '').trim();
-                if (sentenceCount === 0) coherentText += sentence;
-                else {
-                    const connectors = ['. كما ', '. بالإضافة إلى ذلك، ', '. ومن الجدير بالذكر أن '];
-                    coherentText += connectors[sentenceCount % connectors.length] + sentence.charAt(0).toLowerCase() + sentence.slice(1);
+                
+                if (sentenceCount === 0) {
+                    coherentText += formatMarkdownToHTML(sentence);
+                } else {
+                    coherentText += "<br>" + formatMarkdownToHTML(sentence);
                 }
                 usedSentences.add(sentence);
                 sentenceCount++;
             }
-            if (!coherentText.endsWith('.')) coherentText += '.';
             return coherentText;
-        }        function sendChatMessage() {            
+        }
+
+        function sendChatMessage() {            
             if (!currentLoggedInDoctor) { switchTab('login'); return; }
             const questionInput = document.getElementById('chatQuestion');
             const query = questionInput.value.trim();
@@ -455,6 +474,7 @@
             chatMessages.appendChild(userMsg);
             questionInput.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
+            
             const searchEngine = new AdvancedArabicSearchEngine(articlesMap);
             const results = searchEngine.search(query);
             let answerHTML = "";
@@ -462,9 +482,9 @@
                 const coherentAnswer = generateCoherentAnswer(query, results);
                 answerHTML += `<p class="font-bold text-blue-800 text-base mb-2">📍 الإجابة المستخلصة:</p>`;
                 answerHTML += `<div class="p-3 bg-slate-50 border-r-4 border-blue-600 rounded-l text-base md:text-lg text-slate-800 leading-relaxed">
-                                    <p class="text-slate-800">${coherentAnswer}</p>
-                                    <div class="mt-3 pt-2 border-t border-slate-200 text-sm text-slate-500">
-                                        📚 المصادر: ${getUniqueSources(results).join(' • ')}
+                                    <div class="text-slate-800">${coherentAnswer}</div>
+                                    <div class="mt-4 pt-2 border-t border-slate-200 text-sm text-slate-500">
+                                        📚 المصادر المستند عليها: ${getUniqueSources(results).join(' • ')}
                                     </div>
                                 </div>`;
             } else {
@@ -473,11 +493,12 @@
             setTimeout(() => {
                 const botMsg = document.createElement('div');
                 botMsg.className = 'flex justify-start';
-                botMsg.innerHTML = `<div class="bg-white border border-slate-200 rounded-lg p-3.5 max-w-[90%] shadow-sm">${answerHTML}</div>`;
+                botMsg.innerHTML = `<div class="bg-white border border-slate-200 rounded-lg p-3.5 w-full max-w-[95%] shadow-sm">${answerHTML}</div>`;
                 chatMessages.appendChild(botMsg);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }, 150);
         }
+
         async function submitDoctorRegistration() {
             if (!db) { alert("❌ خطأ في قاعدة البيانات."); return; }
             const name = document.getElementById('regName').value.trim();
@@ -493,7 +514,7 @@
                 switchTab('login');
             } catch (e) { alert("خطأ: " + e.message); }
         }
-        // استخراج النص من الملفات بشكل آمن
+
         document.getElementById('fileInput').addEventListener('change', async function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -536,6 +557,7 @@
                 } else { alert("الملفات النصية و PDF فقط هي المدعومة حالياً."); isReadingFile = false; saveBtn.disabled = false; }
             } catch (err) { alert("خطأ: " + err.message); isReadingFile = false; saveBtn.disabled = false; }
         });
+
         async function saveDocument() {
             if (!db) { alert("قاعدة البيانات غير متصلة."); return; }            if (isReadingFile) { alert("⏳ يرجى الانتظار حتى تنتهي معالجة وقراءة الملف!"); return; }
             const id = document.getElementById('currentDocId').value;
@@ -552,6 +574,7 @@
             } catch (err) { alert("❌ فشل الحفظ: " + err.message); }
             finally { saveBtn.innerText = "حفظ سحابي مؤكد"; saveBtn.disabled = false; }
         }
+
         async function fetchUploadedFiles() {
             if (!db) return;
             const tbody = document.getElementById('filesTableBody');
@@ -568,6 +591,7 @@
                 });
             } catch (e) { console.error(e); }
         }
+
         async function fetchRegisteredDoctors() {
             if (!db) return;
             const tbody = document.getElementById('doctorsTableBody');
@@ -585,6 +609,7 @@
                 });
             } catch (e) { console.error(e); }
         }
+
         async function toggleDoctorStatus(id, newStatus) {
             if (!db) return;            try { await db.collection('doctors_registry').doc(id).update({ status: newStatus }); alert(`✅ تم التحديث إلى: ${newStatus}`); fetchRegisteredDoctors(); }
             catch (e) { alert("خطأ: " + e.message); }
@@ -621,7 +646,7 @@
             document.getElementById('readingStatus').innerHTML = '';
             isReadingFile = false;
         }
-        // بدء التشغيل
+
         window.addEventListener('DOMContentLoaded', () => {
             const savedDoctor = loadSession();
             if (savedDoctor) {
@@ -635,4 +660,5 @@
             }
         });
     </script>
-</body></html>
+</body>
+</html>
