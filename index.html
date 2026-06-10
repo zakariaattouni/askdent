@@ -3,88 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة طب الأسنان المعرفية - لوحة التحكم الأكاديمية</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    
+    <title>منصة طب الأسنان المعرفية</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    
     <style>
-        body { 
-            font-family: 'Tajawal', sans-serif; 
-            scroll-behavior: smooth;
-        }
-        /* تحسينات مخصصة لشريط التمرير على شاشات الهواتف المحمولة لزيادة سلاسة التصفح */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+        body { font-family: 'Tajawal', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen p-3 md:p-8 flex flex-col justify-between">
-
-    <div class="w-full max-w-4xl mx-auto flex-1">
+<body class="bg-slate-50 text-slate-800 min-h-screen p-3 md:p-8">
+    <div class="w-full max-w-4xl mx-auto">
         
         <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex-wrap gap-3">
             <div class="flex items-center gap-2">
                 <span class="text-xl">🦷</span>
                 <span class="font-bold text-blue-600 text-sm md:text-base">منصة طب الأسنان المعرفية</span>
             </div>
-            <div class="flex gap-2 flex-wrap items-center">
-                <button id="navLoginBtn" onclick="switchTab('login')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-sm hover:bg-blue-700">🔐 دخول طبيب</button>
+            <div class="flex gap-2 flex-wrap">
+                <button id="navLoginBtn" onclick="switchTab('login')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-sm">🔐 دخول طبيب</button>
                 <button id="navRegisterBtn" onclick="switchTab('register')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">📝 تسجيل طبيب</button>
                 <button id="navAdminBtn" onclick="checkAdminAccess()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border border-slate-300">⚙️ لوحة الإدارة</button>
                 <button id="navLogoutBtn" onclick="doctorLogout()" class="hidden bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer">🚪 خروج</button>
-                
                 <a href="https://wa.me/963939436998" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-sm flex items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
                     تواصل
                 </a>
             </div>
         </div>
-        
         <div id="loginTab" class="bg-white rounded-2xl shadow-md p-6 md:p-10 border border-slate-200">
             <div class="text-center mb-8 pb-6 border-b border-slate-100">
                 <div class="text-5xl mb-3">🔐</div>
                 <h1 class="text-2xl font-bold text-blue-600 mb-2">دخول الأطباء المعتمدين</h1>
-                <p class="text-xs text-slate-500">الرجاء إدخال اسم المستخدم وكلمة السر المعتمدة من قبل الإدارة الطبية.</p>
+                <p class="text-xs text-slate-500">الرجاء إدخال اسم المستخدم وكلمة السر.</p>
             </div>
             <div class="space-y-4 max-w-md mx-auto">
                 <div>
-                    <label class="block text-xs font-semibold mb-1 text-slate-600">اسم المستخدم الطبيبي:</label>
+                    <label class="block text-xs font-semibold mb-1 text-slate-600">اسم المستخدم:</label>
                     <input type="text" id="loginName" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded text-sm outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold mb-1 text-slate-600">كلمة السر الخاصة بالحساب:</label>
+                    <label class="block text-xs font-semibold mb-1 text-slate-600">كلمة السر:</label>
                     <input type="password" id="loginPassword" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded text-sm outline-none focus:ring-2 focus:ring-blue-500" onkeypress="if(event.key==='Enter') doctorLogin()">
                 </div>
                 <button onclick="doctorLogin()" id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg text-sm shadow-md cursor-pointer transition">دخول إلى المنصة</button>
                 <div class="text-center pt-2 border-t border-slate-100">
-                    <p class="text-xs text-slate-500">ليس لديك حساب مسبق؟ <button onclick="switchTab('register')" class="text-blue-600 font-bold hover:underline cursor-pointer">سجّل حساب جديد الآن</button></p>
-                </div>
+                    <p class="text-xs text-slate-500">ليس لديك حساب؟ <button onclick="switchTab('register')" class="text-blue-600 font-bold hover:underline cursor-pointer">سجّل الآن</button></p>                </div>
             </div>
         </div>
-        
         <div id="userTab" class="hidden bg-white rounded-2xl shadow-md p-4 md:p-10 border border-slate-200">
             <div class="text-center mb-6 pb-4 border-b border-slate-100">
                 <div class="flex items-center justify-center gap-2 mb-2">
                     <span class="text-2xl">📚</span>
-                    <h1 class="text-xl md:text-2xl font-bold text-blue-600">الموجز الطبي المعرفي الفوري</h1>
+                    <h1 class="text-xl md:text-2xl font-bold text-blue-600">الموجز الطبي المعرفي</h1>
                 </div>
                 <p id="welcomeUser" class="text-xs text-slate-500">مرحباً بك دكتور، اكتب مصطلح البحث أو السؤال الإكلينيكي لاستخراج الإجابة فوراً.</p>
-                <div id="refsCount" class="text-xs text-green-600 mt-2 hidden">📚 المراجع المفهرسة سحابياً: <span id="refsNumber">0</span> مراجع</div>
+                <div id="refsCount" class="text-xs text-green-600 mt-2 hidden">📚 المراجع المفهرسة سحابياً: <span id="refsNumber">0</span></div>
             </div>
             
             <div id="chatContainer" class="flex flex-col h-[480px] md:h-[520px] border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
@@ -92,21 +65,20 @@
                 
                 <div class="border-t border-slate-200 bg-white p-3">
                     <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="text" id="chatQuestion" placeholder="اكتب المرض، العَرَض، أو المصطلح الطبي مثل: بزوغ ضرس العقل..." class="flex-1 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-base md:text-lg focus:ring-2 focus:ring-blue-500" onkeypress="if(event.key==='Enter') sendChatMessage()">
+                        <input type="text" id="chatQuestion" placeholder="اكتب المرض، العَرَض، أو المصطلح الطبي..." class="flex-1 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-base md:text-lg focus:ring-2 focus:ring-blue-500" onkeypress="if(event.key==='Enter') sendChatMessage()">
                         <button id="chatSendBtn" onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-lg shadow-sm cursor-pointer transition text-base md:text-lg whitespace-nowrap">بحث واستخلاص</button>
                     </div>
                 </div>
             </div>
         </div>
-        
         <div id="registerTab" class="hidden bg-white rounded-2xl shadow-md p-6 md:p-10 border border-slate-200">
             <div class="text-center mb-6 pb-4 border-b border-slate-100">
                 <h2 class="text-xl font-bold text-blue-600 mb-1">📝 تسجيل حساب طبيب جديد</h2>
-                <p class="text-xs text-slate-500">أنشئ حسابك بالاسم وكلمة السر المعتمدة وسيتم تفعيله من المشرف.</p>
+                <p class="text-xs text-slate-500">أنشئ حسابك بالاسم وكلمة السر المعتمدة.</p>
             </div>
             <div class="space-y-4 max-w-md mx-auto">
                 <div>
-                    <label class="block text-xs font-semibold mb-1 text-slate-600">اسم المستخدم المفضل:</label>
+                    <label class="block text-xs font-semibold mb-1 text-slate-600">اسم المستخدم:</label>
                     <input type="text" id="regName" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded text-sm outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
@@ -119,75 +91,63 @@
                 </div>
                 <button onclick="submitDoctorRegistration()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg text-sm shadow-md cursor-pointer transition">تقديم طلب التسجيل</button>
                 <div class="text-center pt-2 border-t border-slate-100">
-                    <p class="text-xs text-slate-500">لديك حساب مفعل؟ <button onclick="switchTab('login')" class="text-blue-600 font-bold hover:underline cursor-pointer">سجّل الدخول مباشرة</button></p>
+                    <p class="text-xs text-slate-500">لديك حساب؟ <button onclick="switchTab('login')" class="text-blue-600 font-bold hover:underline cursor-pointer">سجّل الدخول</button></p>
                 </div>
             </div>
         </div>
-        
         <div id="adminTab" class="hidden space-y-8">
-            <div class="bg-white rounded-2xl p-4 md:p-6 border border-slate-200 shadow-md">
-                <h2 id="formTitle" class="text-sm md:text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>➕</span> إضافة / تعديل مرجع طبي للمنصة</h2>
+            <div class="bg-white rounded-2xl p-4 md:p-6 border border-slate-200 shadow-md">                <h2 id="formTitle" class="text-sm md:text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>➕</span> إضافة / تعديل مرجع طبي للمنصة</h2>
                 <input type="hidden" id="currentDocId">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label class="block text-xs font-semibold mb-1 text-slate-600">عنوان المرجع أو الكتاب:</label>
+                        <label class="block text-xs font-semibold mb-1 text-slate-600">عنوان المرجع:</label>
                         <input type="text" id="docTitle" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded outline-none text-xs focus:ring-1 focus:ring-blue-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold mb-1 text-slate-600">رفع ملف مرجعي مباشر (PDF / TXT):</label>
+                        <label class="block text-xs font-semibold mb-1 text-slate-600">رفع ملف (PDF / TXT):</label>
                         <input type="file" id="fileInput" accept=".txt,.pdf" class="w-full text-xs text-slate-500 file:py-2 file:px-3 file:rounded file:border file:border-slate-200 file:bg-slate-50 file:text-slate-700 hover:file:bg-slate-100 cursor-pointer">
                     </div>
                 </div>
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold mb-1 text-slate-600">المحتوى المستخرج الفعلي: <span id="readingStatus" class="text-blue-600 text-xs font-bold"></span></label>
-                    <textarea id="docContent" rows="8" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded outline-none text-xs resize-none focus:ring-1 focus:ring-blue-500 font-mono" placeholder="سيظهر النص المستخرج هنا تلقائياً ليكون قابلاً للبحث الفوري والعميق..."></textarea>
+                    <label class="block text-xs font-semibold mb-1 text-slate-600">المحتوى المستخرج: <span id="readingStatus" class="text-blue-600 text-xs"></span></label>
+                    <textarea id="docContent" rows="6" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded outline-none text-xs resize-none focus:ring-1 focus:ring-blue-500" placeholder="سيظهر النص المستخرج هنا تلقائياً ليكون قابلاً للبحث الفوري..."></textarea>
                 </div>
                 <div class="flex gap-2 justify-end">
-                    <button id="cancelBtn" onclick="resetForm()" class="hidden bg-slate-100 hover:bg-slate-200 border border-slate-300 px-4 py-2 rounded text-xs font-bold text-slate-700 cursor-pointer">إلغاء الأمر</button>
-                    <button id="saveBtn" onclick="saveDocument()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded text-xs font-bold shadow-sm cursor-pointer transition">حفظ سحابي مؤكد</button>
+                    <button id="cancelBtn" onclick="resetForm()" class="hidden bg-slate-100 hover:bg-slate-200 border border-slate-300 px-4 py-2 rounded text-xs font-bold text-slate-700 cursor-pointer">إلغاء</button>
+                    <button id="saveBtn" onclick="saveDocument()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded text-xs font-bold shadow-sm cursor-pointer">حفظ سحابي مؤكد</button>
                 </div>
             </div>
-            
             <div class="bg-white rounded-2xl p-4 md:p-6 border border-slate-200 shadow-md">
-                <h2 class="text-sm md:text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>👥</span> طلبات وتراخيص الأطباء المسجلين بالنظام</h2>
+                <h2 class="text-sm md:text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>👥</span> طلبات وتراخيص الأطباء</h2>
                 <div class="overflow-x-auto">
                     <table class="w-full text-right text-xs text-slate-600 min-w-[500px]">
                         <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
-                            <tr><th class="px-4 py-3">اسم الطبيب</th><th class="px-4 py-3">كلمة السر المرئية</th><th class="px-4 py-3">حالة الترخيص الحالية</th><th class="px-4 py-3 text-center">إجراءات التحكم</th></tr>
+                            <tr><th class="px-4 py-3">الاسم</th><th class="px-4 py-3">كلمة السر</th><th class="px-4 py-3">الحالة</th><th class="px-4 py-3 text-center">التحكم</th></tr>
                         </thead>
-                        <tbody id="doctorsTableBody"><tr><td colspan="4" class="px-4 py-4 text-center text-slate-400">لا توجد طلبات أطباء مسجلة حالياً بنظام Firebase.</td></tr></tbody>
+                        <tbody id="doctorsTableBody"><tr><td colspan="4" class="px-4 py-4 text-center text-slate-400">لا توجد طلبات مسجلة.</td></tr></tbody>
                     </table>
                 </div>
             </div>
-            
             <div class="bg-white rounded-2xl p-4 md:p-6 border border-slate-200 shadow-md">
-                <h2 class="text-sm md:text-md font-bold text-slate-700 mb-4 flex items-center gap-2"><span>📂</span> المراجع والمستندات الطبية المفهرسة الحالية في الـ Firebase</h2>
+                <h2 class="text-sm md:text-md font-bold text-slate-700 mb-4 flex items-center gap-2"><span>📂</span> المراجع المتاحة الحالية في الـ Firebase</h2>
                 <div class="overflow-x-auto">
                     <table class="w-full text-right text-xs text-slate-600 min-w-[500px]">
                         <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
-                            <tr><th class="px-4 py-3">عنوان المستند/الكتاب</th><th class="px-4 py-3">الحجم البنيوي (عدد الحروف)</th><th class="px-4 py-3 text-center">العمليات المتاحة</th></tr>
+                            <tr><th class="px-4 py-3">العنوان</th><th class="px-4 py-3">الحجم البنيوي</th><th class="px-4 py-3 text-center">الإجراءات</th></tr>
                         </thead>
-                        <tbody id="filesTableBody"><tr><td colspan="3" class="px-4 py-4 text-center text-slate-400">جاري تحميل مراجعك وفهرستها...</td></tr></tbody>
+                        <tbody id="filesTableBody"><tr><td colspan="3" class="px-4 py-4 text-center text-slate-400">جاري تحميل مراجعك...</td></tr></tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-
-    <footer class="w-full text-center py-4 mt-8 border-t border-slate-200 text-xs text-slate-400">
-        <p>© 2026 جميع الحقوق محفوظة لمنصة طب الأسنان المعرفية</p>
-    </footer>
-
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    
     <script>
-        // العودة لربط خادم الـ Worker السحابي والآمن الأصلي المستقر دون قيود الـ Blobs
-        if (typeof pdfjsLib !== 'undefined') {
-            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        // تهيئة PDF.js - إصدار أحدث وأكثر استقراراً
+        if (typeof pdfjsLib !== 'undefined') {            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         }
-
-        // إعدادات تهيئة مشروع Firebase الحصري والخاص بالمنصة
+        
         const firebaseConfig = {
             apiKey: "AIzaSyDdpSqPSOMteKvZKKWMYKyGUuLuW44aKoM",
             authDomain: "askdent-532f4.firebaseapp.com",
@@ -203,36 +163,51 @@
             firebase.initializeApp(firebaseConfig);
             db = firebase.firestore();
         } catch(e) {
-            console.error("فشل تهيئة اتصال منصة Firebase:", e);
+            console.error("فشل تهيئة Firebase:", e);
+            alert("خطأ في الاتصال بقاعدة البيانات، بعض الوظائف قد لا تعمل.");
             db = null;
         }
         
         let articlesMap = {};
         const adminPassword = "salem1959";
         let currentLoggedInDoctor = null;
-
-        // دوال التحكم بجلسات تسجيل دخول الأطباء محلياً لمنع الخروج المفاجئ عند تحديث الصفحة
+        
         function saveSession(doctorName) {
-            localStorage.setItem('dentai_session', JSON.stringify({ doctor: doctorName, timestamp: Date.now() }));
+            localStorage.setItem('dentai_session', JSON.stringify({
+                doctor: doctorName,
+                timestamp: Date.now()
+            }));
         }
+        
         function loadSession() {
             try {
                 const session = localStorage.getItem('dentai_session');
-                if (session) { return JSON.parse(session).doctor; }
+                if (session) {
+                    const data = JSON.parse(session);
+                    return data.doctor;
+                }
             } catch (e) { console.error(e); }
             return null;
         }
-        function clearSession() { localStorage.removeItem('dentai_session'); }
-
-        // التبديل الديناميكي المستقر والآمن بين التبويبات والواجهات الرسومية المختلفة
-        function switchTab(tab) {
-            if (tab === 'user' && !currentLoggedInDoctor) {
+        
+        function clearSession() {
+            localStorage.removeItem('dentai_session');
+        }
+        
+        function switchTab(tab) {            if (tab === 'user' && !currentLoggedInDoctor) {
                 const savedDoctor = loadSession();
-                if (savedDoctor) { currentLoggedInDoctor = savedDoctor; } 
-                else { tab = 'login'; }
+                if (savedDoctor) {
+                    currentLoggedInDoctor = savedDoctor;
+                    document.getElementById('welcomeUser').innerText = `مرحباً د. ${savedDoctor}، اطرح سؤالك الإكلينيكي مباشرة.`;
+                } else {
+                    tab = 'login';
+                }
             }
             const tabs = ['loginTab', 'userTab', 'registerTab', 'adminTab'];
-            tabs.forEach(t => { const el = document.getElementById(t); if (el) el.classList.add('hidden'); });
+            tabs.forEach(t => {
+                const el = document.getElementById(t);
+                if (el) el.classList.add('hidden');
+            });
             const activeTab = document.getElementById(tab + 'Tab');
             if (activeTab) activeTab.classList.remove('hidden');
             
@@ -251,50 +226,54 @@
                 else logoutBtn.classList.add('hidden');
             }
         }
-
-        // التحقق من صلاحيات المشرف الأكاديمي للدخول إلى لوحة المراجع والتحكم بالتراخيص
+        
         function checkAdminAccess() {
-            const pass = prompt("كلمة مرور الإدارة الأكاديمية العالية لطب الأسنان:");
+            const pass = prompt("كلمة مرور الإدارة الأكاديمية:");
             if (pass === adminPassword) { 
                 switchTab('admin'); 
-                if (db) { fetchUploadedFiles(); fetchRegisteredDoctors(); }
-            } else if (pass !== null) { alert("كلمة المرور المدخلة خاطئة، يرجى مراجعة المسؤول الأكاديمي."); }
+                if (db) {
+                    fetchUploadedFiles(); 
+                    fetchRegisteredDoctors();
+                } else {
+                    alert("⚠️ لا يمكن الوصول إلى قاعدة البيانات حالياً.");
+                }
+            }
+            else if (pass !== null) alert("كلمة المرور خاطئة!");
         }
-
-        // معالجة تسجيل دخول الأطباء بالتطابق التام مع قاعدة البيانات السحابية الحية
+        
         async function doctorLogin() {
-            if (!db) { alert("❌ خطأ في الاتصال بقاعدة البيانات الاستدلالية."); return; }
-            const name = document.getElementById('loginName').value.trim();
-            const password = document.getElementById('loginPassword').value.trim();
+            if (!db) { alert("❌ خطأ في الاتصال بقاعدة البيانات، حاول لاحقاً."); return; }
+            const name = document.getElementById('loginName').value.trim();            const password = document.getElementById('loginPassword').value.trim();
             const loginBtn = document.getElementById('loginBtn');
-            if (!name || !password) { alert("يرجى إدخال اسم الطبيب وكلمة السر المعتمدة."); return; }
-            loginBtn.disabled = true; loginBtn.innerText = "جاري التحقق من التراخيص...";
+            if (!name || !password) { alert("يرجى إدخال الاسم وكلمة السر."); return; }
+            loginBtn.disabled = true; loginBtn.innerText = "جاري التحقق...";
             try {
                 const snapshot = await db.collection('doctors_registry').where('name', '==', name).get();
-                if (snapshot.empty) { alert("❌ الاسم الطبي غير مسجل بالمنصة حالياً."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }
+                if (snapshot.empty) { alert("❌ الاسم غير مسجل بالنظام."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }
                 let matched = null;
                 snapshot.forEach(doc => { const d = doc.data(); if (d.password === password) matched = { id: doc.id, ...d }; });
-                if (!matched) { alert("❌ كلمة السر المدخلة غير صحيحة."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }
-                if (matched.status !== "مفعل ومصرح") { alert("⏳ الحساب قيد المراجعة الفنية، بانتظار تفعيل الإدارة الطبيّة الأكاديمية."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }                
+                if (!matched) { alert("❌ كلمة السر غير صحيحة."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }
+                if (matched.status !== "مفعل ومصرح") { alert("⏳ الحساب معلق، بانتظار تفعيل الإدارة الطبيّة."); loginBtn.disabled = false; loginBtn.innerText = "دخول"; return; }                
                 
                 currentLoggedInDoctor = matched.name;
                 saveSession(matched.name);
-                document.getElementById('welcomeUser').innerText = `مرحباً د. ${matched.name}، اطرح سؤالك الإكلينيكي مباشرة وبشكل فوري.`;
+                
+                document.getElementById('welcomeUser').innerText = `مرحباً د. ${matched.name}، اطرح سؤالك الإكلينيكي مباشرة.`;
+                document.getElementById('loginName').value = ''; document.getElementById('loginPassword').value = '';                
                 await loadArticles(); 
                 switchTab('user');
-            } catch (e) { alert("خطأ في الخادم السحابي: " + e.message); }
+            } catch (e) { alert("خطأ سحابي: " + e.message); }
             finally { loginBtn.disabled = false; loginBtn.innerText = "دخول إلى المنصة"; }
         }
-
+        
         function doctorLogout() {
-            if (!confirm("هل تريد تأكيد تسجيل خروجك من المنصة المعرفية؟")) return;
+            if (!confirm("هل تريد تسجيل الخروج؟")) return;
             currentLoggedInDoctor = null;
             clearSession();
             document.getElementById('chatMessages').innerHTML = '';
             switchTab('login');
         }
-
-        // جلب ومزامنة كافة المقالات والمراجع المفهرسة المخزنة على خوادم الـ Firestore
+        
         async function loadArticles() {
             if (!db) return;
             articlesMap = {};
@@ -303,288 +282,462 @@
                 snapshot.forEach(doc => { articlesMap[doc.id] = { title: doc.data().title, content: doc.data().content }; });
                 const rc = document.getElementById('refsCount'), rn = document.getElementById('refsNumber');
                 if (rc && rn) { rn.textContent = snapshot.size; if (snapshot.size > 0) rc.classList.remove('hidden'); else rc.classList.add('hidden'); }
-            } catch (e) { console.error("خطأ أثناء مزامنة الملفات المرجعية الطبية:", e); }
+            } catch (e) { console.error("خطأ مزامنة الملفات:", e); }
         }
-
-        // ========================================================
-        // محرك البحث والنواة الاستدلالية المتقدمة للغة العربية والطبية
-        // ========================================================
+        
+        // ============================================
+        // محرك البحث الذكي المتقدم
+        // ============================================
         class AdvancedArabicSearchEngine {
             constructor(articlesMap) { 
                 this.articles = articlesMap;
-                this.arabicStopWords = new Set(['من', 'إلى', 'في', 'عن', 'على', 'مع', 'ال', 'هذا', 'هذه', 'هو', 'هي', 'و', 'أو', 'ثم', 'إلى', 'إن', 'أنه']);
+                this.arabicStopWords = new Set([
+                    'من', 'إلى', 'في', 'عن', 'على', 'مع', 'ك', 'ل', 'ب', 'ف', 'ثم', 'أو', 'أم',                    'ال', 'هذا', 'هذه', 'ذلك', 'تلك', 'الذي', 'التي', 'الذين', 'اللواتي',
+                    'هو', 'هي', 'هما', 'هم', 'هن', 'أنا', 'نحن', 'أنت', 'أنتم', 'أنتن',
+                    'كان', 'كانت', 'يكون', 'تكون', 'قد', 'سوف', 'س', 'ما', 'لا', 'لم', 'لن',
+                    'هل', 'أين', 'متى', 'كيف', 'لماذا', 'ماذا', 'أي', 'كل', 'جميع',
+                    'بعض', 'عدة', 'كثير', 'قليل', 'هناك', 'حيث', 'لأن', 'لكي', 'حتى',
+                    'أن', 'إن', 'أنه', 'إنه', 'و', 'أو', 'ثم', 'لكن'
+                ]);
+                this.medicalSynonyms = {
+                    'رحى': ['رحى', 'ضرس', 'طاحنة', 'مولار'],
+                    'ثالثة': ['ثالثة', 'ثالث', 'عقل', 'الضرس الثالث'],
+                    'ضرس العقل': ['ضرس العقل', 'الرحى الثالثة', 'الرحى الثالثة', 'ضرس ثالث'],
+                    'بزوغ': ['بزوغ', 'ظهور', 'طلوع', 'خروج', 'نمو'],
+                    'لثة': ['لثة', 'لثّة', 'صماخ'],
+                    'أسنان': ['أسنان', 'سن', 'ضرس', 'ناجذ'],
+                    'رضيع': ['رضيع', 'طفل', 'صغير', 'لثة', 'حليب', 'مؤقت', 'أولي', '6 أشهر', 'سنة'],
+                    'تنظيف': ['تنظيف', 'نظافة', 'عناية', 'غسل']
+                };
+                this.contextKeywords = {
+                    'adult_dental': ['عقل', 'ثالثة', 'ثالث', 'بلوغ', 'مراهق', 'بالغ', '18', '20', '25', '30'],
+                    'infant_dental': ['رضيع', 'طفل', 'صغير', 'لثة', 'حليب', 'مؤقت', 'أولي', '6 أشهر', 'سنة']
+                };
             }
+            
             normalizeArabicText(text) {
-                if(!text) return "";
-                return text.replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي').replace(/\s+/g, ' ').trim().toLowerCase();
+                return text.replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي').replace(/ء/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
             }
+            
             tokenize(text) {
                 const normalized = this.normalizeArabicText(text);
-                return normalized.split(/[\s،,._\-\/\(\)\[\]{}:""''؛]+/).filter(token => token.length > 2 && !this.arabicStopWords.has(token));
+                return normalized.split(/[\s،,._\-\/\(\)\[\]{}:""''؛]+/).filter(token => token.length > 2 && !this.arabicStopWords.has(token) && !/^[0-9]+$/.test(token));
             }
+            
+            expandQueryTerms(query) {
+                const tokens = this.tokenize(query);
+                const expandedTokens = new Set(tokens);
+                tokens.forEach(token => {
+                    for (const [key, synonyms] of Object.entries(this.medicalSynonyms)) {
+                        if (synonyms.includes(token) || key.includes(token)) {
+                            synonyms.forEach(syn => expandedTokens.add(syn));
+                            expandedTokens.add(key);
+                        }
+                    }
+                });
+                return Array.from(expandedTokens);
+            }
+            
+            detectContext(query) {
+                const normalizedQuery = this.normalizeArabicText(query);
+                let adultScore = 0, infantScore = 0;
+                this.contextKeywords.adult_dental.forEach(keyword => { if (normalizedQuery.includes(keyword)) adultScore += 10; });                this.contextKeywords.infant_dental.forEach(keyword => { if (normalizedQuery.includes(keyword)) infantScore += 10; });
+                return adultScore > infantScore ? 'adult' : infantScore > adultScore ? 'infant' : 'general';
+            }
+            
+            calculateExactMatchScore(query, sentence) {
+                const normalizedQuery = this.normalizeArabicText(query);
+                const normalizedSentence = this.normalizeArabicText(sentence);
+                if (normalizedSentence.includes(normalizedQuery)) return 100;
+                const queryWords = this.tokenize(query);
+                let matchCount = 0, positionScore = 0;
+                queryWords.forEach((word, index) => {
+                    const position = normalizedSentence.indexOf(word);
+                    if (position !== -1) { matchCount++; positionScore += (100 - position) / 100; }
+                });
+                if (matchCount === queryWords.length) return 80 + (positionScore * 20);
+                return (matchCount / queryWords.length) * 60;
+            }
+            
+            getBigrams(text) {
+                const words = this.tokenize(text);
+                const bigrams = [];
+                for (let i = 0; i < words.length - 1; i++) bigrams.push(words[i] + ' ' + words[i+1]);
+                return bigrams;
+            }
+            
             search(query) {
                 const results = [];
-                const queryWords = this.tokenize(query);
-                if (queryWords.length === 0) return [];
-
+                const queryContext = this.detectContext(query);
+                const expandedTerms = this.expandQueryTerms(query);
                 for (const id in this.articles) {
                     const doc = this.articles[id];
-                    if (!doc.content) continue;
-                    
                     const sentences = doc.content.split(/\n+/);
                     sentences.forEach(sentence => {
                         const cleanSentence = sentence.trim();
-                        if (cleanSentence.length < 10) return;
+                        if (cleanSentence.length < 10 || cleanSentence.length > 1500) return;
                         const normalizedSentence = this.normalizeArabicText(cleanSentence);
+                        const sentenceContext = this.detectContext(cleanSentence);
+                        if (queryContext !== 'general' && sentenceContext !== 'general' && queryContext !== sentenceContext) return;
                         let score = 0;
-                        queryWords.forEach(word => { if (normalizedSentence.includes(word)) score += 30; });
+                        let exactMatchScore = this.calculateExactMatchScore(query, cleanSentence);
+                        score += exactMatchScore * 2;
+                        expandedTerms.forEach(term => { if (normalizedSentence.includes(term)) score += 30; });
+                        const queryBigrams = this.getBigrams(query);
+                        queryBigrams.forEach(bigram => { if (normalizedSentence.includes(bigram)) score += 50; });
+                        if (queryContext === 'adult' && this.contextKeywords.adult_dental.some(k => normalizedSentence.includes(k))) score += 40;
+                        if (queryContext === 'infant' && this.contextKeywords.infant_dental.some(k => normalizedSentence.includes(k))) score += 40;
                         if (score > 15) {
-                            results.push({ title: doc.title, text: cleanSentence, score: score, confidence: Math.min(score, 100) });
-                        }
-                    });
+                            const confidence = Math.min(Math.round((score / 300) * 100), 100);
+                            results.push({ title: doc.title, text: cleanSentence, score: score, confidence: confidence, exactMatchScore: exactMatchScore });
+                        }                    });
                 }
-                return results.sort((a,b) => b.score - a.score);
+                return results.sort((a,b) => {
+                    if (Math.abs(b.exactMatchScore - a.exactMatchScore) > 20) return b.exactMatchScore - a.exactMatchScore;
+                    return b.score - a.score;
+                });
             }
         }
-
-        function formatMarkdownToHTML(text) {
-            if(!text) return "";
-            return text.replace(/\*\*\s*(.*?)\s*\*\*/g, '<strong>$1</strong>').split('\n').join('<br>');
+        
+        function detectQueryType(query) {
+            const q = query.toLowerCase();
+            if (q.includes('ما هو') || q.includes('ما هي') || q.includes('عرّف') || q.includes('تعريف')) return 'definition';
+            if (q.includes('علاج') || q.includes('معالجة') || q.includes('دواء') || q.includes('كيف نعالج')) return 'treatment';
+            if (q.includes('أعراض') || q.includes('علامات') || q.includes('كيف يظهر') || q.includes('ألم')) return 'symptoms';
+            return 'general';
         }
-
-        // معالجة وإرسال أسئلة الاستفسار الطبي داخل الشات
+        
+        function getUniqueSources(results) {
+            const sources = new Set();
+            results.forEach(r => { if (r.title) sources.add(r.title); });
+            return Array.from(sources).slice(0,3);
+        }
+        
+        function formatMarkdownToHTML(text) {
+            let html = text;
+            html = html.replace(/###\s+(.*)/g, '<h4 class="font-bold text-blue-700 text-md mt-3 mb-1">$1</h4>');
+            html = html.replace(/\*\*\s*(.*?)\s*\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>');
+            html = html.replace(/^\*\s+(.*)/gm, '<li class="list-disc list-inside mr-2 text-slate-700">$1</li>');
+            return html.split('\n').join('<br>');
+        }
+        
+        function generateCoherentAnswer(query, results) {
+            if (results.length === 0) return "";
+            const filteredResults = results.filter(r => r.confidence > 15);
+            if (filteredResults.length === 0) return "";
+            
+            const sortedResults = filteredResults.sort((a,b) => b.confidence - a.confidence);
+            const topResults = sortedResults.slice(0, 5); 
+            let coherentText = "";
+            const usedSentences = new Set();
+            const queryType = detectQueryType(query);
+            
+            const intros = {
+                'definition': 'بناءً على المراجع الطبية المتاحة، ',
+                'treatment': 'وفقاً للمصادر الطبية المعتمدة، ',
+                'symptoms': 'تشير المراجع إلى أن ',
+                'general': 'من واقع البيانات والمرجعيات المخزنة: '
+            };
+            coherentText = intros[queryType] || intros.general;
+            coherentText += "<br>";            let sentenceCount = 0;
+            for (const result of topResults) {
+                if (sentenceCount >= 10) break;
+                let sentence = result.text.trim();
+                if (usedSentences.has(sentence) || sentence.length < 10) continue;
+                
+                sentence = sentence.replace(/^[""]|[""]$/g, '').trim();
+                
+                if (sentenceCount === 0) {
+                    coherentText += formatMarkdownToHTML(sentence);
+                } else {
+                    coherentText += "<br>" + formatMarkdownToHTML(sentence);
+                }
+                usedSentences.add(sentence);
+                sentenceCount++;
+            }
+            return coherentText;
+        }
+        
         function sendChatMessage() {            
             if (!currentLoggedInDoctor) { switchTab('login'); return; }
             const questionInput = document.getElementById('chatQuestion');
             const query = questionInput.value.trim();
             if (!query) return;
-            
+            if (Object.keys(articlesMap).length === 0) {
+                alert("⚠️ لا توجد مراجع مرفوعة بالمنصة للبحث بداخلها حالياً.");
+                return;
+            }
             const chatMessages = document.getElementById('chatMessages');
             const userMsg = document.createElement('div');
             userMsg.className = 'flex justify-end';
             userMsg.innerHTML = `<div class="bg-blue-600 text-white rounded-lg p-3 max-w-[85%] shadow-sm"><p class="text-base md:text-lg font-medium">${query}</p></div>`;
             chatMessages.appendChild(userMsg);
             questionInput.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
             
             const searchEngine = new AdvancedArabicSearchEngine(articlesMap);
             const results = searchEngine.search(query);
             let answerHTML = "";
             if (results.length > 0) {
-                let coherentAnswer = formatMarkdownToHTML(results.slice(0,3).map(r => r.text).join('<br><br>'));
-                answerHTML += `<p class="font-bold text-blue-800 text-base mb-2">📍 الإجابة والتحليل المستخلص فورياً:</p>
-                               <div class="p-3 bg-slate-50 border-r-4 border-blue-600 rounded-l text-base md:text-lg text-slate-800 leading-relaxed">
-                                    <div>${coherentAnswer}</div>
-                               </div>`;
+                const coherentAnswer = generateCoherentAnswer(query, results);
+                answerHTML += `<p class="font-bold text-blue-800 text-base mb-2">📍 الإجابة المستخلصة:</p>`;
+                answerHTML += `<div class="p-3 bg-slate-50 border-r-4 border-blue-600 rounded-l text-base md:text-lg text-slate-800 leading-relaxed">
+                                    <div class="text-slate-800">${coherentAnswer}</div>
+                                    <div class="mt-4 pt-2 border-t border-slate-200 text-sm text-slate-500">
+                                        📚 المصادر المستند عليها: ${getUniqueSources(results).join(' • ')}
+                                    </div>
+                                </div>`;
             } else {
-                answerHTML = `<p class="text-amber-800 font-semibold text-base">⚠️ لم يتم العثور على معلومات سريرية مطابقة داخل الملفات المفهرسة حالياً.</p>`;
-            }
+                answerHTML = `<p class="text-amber-800 font-semibold text-base">⚠️ لم يتم العثور على معلومات كافية للإجابة على سؤالك. جرب استخدام مصطلحات أكثر تحديداً.</p>`;            }
             setTimeout(() => {
                 const botMsg = document.createElement('div');
                 botMsg.className = 'flex justify-start';
                 botMsg.innerHTML = `<div class="bg-white border border-slate-200 rounded-lg p-3.5 w-full max-w-[95%] shadow-sm">${answerHTML}</div>`;
                 chatMessages.appendChild(botMsg);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 100);
+            }, 150);
         }
-
+        
         async function submitDoctorRegistration() {
+            if (!db) { alert("❌ خطأ في قاعدة البيانات."); return; }
             const name = document.getElementById('regName').value.trim();
             const password = document.getElementById('regPassword').value.trim();
-            if (!name || !password) { alert("يرجى إكمال كتابة الاسم وكلمة السر لتقديم الطلب الطبي."); return; }
+            const passwordConfirm = document.getElementById('regPasswordConfirm').value.trim();
+            if (!name || !password || !passwordConfirm) { alert("يرجى تعبئة جميع الحقول."); return; }
+            if (password !== passwordConfirm) { alert("كلمة السر غير متطابقة!"); return; }
             try {
+                const existing = await db.collection('doctors_registry').where('name', '==', name).get();
+                if (!existing.empty) { alert("⚠️ هذا الاسم مسجل مسبقاً."); return; }
                 await db.collection('doctors_registry').add({ name, password, status: "معلق وبانتظار التفعيل", timestamp: new Date() });
-                alert("✅ تم تقديم طلبك بنجاح للأكاديمية الطبية، وسيتم تفعيله قريباً.");
+                alert("✅ تم تقديم طلب التسجيل بنجاح! انتظر تفعيل الحساب من لوحة التحكم.");
+                document.getElementById('regName').value = ""; document.getElementById('regPassword').value = ""; document.getElementById('regPasswordConfirm').value = "";
                 switchTab('login');
-            } catch (e) { alert(e.message); }
+            } catch (e) { alert("خطأ: " + e.message); }
         }
-
-        // ========================================================
-        // محرك قراءة الملفات الأصلي والمستقر والمجرب سابقاً بنجاح
-        // ========================================================
+        
+        // ============================================
+        // نظام رفع الملفات المبسط والموثوق - نقرة واحدة
+        // ============================================
         document.getElementById('fileInput').addEventListener('change', async function(e) {
             const file = e.target.files[0];
             if (!file) return;
+            
             const docTitle = document.getElementById('docTitle');
             const docContent = document.getElementById('docContent');
             const readingStatus = document.getElementById('readingStatus');
             const saveBtn = document.getElementById('saveBtn');
             
+            // تعيين العنوان تلقائياً من اسم الملف
             docTitle.value = file.name.split('.').slice(0, -1).join('.');
-            saveBtn.disabled = true; 
-            saveBtn.style.opacity = "0.5";
-            readingStatus.innerHTML = '⏳ جاري استخراج محتوى الملف الحالية...';
+            saveBtn.disabled = true;
+            readingStatus.innerHTML = '⏳ جاري قراءة الملف...';
             docContent.value = '';
             
             try {
-                if (file.type === "text/plain") {
-                    const reader = new FileReader();
-                    reader.onload = function(evt) {
-                        docContent.value = evt.target.result;
-                        saveBtn.disabled = false; saveBtn.style.opacity = "1";
-                        readingStatus.innerHTML = '✅ تم استخراج النص بنجاح';
-                    };
-                    reader.readAsText(file);
-                } else if (file.type === "application/pdf") {
-                    const fileReader = new FileReader();
-                    fileReader.onload = async function() {
-                        try {
-                            const typedarray = new Uint8Array(this.result);
-                            const pdf = await pdfjsLib.getDocument(typedarray).promise;
-                            let fullText = "";
-                            
-                            for (let i = 1; i <= pdf.numPages; i++) {
-                                const page = await pdf.getPage(i);
-                                const textContent = await page.getTextContent();
-                                let lastY = null;
-                                let pageText = "";
-                                
-                                for (const item of textContent.items) {
-                                    if (lastY !== null && Math.abs(item.transform[5] - lastY) > 5) { pageText += "\n"; }
-                                    pageText += item.str + " ";
-                                    lastY = item.transform[5];
-                                }
-                                fullText += pageText + "\n";
-                            }
-                            
-                            docContent.value = fullText.trim();
-                            readingStatus.innerHTML = `✅ تم استخراج نصوص الـ PDF بنجاح (${pdf.numPages} صفحة).`;
-                        } catch (err) { 
-                            console.error(err);
-                            alert("❌ فشلت قراءة ملف الـ PDF عبر المحرك السحابي."); 
-                            readingStatus.innerHTML = '❌ فشل استخراج النص';
-                        } finally { 
-                            saveBtn.disabled = false; saveBtn.style.opacity = "1";
-                        }
-                    };
-                    fileReader.readAsArrayBuffer(file);
+                if (file.type === "text/plain" || file.name.endsWith('.txt')) {
+                    // قراءة ملف نصي - بسيط ومباشر
+                    const text = await file.text();
+                    docContent.value = text;                    readingStatus.innerHTML = '✅ تم استيراد النص بنجاح';
+                    saveBtn.disabled = false;
+                    
+                } else if (file.type === "application/pdf" || file.name.endsWith('.pdf')) {
+                    // قراءة ملف PDF بطريقة مبسطة وموثوقة
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    
+                    let fullText = "";
+                    const totalPages = pdf.numPages;
+                    
+                    // استخراج النص من كل صفحة
+                    for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+                        readingStatus.innerHTML = `⏳ معالجة الصفحة ${pageNum} من ${totalPages}...`;
+                        
+                        const page = await pdf.getPage(pageNum);
+                        const textContent = await page.getTextContent();
+                        
+                        // دمج النص من كل عناصر الصفحة
+                        const pageText = textContent.items
+                            .map(item => item.str)
+                            .filter(str => str.trim().length > 0)
+                            .join(' ');
+                        
+                        fullText += pageText + "\n\n";
+                    }
+                    
+                    docContent.value = fullText.trim();
+                    readingStatus.innerHTML = `✅ تم استخراج النص بنجاح (${totalPages} صفحة)`;
+                    saveBtn.disabled = false;
+                    
                 } else {
-                    alert("⚠️ صيغة الملف غير مدعومة. يرجى رفع ملفات PDF أو TXT فقط.");
-                    resetForm();
+                    alert("⚠️ الصيغ المدعومة: PDF و TXT فقط");
+                    readingStatus.innerHTML = '❌ صيغة غير مدعومة';
+                    saveBtn.disabled = false;
                 }
-            } catch (err) { 
-                alert("عطل في المتصفح: " + err.message); 
-                saveBtn.disabled = false; saveBtn.style.opacity = "1";
+            } catch (error) {
+                console.error("خطأ في قراءة الملف:", error);
+                readingStatus.innerHTML = '❌ فشل قراءة الملف: ' + error.message;
+                saveBtn.disabled = false;
+                alert("حدث خطأ أثناء قراءة الملف. تأكد من أن الملف غير تالف وجرب مرة أخرى.");
             }
         });
-
-        // =============================================================
-        // دالة الحفظ السحابي المباشر والأمين لبيانات الـ Firestore
-        // =============================================================
+        
         async function saveDocument() {
-            if (!db) { alert("⚠️ قاعدة البيانات غير متصلة."); return; }
+            if (!db) { alert("قاعدة البيانات غير متصلة."); return; }
             
-            const title = document.getElementById('docTitle').value.trim();
-            const content = document.getElementById('docContent').value.trim();
             const id = document.getElementById('currentDocId').value;
-            
-            if (!title || !content) { alert("⚠️ يرجى التأكد من استخراج النص ووجود عنوان للمرجع."); return; }
+            const title = document.getElementById('docTitle').value.trim();
+            const content = document.getElementById('docContent').value.trim();            
+            if (!title || !content) { 
+                alert("⚠️ يرجى إدخال العنوان والتأكد من استخراج المحتوى من الملف."); 
+                return; 
+            }
             
             const saveBtn = document.getElementById('saveBtn');
-            const readingStatus = document.getElementById('readingStatus');
-            
-            saveBtn.innerText = "جاري الحفظ سحابياً..."; 
+            saveBtn.innerText = "جاري الحفظ السحابي..."; 
             saveBtn.disabled = true;
             
             try {
-                const docData = {
-                    title: title,
-                    content: content,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-
-                if (id && id.trim() !== "") {
-                    await db.collection('medical_docs').doc(id).set(docData, { merge: true });
+                if (id) {
+                    await db.collection('medical_docs').doc(id).set({ 
+                        title, 
+                        content, 
+                        updatedAt: new Date() 
+                    }, { merge: true });
                 } else {
-                    docData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-                    await db.collection('medical_docs').add(docData);
+                    await db.collection('medical_docs').add({ 
+                        title, 
+                        content, 
+                        createdAt: new Date() 
+                    });
                 }
                 
-                alert("✅ تم حفظ المرجع الطبي بنجاح في قاعدة البيانات.");
+                alert("✅ تم حفظ المرجع بنجاح!");
                 resetForm(); 
                 await fetchUploadedFiles(); 
                 await loadArticles();
+                
             } catch (err) { 
-                alert("❌ فشلت عملية الإضافة السحابية: " + err.message); 
+                alert("❌ فشل الحفظ: " + err.message); 
             } finally { 
                 saveBtn.innerText = "حفظ سحابي مؤكد"; 
                 saveBtn.disabled = false; 
-                saveBtn.style.opacity = "1";
             }
         }
-
-        // جلب وعرض قائمة كافة المستندات والملفات المرفوعة لسهولة إدارتها
+        
         async function fetchUploadedFiles() {
             if (!db) return;
             const tbody = document.getElementById('filesTableBody');
             tbody.innerHTML = "";
+            
             try {
                 const snapshot = await db.collection('medical_docs').get();
-                if (snapshot.empty) { tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-slate-400">لا توجد مراجع طبية محفوظة داخل النظام حالياً.</td></tr>'; return; }
-                snapshot.forEach(doc => {
+                if (snapshot.empty) { 
+                    tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-slate-400">لا توجد مراجع محفوظة حالياً.</td></tr>'; 
+                    return; 
+                }
+                                snapshot.forEach(doc => {
                     const d = doc.data();
                     const tr = document.createElement('tr');
                     tr.className = "border-b border-slate-200 hover:bg-slate-50";
-                    tr.innerHTML = `<td class="px-4 py-3 font-medium text-slate-800">${d.title}</td><td class="px-4 py-3 text-slate-500">${(d.content||'').length} حرف مستخلص</td><td class="px-4 py-3 text-center flex justify-center gap-2"><button onclick="editDocument('${doc.id}','${encodeURIComponent(d.title||'')}','${encodeURIComponent(d.content||'')}')" class="bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-blue-600 hover:text-white transition">تعديل المرجع</button><button onclick="deleteDocument('${doc.id}')" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-red-600 hover:text-white transition">حذف نهائي</button></td>`;
+                    tr.innerHTML = `<td class="px-4 py-3 font-medium text-slate-800">${d.title}</td>
+                                    <td class="px-4 py-3 text-slate-500">${(d.content||'').length} حرف</td>
+                                    <td class="px-4 py-3 text-center flex justify-center gap-2">
+                                        <button onclick="editDocument('${doc.id}','${encodeURIComponent(d.title||'')}','${encodeURIComponent(d.content||'')}')" class="bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-blue-600 hover:text-white transition">تعديل</button>
+                                        <button onclick="deleteDocument('${doc.id}')" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-red-600 hover:text-white transition">حذف</button>
+                                    </td>`;
                     tbody.appendChild(tr);
                 });
-            } catch (e) { console.error(e); }
+            } catch (e) { 
+                console.error(e); 
+            }
         }
-
-        // إدارة طلبات الأطباء والموافقات الفورية لتسجيلات الدخول بالمنصة الطبية
+        
         async function fetchRegisteredDoctors() {
             if (!db) return;
             const tbody = document.getElementById('doctorsTableBody');
             tbody.innerHTML = "";
+            
             try {
                 const snapshot = await db.collection('doctors_registry').get();
+                if (snapshot.empty) { 
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-400">لا توجد طلبات مسجلة.</td></tr>'; 
+                    return; 
+                }
+                
                 snapshot.forEach(doc => {
                     const d = doc.data();
                     const isAct = d.status === "مفعل ومصرح";
                     const tr = document.createElement('tr');
                     tr.className = "border-b border-slate-200 hover:bg-slate-50";
-                    tr.innerHTML = `<td class="px-4 py-3 font-semibold">${d.name}</td><td class="px-4 py-3 font-mono text-xs">${d.password||'—'}</td><td class="px-4 py-3 font-bold ${isAct?'text-green-600':'text-amber-600'}">${d.status}</td><td class="px-4 py-3 text-center flex justify-center gap-2">${isAct?`<button onclick="toggleDoctorStatus('${doc.id}','معلق وبانتظار التفعيل')" class="bg-amber-50 text-amber-600 border border-amber-200 px-2.5 py-1 rounded text-xs cursor-pointer">إيقاف الترخيص</button>`:`<button onclick="toggleDoctorStatus('${doc.id}','مفعل ومصرح')" class="bg-green-50 text-green-600 border border-green-200 px-2.5 py-1 rounded text-xs cursor-pointer">✔️ تفعيل فوري</button>`}<button onclick="deleteDoctorRequest('${doc.id}')" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded text-xs cursor-pointer">شطب الحساب</button></td>`;
+                    tr.innerHTML = `<td class="px-4 py-3 font-semibold">${d.name}</td>
+                                    <td class="px-4 py-3 font-mono text-xs">${d.password||'—'}</td>
+                                    <td class="px-4 py-3 font-bold ${isAct?'text-green-600':'text-amber-600'}">${d.status}</td>
+                                    <td class="px-4 py-3 text-center flex justify-center gap-2">
+                                        ${isAct?`<button onclick="toggleDoctorStatus('${doc.id}','معلق وبانتظار التفعيل')" class="bg-amber-50 text-amber-600 border border-amber-200 px-2.5 py-1 rounded text-xs cursor-pointer">تعطيل</button>`:`<button onclick="toggleDoctorStatus('${doc.id}','مفعل ومصرح')" class="bg-green-50 text-green-600 border border-green-200 px-2.5 py-1 rounded text-xs cursor-pointer">✔️ تفعيل</button>`}
+                                        <button onclick="deleteDoctorRequest('${doc.id}')" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded text-xs cursor-pointer">حذف</button>
+                                    </td>`;
                     tbody.appendChild(tr);
                 });
-            } catch (e) { console.error(e); }
+            } catch (e) { 
+                console.error(e); 
+            }
         }
-
+        
         async function toggleDoctorStatus(id, newStatus) {
-            if (!db) return;
-            try { await db.collection('doctors_registry').doc(id).update({ status: newStatus }); fetchRegisteredDoctors(); } catch (e) { alert(e.message); }
+            if (!db) return;            try { 
+                await db.collection('doctors_registry').doc(id).update({ status: newStatus }); 
+                alert(`✅ تم التحديث إلى: ${newStatus}`); 
+                fetchRegisteredDoctors(); 
+            } catch (e) { 
+                alert("خطأ: " + e.message); 
+            }
         }
+        
         async function deleteDoctorRequest(id) {
-            if (!confirm("هل تريد تأكيد شطب طلب هذا الطبيب نهائياً من السجلات؟")) return;
-            try { await db.collection('doctors_registry').doc(id).delete(); fetchRegisteredDoctors(); } catch (e) { alert(e.message); }
+            if (!db) return;
+            if (!confirm("هل تريد حذف هذا الطبيب من السجل؟")) return;
+            try { 
+                await db.collection('doctors_registry').doc(id).delete(); 
+                alert("✅ تم الحذف بنجاح"); 
+                fetchRegisteredDoctors(); 
+            } catch (e) { 
+                alert("خطأ: " + e.message); 
+            }
         }
+        
         function editDocument(id, t, c) {
             document.getElementById('currentDocId').value = id;
             document.getElementById('docTitle').value = decodeURIComponent(t);
             document.getElementById('docContent').value = decodeURIComponent(c);
-            document.getElementById('formTitle').innerHTML = "<span>📝</span> تعديل بيانات المرجع الطبي الحالي";
+            document.getElementById('formTitle').innerHTML = "<span>📝</span> تعديل المرجع الحالي";
             document.getElementById('saveBtn').innerText = "تحديث البيانات سحابياً";
             document.getElementById('cancelBtn').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+        
         async function deleteDocument(id) {
-            if (!confirm("هل تريد بالتأكيد إزالة هذا المرجع نهائياً من مخرجات قواعد البيانات السحابية؟")) return;
-            try { await db.collection('medical_docs').doc(id).delete(); fetchUploadedFiles(); loadArticles(); } catch (e) { alert(e.message); }
+            if (!db) return;
+            if (!confirm("هل تريد حذف هذا المرجع نهائياً؟")) return;
+            try { 
+                await db.collection('medical_docs').doc(id).delete(); 
+                alert("✅ تم حذف المرجع"); 
+                fetchUploadedFiles(); 
+                loadArticles(); 
+            } catch (e) { 
+                alert("خطأ: " + e.message); 
+            }
         }
-
-        // إعادة ضبط عناصر وحقول لوحة الإدخال والرفع إلى وضعها الافتراضي والنظيف
+        
         function resetForm() {
             document.getElementById('currentDocId').value = "";
             document.getElementById('docTitle').value = "";
             document.getElementById('docContent').value = "";
             document.getElementById('fileInput').value = "";
-            document.getElementById('formTitle').innerHTML = "<span>➕</span> إضافة / تعديل مرجع طبي للمنصة";
-            document.getElementById('saveBtn').innerText = "حفظ سحابي مؤكد";
+            document.getElementById('formTitle').innerHTML = "<span>➕</span> إضافة / تعديل مرجع طبي";            document.getElementById('saveBtn').innerText = "حفظ سحابي مؤكد";
             document.getElementById('cancelBtn').classList.add('hidden');
             document.getElementById('readingStatus').innerHTML = '';
-            document.getElementById('saveBtn').disabled = false;
-            document.getElementById('saveBtn').style.opacity = "1";
         }
-
-        // تشغيل المنصة تلقائياً فور اكتمال بناء وتحميل شجرة الـ DOM وتأمين الجلسة النشطة للأطباء
+        
         window.addEventListener('DOMContentLoaded', () => {
             const savedDoctor = loadSession();
             if (savedDoctor) {
