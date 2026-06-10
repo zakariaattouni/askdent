@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Tajawal', sans-serif; }
+        /* تحسين ظهور النص في مربع التعديل */
+        textarea { direction: rtl; text-align: right; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen p-3 md:p-8">
@@ -45,9 +47,9 @@
                     <label class="block text-xs font-semibold mb-1 text-slate-600">كلمة السر:</label>
                     <input type="password" id="loginPassword" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded text-sm outline-none focus:ring-2 focus:ring-blue-500" onkeypress="if(event.key==='Enter') doctorLogin()">
                 </div>
-                <button onclick="doctorLogin()" id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg text-sm shadow-md cursor-pointer transition">دخول إلى المنصة</button>
-                <div class="text-center pt-2 border-t border-slate-100">
-                    <p class="text-xs text-slate-500">ليس لديك حساب؟ <button onclick="switchTab('register')" class="text-blue-600 font-bold hover:underline cursor-pointer">سجّل الآن</button></p>                </div>
+                <button onclick="doctorLogin()" id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg text-sm shadow-md cursor-pointer transition">دخول إلى المنصة</button>                <div class="text-center pt-2 border-t border-slate-100">
+                    <p class="text-xs text-slate-500">ليس لديك حساب؟ <button onclick="switchTab('register')" class="text-blue-600 font-bold hover:underline cursor-pointer">سجّل الآن</button></p>
+                </div>
             </div>
         </div>
         <div id="userTab" class="hidden bg-white rounded-2xl shadow-md p-4 md:p-10 border border-slate-200">
@@ -94,9 +96,9 @@
                     <p class="text-xs text-slate-500">لديك حساب؟ <button onclick="switchTab('login')" class="text-blue-600 font-bold hover:underline cursor-pointer">سجّل الدخول</button></p>
                 </div>
             </div>
-        </div>
-        <div id="adminTab" class="hidden space-y-8">
-            <div class="bg-white rounded-2xl p-4 md:p-6 border border-slate-200 shadow-md">                <h2 id="formTitle" class="text-sm md:text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>➕</span> إضافة / تعديل مرجع طبي للمنصة</h2>
+        </div>        <div id="adminTab" class="hidden space-y-8">
+            <div class="bg-white rounded-2xl p-4 md:p-6 border border-slate-200 shadow-md">
+                <h2 id="formTitle" class="text-sm md:text-md font-bold text-blue-600 mb-4 flex items-center gap-2"><span>➕</span> إضافة / تعديل مرجع طبي للمنصة</h2>
                 <input type="hidden" id="currentDocId">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
@@ -143,9 +145,9 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-right text-xs text-slate-600 min-w-[500px]">
                         <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
-                            <tr><th class="px-4 py-3">العنوان</th><th class="px-4 py-3">الحجم البنيوي</th><th class="px-4 py-3 text-center">الإجراءات</th></tr>
-                        </thead>
-                        <tbody id="filesTableBody"><tr><td colspan="3" class="px-4 py-4 text-center text-slate-400">جاري تحميل مراجعك...</td></tr></tbody>                    </table>
+                            <tr><th class="px-4 py-3">العنوان</th><th class="px-4 py-3">الحجم البنيوي</th><th class="px-4 py-3 text-center">الإجراءات</th></tr>                        </thead>
+                        <tbody id="filesTableBody"><tr><td colspan="3" class="px-4 py-4 text-center text-slate-400">جاري تحميل مراجعك...</td></tr></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -192,9 +194,9 @@
                     const data = JSON.parse(session);
                     return data.doctor;
                 }
-            } catch (e) { console.error(e); }
-            return null;
-        }        function clearSession() {
+            } catch (e) { console.error(e); }            return null;
+        }
+        function clearSession() {
             localStorage.removeItem('dentai_session');
         }
         function switchTab(tab) {
@@ -241,9 +243,9 @@
                     alert("⚠️ لا يمكن الوصول إلى قاعدة البيانات حالياً.");
                 }
             }
-            else if (pass !== null) alert("كلمة المرور خاطئة!");
-        }
-        async function doctorLogin() {            if (!db) { alert("❌ خطأ في الاتصال بقاعدة البيانات، حاول لاحقاً."); return; }
+            else if (pass !== null) alert("كلمة المرور خاطئة!");        }
+        async function doctorLogin() {
+            if (!db) { alert("❌ خطأ في الاتصال بقاعدة البيانات، حاول لاحقاً."); return; }
             const name = document.getElementById('loginName').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
             const loginBtn = document.getElementById('loginBtn');
@@ -290,9 +292,9 @@
         class AdvancedArabicSearchEngine {
             constructor(articlesMap) { 
                 this.articles = articlesMap;
-                this.arabicStopWords = new Set([
-                    'من', 'إلى', 'في', 'عن', 'على', 'مع', 'ك', 'ل', 'ب', 'ف', 'ثم', 'أو', 'أم',
-                    'ال', 'هذا', 'هذه', 'ذلك', 'تلك', 'الذي', 'التي', 'الذين', 'اللواتي',                    'هو', 'هي', 'هما', 'هم', 'هن', 'أنا', 'نحن', 'أنت', 'أنتم', 'أنتن',
+                this.arabicStopWords = new Set([                    'من', 'إلى', 'في', 'عن', 'على', 'مع', 'ك', 'ل', 'ب', 'ف', 'ثم', 'أو', 'أم',
+                    'ال', 'هذا', 'هذه', 'ذلك', 'تلك', 'الذي', 'التي', 'الذين', 'اللواتي',
+                    'هو', 'هي', 'هما', 'هم', 'هن', 'أنا', 'نحن', 'أنت', 'أنتم', 'أنتن',
                     'كان', 'كانت', 'يكون', 'تكون', 'قد', 'سوف', 'س', 'ما', 'لا', 'لم', 'لن',
                     'هل', 'أين', 'متى', 'كيف', 'لماذا', 'ماذا', 'أي', 'كل', 'جميع',
                     'بعض', 'عدة', 'كثير', 'قليل', 'هناك', 'حيث', 'لأن', 'لكي', 'حتى',
@@ -339,9 +341,9 @@
                 this.contextKeywords.adult_dental.forEach(keyword => { if (normalizedQuery.includes(keyword)) adultScore += 10; });
                 this.contextKeywords.infant_dental.forEach(keyword => { if (normalizedQuery.includes(keyword)) infantScore += 10; });                return adultScore > infantScore ? 'adult' : infantScore > adultScore ? 'infant' : 'general';
             }
-            calculateExactMatchScore(query, sentence) {
-                const normalizedQuery = this.normalizeArabicText(query);
-                const normalizedSentence = this.normalizeArabicText(sentence);                if (normalizedSentence.includes(normalizedQuery)) return 100;
+            calculateExactMatchScore(query, sentence) {                const normalizedQuery = this.normalizeArabicText(query);
+                const normalizedSentence = this.normalizeArabicText(sentence);
+                if (normalizedSentence.includes(normalizedQuery)) return 100;
                 const queryWords = this.tokenize(query);
                 let matchCount = 0, positionScore = 0;
                 queryWords.forEach((word, index) => {
@@ -388,9 +390,9 @@
                     return b.score - a.score;
                 });
             }
-        }
-        function detectQueryType(query) {
-            const q = query.toLowerCase();            if (q.includes('ما هو') || q.includes('ما هي') || q.includes('عرّف') || q.includes('تعريف')) return 'definition';
+        }        function detectQueryType(query) {
+            const q = query.toLowerCase();
+            if (q.includes('ما هو') || q.includes('ما هي') || q.includes('عرّف') || q.includes('تعريف')) return 'definition';
             if (q.includes('علاج') || q.includes('معالجة') || q.includes('دواء') || q.includes('كيف نعالج')) return 'treatment';
             if (q.includes('أعراض') || q.includes('علامات') || q.includes('كيف يظهر') || q.includes('ألم')) return 'symptoms';
             return 'general';
@@ -437,9 +439,9 @@
                 if (sentenceCount === 0) {
                     coherentText += formatMarkdownToHTML(sentence);
                 } else {
-                    coherentText += "<br>" + formatMarkdownToHTML(sentence);
-                }
-                usedSentences.add(sentence);                sentenceCount++;
+                    coherentText += "<br>" + formatMarkdownToHTML(sentence);                }
+                usedSentences.add(sentence);
+                sentenceCount++;
             }
             return coherentText;
         }
@@ -486,9 +488,9 @@
         async function submitDoctorRegistration() {
             if (!db) { alert("❌ خطأ في قاعدة البيانات."); return; }
             const name = document.getElementById('regName').value.trim();
-            const password = document.getElementById('regPassword').value.trim();
-            const passwordConfirm = document.getElementById('regPasswordConfirm').value.trim();
-            if (!name || !password || !passwordConfirm) { alert("يرجى تعبئة جميع الحقول."); return; }            if (password !== passwordConfirm) { alert("كلمة السر غير متطابقة!"); return; }
+            const password = document.getElementById('regPassword').value.trim();            const passwordConfirm = document.getElementById('regPasswordConfirm').value.trim();
+            if (!name || !password || !passwordConfirm) { alert("يرجى تعبئة جميع الحقول."); return; }
+            if (password !== passwordConfirm) { alert("كلمة السر غير متطابقة!"); return; }
             try {
                 const existing = await db.collection('doctors_registry').where('name', '==', name).get();
                 if (!existing.empty) { alert("⚠️ هذا الاسم مسجل مسبقاً."); return; }
@@ -499,7 +501,7 @@
         }
         
         // ============================================
-        // نظام الرفع المبسط (زرين فقط) مع الحفاظ على مربع النص للمراجعة
+        // نظام الرفع المبسط (زرين فقط) مع تحسين استخراج نص PDF
         // ============================================
         async function handleFileUpload(file, type) {
             if (!file) return;
@@ -522,12 +524,45 @@
                     const arrayBuffer = await file.arrayBuffer();
                     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
                     let fullText = "";
+                    
                     for (let i = 1; i <= pdf.numPages; i++) {
                         readingStatus.innerHTML = `⏳ معالجة الصفحة ${i}/${pdf.numPages}...`;
                         const page = await pdf.getPage(i);
-                        const tc = await page.getTextContent();
-                        fullText += tc.items.map(it => it.str).join(' ') + "\n\n";
+                        const textContent = await page.getTextContent();
+                        
+                        // تحسين استخراج النص العربي: تجميع الأسطر وترتيبها
+                        let lines = [];
+                        let currentLine = [];
+                        let lastY = -1;
+                        const threshold = 10; // فرق بسيط في الارتفاع يعتبر نفس السطر
+
+                        textContent.items.forEach(item => {
+                            // تجاهل العناصر الفارغة                            if (!item.str || item.str.trim() === '') return;
+
+                            if (lastY === -1) lastY = item.transform[5];
+                            
+                            // إذا كان الفرق في Y صغيراً، فهو نفس السطر
+                            if (Math.abs(item.transform[5] - lastY) < threshold) {
+                                currentLine.push(item);
+                            } else {
+                                // انتهى السطر، نرتبه ونضيفه
+                                // للعربية نرتب من اليمين لليسار (X الأكبر يأتي أولاً لأن الإحداثيات تبدأ من اليسار)
+                                // ملاحظة: في PDF الإحداثيات تبدأ من الزاوية اليسرى السفلى عادة
+                                currentLine.sort((a, b) => b.transform[4] - a.transform[4]); 
+                                lines.push(currentLine.map(i => i.str).join(' '));
+                                currentLine = [item];
+                                lastY = item.transform[5];
+                            }
+                        });
+                        // إضافة آخر سطر
+                        if (currentLine.length > 0) {
+                            currentLine.sort((a, b) => b.transform[4] - a.transform[4]);
+                            lines.push(currentLine.map(i => i.str).join(' '));
+                        }
+
+                        fullText += lines.join('\n') + "\n\n";
                     }
+                    
                     docContent.value = fullText.trim();
                     readingStatus.innerHTML = `✅ تم استخراج النص (${pdf.numPages} صفحة)`;
                 }
@@ -537,7 +572,8 @@
                 alert("حدث خطأ أثناء قراءة الملف: " + err.message);
             } finally {
                 saveBtn.disabled = false;
-            }        }
+            }
+        }
         
         document.getElementById('txtFileInput').addEventListener('change', function(e) {
             handleFileUpload(e.target.files[0], 'txt');
@@ -550,8 +586,7 @@
             if (!db) { alert("قاعدة البيانات غير متصلة."); return; }
             const id = document.getElementById('currentDocId').value;
             const title = document.getElementById('docTitle').value.trim();
-            const content = document.getElementById('docContent').value.trim();
-            if (!title || !content) { alert("⚠️ يرجى إدخال العنوان والتأكد من وجود محتوى."); return; }
+            const content = document.getElementById('docContent').value.trim();            if (!title || !content) { alert("⚠️ يرجى إدخال العنوان والتأكد من وجود محتوى."); return; }
             const saveBtn = document.getElementById('saveBtn');
             saveBtn.innerText = "جاري الحفظ السحابي المباشر..."; saveBtn.disabled = true;
             try {
@@ -586,7 +621,8 @@
                 const snapshot = await db.collection('doctors_registry').get();
                 if (snapshot.empty) { tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-400">لا توجد طلبات مسجلة.</td></tr>'; return; }
                 snapshot.forEach(doc => {
-                    const d = doc.data();                    const isAct = d.status === "مفعل ومصرح";
+                    const d = doc.data();
+                    const isAct = d.status === "مفعل ومصرح";
                     const tr = document.createElement('tr');
                     tr.className = "border-b border-slate-200 hover:bg-slate-50";
                     tr.innerHTML = `<td class="px-4 py-3 font-semibold">${d.name}</td><td class="px-4 py-3 font-mono text-xs">${d.password||'—'}</td><td class="px-4 py-3 font-bold ${isAct?'text-green-600':'text-amber-600'}">${d.status}</td><td class="px-4 py-3 text-center flex justify-center gap-2">${isAct?`<button onclick="toggleDoctorStatus('${doc.id}','معلق وبانتظار التفعيل')" class="bg-amber-50 text-amber-600 border border-amber-200 px-2.5 py-1 rounded text-xs cursor-pointer">تعطيل</button>`:`<button onclick="toggleDoctorStatus('${doc.id}','مفعل ومصرح')" class="bg-green-50 text-green-600 border border-green-200 px-2.5 py-1 rounded text-xs cursor-pointer">✔️ تفعيل</button>`}<button onclick="deleteDoctorRequest('${doc.id}')" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded text-xs cursor-pointer">حذف</button></td>`;
@@ -599,8 +635,7 @@
             catch (e) { alert("خطأ: " + e.message); }
         }
         async function deleteDoctorRequest(id) {
-            if (!db) return;
-            if (!confirm("هل تريد حذف هذا الطبيب من السجل؟")) return;
+            if (!db) return;            if (!confirm("هل تريد حذف هذا الطبيب من السجل؟")) return;
             try { await db.collection('doctors_registry').doc(id).delete(); alert("✅ تم الحذف بنجاح"); fetchRegisteredDoctors(); }
             catch (e) { alert("خطأ: " + e.message); }
         }
@@ -635,7 +670,8 @@
             if (savedDoctor) {
                 currentLoggedInDoctor = savedDoctor;
                 document.getElementById('welcomeUser').innerText = `مرحباً د. ${savedDoctor}، اطرح سؤالك الإكلينيكي مباشرة.`;
-                loadArticles();                switchTab('user');
+                loadArticles();
+                switchTab('user');
             } else {
                 switchTab('login');
                 loadArticles();
