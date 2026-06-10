@@ -139,7 +139,10 @@
                     </div>
                 </div>
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold mb-1 text-slate-600">المحتوى المستخرج الفعلي: <span id="readingStatus" class="text-blue-600 text-xs text-wrap break-all font-bold"></span></label>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-xs font-semibold text-slate-600">المحتوى المستخرج الفعلي: <span id="readingStatus" class="text-blue-600 text-xs font-bold"></span></label>
+                        <button id="manualPasteBtn" onclick="triggerManualPaste()" class="hidden bg-amber-500 hover:bg-amber-600 text-white px-2 py-0.5 rounded text-[10px] font-bold shadow-sm transition cursor-pointer">📋 لصق وتأكيد النص يدويًا</button>
+                    </div>
                     <textarea id="docContent" rows="8" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded outline-none text-xs resize-none focus:ring-1 focus:ring-blue-500 font-mono" placeholder="سيظهر النص المستخرج هنا تلقائياً ليكون قابلاً للبحث الفوري والعميق..."></textarea>
                 </div>
                 <div class="flex gap-2 justify-end">
@@ -182,8 +185,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     
     <script>
-        // ربط وتهيئة خادم الـ Worker التابع لمكتبة PDF.js بشكل سحابي كامل ومستقر
-        // الحل الحاسم: في حال فشل تحميل الروابط الخارجية، يتم إنشاء الـ Worker من Blob محلي فوراً لمنع تعطل قراءة ملفات الـ PDF
+        // إعداد الـ Worker التابع لمكتبة PDF.js مع تأمينه محلياً
         try {
             if (typeof pdfjsLib !== 'undefined') {
                 const workerCode = "importScripts('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js');";
@@ -191,7 +193,6 @@
                 pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(blob);
             }
         } catch(e) {
-            console.warn("جاري الانتقال للرابط المباشر للـ Worker البديل:", e);
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         }
 
@@ -218,7 +219,8 @@
         let articlesMap = {};
         const adminPassword = "salem1959";
         let currentLoggedInDoctor = null;
-        let isReadingFile = false; // القفل البرمجي لمنع تداخل العمليات أثناء معالجة المستندات الكبيرة
+        let isReadingFile = false;
+        let backupExtractedText = ""; // حفظ النص المستخرج برمجياً كحاوية بديلة آمنة للموبايل
 
         // دوال التحكم بجلسات تسجيل دخول الأطباء محلياً لمنع الخروج المفاجئ عند تحديث الصفحة
         function saveSession(doctorName) {
@@ -322,12 +324,6 @@
             constructor(articlesMap) { 
                 this.articles = articlesMap;
                 this.arabicStopWords = new Set(['من', 'إلى', 'في', 'عن', 'على', 'مع', 'ال', 'هذا', 'هذه', 'هو', 'هي', 'و', 'أو', 'ثم', 'إلى', 'إن', 'أنه']);
-                this.medicalSynonyms = {
-                    'رحى': ['رحى', 'ضرس', 'طاحنة', 'مولار'],
-                    'ثالثة': ['ثالثة', 'ثالث', 'عقل'],
-                    'ضرس العقل': ['ضرس العقل', 'الرحى الثالثة', 'الرحى الثالثة'],
-                    'بزوغ': ['بزوغ', 'ظهور', 'طلوع', 'خروج']
-                };
             }
             normalizeArabicText(text) {
                 if(!text) return "";
@@ -364,10 +360,10 @@
 
         function formatMarkdownToHTML(text) {
             if(!text) return "";
-            return text.replace(/\*\*\s*(.*?)\s*\*\*/g, '<strong>$1</strong>').split('\n').join('<br>');
+            return text.replace(/\*\*\s*(.*?)\s*\*\"/g, '<strong>$1</strong>').split('\n').join('<br>');
         }
 
-        // معالجة وإرسال أسئلة الاستفسار الطبي داخل الشات مع توليد الإجابة الفورية المحاذية للأسطر
+        // معالجة وإرسال أسئلة الاستفسار الطبي داخل الشات
         function sendChatMessage() {            
             if (!currentLoggedInDoctor) { switchTab('login'); return; }
             const questionInput = document.getElementById('chatQuestion');
@@ -413,8 +409,22 @@
             } catch (e) { alert(e.message); }
         }
 
+        // زر الإنقاذ اليدوي للموبايل لحقن النص رغماً عن قيود المتصفح
+        function triggerManualPaste() {
+            const textarea = document.getElementById('docContent');
+            if (backupExtractedText) {
+                textarea.value = backupExtractedText;
+                textarea.textContent = backupExtractedText;
+                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                textarea.dispatchEvent(new Event('change', { bubbles: true }));
+                alert("📋 تم ربط وحقن النص المستخلص داخل الصندوق بنجاح! يمكنك الضغط على حفظ الآن.");
+            } else {
+                alert("⚠️ لم يتم استخراج أي نص من الملف حتى الآن لربطه.");
+            }
+        }
+
         // ========================================================
-        // التحديث الجوهري الثاني: محرك قراءة الـ PDF المجزأ والمقاوم للتوقف
+        // محرك قراءة الـ PDF المتقدم والمعدل كلياً لتفادي قيود الـ DOM
         // ========================================================
         document.getElementById('fileInput').addEventListener('change', async function(e) {
             const file = e.target.files[0];
@@ -423,19 +433,26 @@
             const docContent = document.getElementById('docContent');
             const readingStatus = document.getElementById('readingStatus');
             const saveBtn = document.getElementById('saveBtn');
+            const manualBtn = document.getElementById('manualPasteBtn');
             
             docTitle.value = file.name.split('.').slice(0, -1).join('.');
             isReadingFile = true; 
             saveBtn.disabled = true; 
             saveBtn.style.opacity = "0.5";
+            manualBtn.classList.add('hidden');
             readingStatus.innerHTML = '⏳ جاري تهيئة مصفوفة الذاكرة الآمنة لقراءة الـ PDF...';
             docContent.value = '';
+            backupExtractedText = "";
             
             try {
                 if (file.type === "text/plain") {
                     const reader = new FileReader();
                     reader.onload = function(evt) {
-                        docContent.value = evt.target.result;
+                        const txt = evt.target.result;
+                        backupExtractedText = txt;
+                        docContent.value = txt;
+                        docContent.textContent = txt;
+                        docContent.dispatchEvent(new Event('input', { bubbles: true }));
                         isReadingFile = false; saveBtn.disabled = false; saveBtn.style.opacity = "1";
                         readingStatus.innerHTML = '✅ تم استيراد النص الصافي بنجاح';
                     };
@@ -445,8 +462,6 @@
                     fileReader.onload = async function() {
                         try {
                             const typedarray = new Uint8Array(this.result);
-                            
-                            // إعداد مهام التحميل مع تعطيل حزم الميزات غير الضرورية لتسريع الأداء وتقليل استهلاك الرام على الموبايل
                             const loadingTask = pdfjsLib.getDocument({ 
                                 data: typedarray,
                                 disableFontFace: true,
@@ -457,7 +472,6 @@
                             const pdf = await loadingTask.promise;
                             let fullText = "";
                             
-                            // البدء بالقراءة التتابعية (صفحة صفحة) مع تفريغ فوري لذاكرة المتصفح
                             for (let i = 1; i <= pdf.numPages; i++) {
                                 readingStatus.innerHTML = `⏳ جاري استخلاص نصوص الملف: صفحة ${i} من أصل ${pdf.numPages}...`;
                                 const page = await pdf.getPage(i);
@@ -472,18 +486,26 @@
                                 }
                                 fullText += pageText + "\n";
                                 
-                                // تحديث واجهة المستخدم بشكل جزئي لمنع جمود الشاشة على أجهزة الأندرويد
                                 if (i % 5 === 0 || i === pdf.numPages) {
                                     docContent.value = fullText.trim();
                                 }
                             }
                             
-                            docContent.value = fullText.trim();
-                            docContent.textContent = fullText.trim();
-                            readingStatus.innerHTML = `✅ تم الاستخراج بنجاح تام بنسبة 100% (${pdf.numPages} صفحة مفككة جاهزة للحفظ السحابي).`;
+                            const finalResult = fullText.trim();
+                            backupExtractedText = finalResult;
+                            
+                            // تحديث القيمة بـ 3 طرق مختلفة بالتوازي لكسر جمود الأندرويد وإطلاق الأحداث
+                            docContent.value = finalResult;
+                            docContent.textContent = finalResult;
+                            docContent.setAttribute('value', finalResult);
+                            docContent.dispatchEvent(new Event('input', { bubbles: true }));
+                            docContent.dispatchEvent(new Event('change', { bubbles: true }));
+                            
+                            readingStatus.innerHTML = `✅ تم الاستخراج بنجاح تام بنسبة 100% (${pdf.numPages} صفحة جاهزة).`;
+                            manualBtn.classList.remove('hidden'); // إظهار زر التأكيد اليدوي كحزام أمان إضافي للمستخدم
                         } catch (err) { 
-                            console.error("خطأ قراءة الـ PDF المتقدم:", err);
-                            alert("❌ فشلت قراءة ملف الـ PDF. تأكد أن الملف غير محمي بكلمة سر، أو جرب رفعه كملف نصي TXT."); 
+                            console.error(err);
+                            alert("❌ فشلت قراءة الملف تلقائياً. تأكد أنه غير محمي، أو استخدم زر التأكيد اليدوي."); 
                             readingStatus.innerHTML = '❌ فشل استخراج النص التتابعي';
                         } finally { 
                             isReadingFile = false; 
@@ -503,7 +525,7 @@
         });
 
         // =============================================================
-        // دالة الحفظ السحابي المباشر والأمين 100% لبيانات الـ Firestore
+        // دالة الحفظ السحابي الذكية والمطورة لسحب النص من الذاكرة الاحتياطية
         // =============================================================
         async function saveDocument() {
             if (!db) { alert("⚠️ قاعدة البيانات غير متصلة برمجياً حالياً."); return; }
@@ -513,11 +535,16 @@
             
             const id = document.getElementById('currentDocId').value;
             const title = titleField ? titleField.value.trim() : "";
-            const content = contentField ? contentField.value.trim() : "";
+            
+            // الحل الذكي: إذا كان المتصفح يرى الحقل فارغاً، نسحب النص فوراً من المتغير الاحتياطي backupExtractedText
+            let content = contentField ? contentField.value.trim() : "";
+            if (!content && backupExtractedText) {
+                content = backupExtractedText.trim();
+            }
             
             if (!title) { alert("⚠️ يرجى كتابة أو تحديد عنوان مناسب لهذا المرجع."); return; }
             if (!content || content.length < 5) { 
-                alert("⚠️ خطأ في الاستدعاء: حقل المحتوى المستخرج فارغ تماماً! يرجى التأكد من اكتمال قراءة الـ PDF وظهور النص بالكامل داخل الصندوق الكبير قبل الحفظ."); 
+                alert("⚠️ فشل الحفظ: حقل المحتوى فارغ. يرجى الانتظار حتى اكتمال القراءة أو استخدام زر 'لصق وتأكيد النص يدويًا'."); 
                 return; 
             }
             
@@ -526,7 +553,7 @@
             
             saveBtn.innerText = "جاري التأمين وتأكيد الرفع السحابي..."; 
             saveBtn.disabled = true;
-            readingStatus.innerHTML = '⏳ جاري الاتصال المباشر بقواعد بيانات Firebase السحابية الفورية وضغط حزم الأحرف الكبيرة...';
+            readingStatus.innerHTML = '⏳ جاري الاتصال المباشر بقواعد بيانات Firebase السحابية...';
             
             try {
                 const docData = {
@@ -602,12 +629,17 @@
             try { await db.collection('doctors_registry').doc(id).delete(); fetchRegisteredDoctors(); } catch (e) { alert(e.message); }
         }
         function editDocument(id, t, c) {
+            const finalTitle = decodeURIComponent(t);
+            const finalContent = decodeURIComponent(c);
+            backupExtractedText = finalContent;
+            
             document.getElementById('currentDocId').value = id;
-            document.getElementById('docTitle').value = decodeURIComponent(t);
-            document.getElementById('docContent').value = decodeURIComponent(c);
+            document.getElementById('docTitle').value = finalTitle;
+            document.getElementById('docContent').value = finalContent;
             document.getElementById('formTitle').innerHTML = "<span>📝</span> تعديل بيانات المرجع الطبي الحالي";
             document.getElementById('saveBtn').innerText = "تحديث البيانات سحابياً";
             document.getElementById('cancelBtn').classList.remove('hidden');
+            document.getElementById('manualPasteBtn').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         async function deleteDocument(id) {
@@ -625,8 +657,10 @@
             document.getElementById('formTitle').innerHTML = "<span>➕</span> إضافة / تعديل مرجع طبي للمنصة";
             document.getElementById('saveBtn').innerText = "حفظ سحابي مؤكد";
             document.getElementById('cancelBtn').classList.add('hidden');
+            document.getElementById('manualPasteBtn').classList.add('hidden');
             document.getElementById('readingStatus').innerHTML = '';
             isReadingFile = false;
+            backupExtractedText = "";
             document.getElementById('saveBtn').disabled = false;
             document.getElementById('saveBtn').style.opacity = "1";
         }
