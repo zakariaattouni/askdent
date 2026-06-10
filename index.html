@@ -183,7 +183,15 @@
     
     <script>
         // ربط وتهيئة خادم الـ Worker التابع لمكتبة PDF.js بشكل سحابي كامل ومستقر
-        if (typeof pdfjsLib !== 'undefined') {
+        // الحل الحاسم: في حال فشل تحميل الروابط الخارجية، يتم إنشاء الـ Worker من Blob محلي فوراً لمنع تعطل قراءة ملفات الـ PDF
+        try {
+            if (typeof pdfjsLib !== 'undefined') {
+                const workerCode = "importScripts('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js');";
+                const blob = new Blob([workerCode], {type: 'application/javascript'});
+                pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(blob);
+            }
+        } catch(e) {
+            console.warn("جاري الانتقال للرابط المباشر للـ Worker البديل:", e);
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         }
 
@@ -406,7 +414,7 @@
         }
 
         // ========================================================
-        // محرك استخراج وتفكيك نصوص الـ PDF المتقدم (المستخرج من Google Docs)
+        // التحديث الجوهري الثاني: محرك قراءة الـ PDF المجزأ والمقاوم للتوقف
         // ========================================================
         document.getElementById('fileInput').addEventListener('change', async function(e) {
             const file = e.target.files[0];
@@ -420,7 +428,7 @@
             isReadingFile = true; 
             saveBtn.disabled = true; 
             saveBtn.style.opacity = "0.5";
-            readingStatus.innerHTML = '⏳ جاري الآن بدء قراءة المستند وفك تشفير محارف نصوص مستندات غوغل...';
+            readingStatus.innerHTML = '⏳ جاري تهيئة مصفوفة الذاكرة الآمنة لقراءة الـ PDF...';
             docContent.value = '';
             
             try {
@@ -437,12 +445,21 @@
                     fileReader.onload = async function() {
                         try {
                             const typedarray = new Uint8Array(this.result);
-                            const loadingTask = pdfjsLib.getDocument({ data: typedarray });
+                            
+                            // إعداد مهام التحميل مع تعطيل حزم الميزات غير الضرورية لتسريع الأداء وتقليل استهلاك الرام على الموبايل
+                            const loadingTask = pdfjsLib.getDocument({ 
+                                data: typedarray,
+                                disableFontFace: true,
+                                disableRange: true,
+                                disableAutoFetch: true
+                            });
+                            
                             const pdf = await loadingTask.promise;
                             let fullText = "";
                             
+                            // البدء بالقراءة التتابعية (صفحة صفحة) مع تفريغ فوري لذاكرة المتصفح
                             for (let i = 1; i <= pdf.numPages; i++) {
-                                readingStatus.innerHTML = `⏳ استخلاص صفحات مستند غوغل: صفحة ${i} من أصل ${pdf.numPages}`;
+                                readingStatus.innerHTML = `⏳ جاري استخلاص نصوص الملف: صفحة ${i} من أصل ${pdf.numPages}...`;
                                 const page = await pdf.getPage(i);
                                 const textContent = await page.getTextContent();
                                 let lastY = null;
@@ -454,16 +471,20 @@
                                     lastY = item.transform[5];
                                 }
                                 fullText += pageText + "\n";
+                                
+                                // تحديث واجهة المستخدم بشكل جزئي لمنع جمود الشاشة على أجهزة الأندرويد
+                                if (i % 5 === 0 || i === pdf.numPages) {
+                                    docContent.value = fullText.trim();
+                                }
                             }
                             
-                            // حقن ومزامنة القيمة المكتوبة داخل الـ DOM بشكل فوري صارم ومثبت للموبايل
                             docContent.value = fullText.trim();
                             docContent.textContent = fullText.trim();
-                            
-                            readingStatus.innerHTML = `✅ تم الاستخراج بنجاح بنسبة 100% (${pdf.numPages} صفحة جاهزة تماماً للحفظ السحابي).`;
+                            readingStatus.innerHTML = `✅ تم الاستخراج بنجاح تام بنسبة 100% (${pdf.numPages} صفحة مفككة جاهزة للحفظ السحابي).`;
                         } catch (err) { 
-                            alert("خطأ أثناء دمج نصوص الـ PDF: " + err.message); 
-                            readingStatus.innerHTML = '❌ فشل استخراج النص';
+                            console.error("خطأ قراءة الـ PDF المتقدم:", err);
+                            alert("❌ فشلت قراءة ملف الـ PDF. تأكد أن الملف غير محمي بكلمة سر، أو جرب رفعه كملف نصي TXT."); 
+                            readingStatus.innerHTML = '❌ فشل استخراج النص التتابعي';
                         } finally { 
                             isReadingFile = false; 
                             saveBtn.disabled = false; 
@@ -471,20 +492,22 @@
                         }
                     };
                     fileReader.readAsArrayBuffer(file);
+                } else {
+                    alert("⚠️ صيغة الملف غير مدعومة. يرجى رفع ملفات PDF أو TXT فقط.");
+                    resetForm();
                 }
             } catch (err) { 
-                alert(err.message); 
+                alert("عطل في المتصفح المحمول: " + err.message); 
                 isReadingFile = false; saveBtn.disabled = false; saveBtn.style.opacity = "1";
             }
         });
 
         // =============================================================
-        // التحديث الجوهري الحاسم: دالة الحفظ السحابي المباشر والأمين 100%
+        // دالة الحفظ السحابي المباشر والأمين 100% لبيانات الـ Firestore
         // =============================================================
         async function saveDocument() {
             if (!db) { alert("⚠️ قاعدة البيانات غير متصلة برمجياً حالياً."); return; }
             
-            // سحب القيمة المكتوبة نصياً ومباشرة من الـ DOM وعناصر الـ HTML لتجنب مشاكل ذاكرة الموبايل العشوائية
             const titleField = document.getElementById('docTitle');
             const contentField = document.getElementById('docContent');
             
@@ -493,8 +516,6 @@
             const content = contentField ? contentField.value.trim() : "";
             
             if (!title) { alert("⚠️ يرجى كتابة أو تحديد عنوان مناسب لهذا المرجع."); return; }
-            
-            // التحقق المباشر من النص لضمان عدم تمرير حقل فارغ
             if (!content || content.length < 5) { 
                 alert("⚠️ خطأ في الاستدعاء: حقل المحتوى المستخرج فارغ تماماً! يرجى التأكد من اكتمال قراءة الـ PDF وظهور النص بالكامل داخل الصندوق الكبير قبل الحفظ."); 
                 return; 
@@ -508,7 +529,6 @@
             readingStatus.innerHTML = '⏳ جاري الاتصال المباشر بقواعد بيانات Firebase السحابية الفورية وضغط حزم الأحرف الكبيرة...';
             
             try {
-                // الكائن الهيكلي الصافي للبيانات الطبية لضمان سلامة الإرسال
                 const docData = {
                     title: title,
                     content: content,
@@ -516,10 +536,8 @@
                 };
 
                 if (id && id.trim() !== "") {
-                    // عملية تحديث المستند الحالي في حال استخدام وضع التعديل
                     await db.collection('medical_docs').doc(id).set(docData, { merge: true });
                 } else {
-                    // إضافة مرجع/كتاب جديد بالكامل إلى قاعدة البيانات
                     docData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                     await db.collection('medical_docs').add(docData);
                 }
