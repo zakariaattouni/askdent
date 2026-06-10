@@ -111,7 +111,7 @@
                     </div>
                 </div>
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold mb-1 text-slate-600">المحتوى المستخرج: <span id="readingStatus" class="text-blue-600 text-xs"></span></label>
+                    <label class="block text-xs font-semibold mb-1 text-slate-600">المحتوى المستخرج: <span id="readingStatus" class="text-blue-600 text-xs text-wrap break-all"></span></label>
                     <textarea id="docContent" rows="6" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded outline-none text-xs resize-none focus:ring-1 focus:ring-blue-500" placeholder="سيظهر النص المستخرج هنا تلقائياً ليكون قابلاً للبحث الفوري..."></textarea>
                 </div>
                 <div class="flex gap-2 justify-end">
@@ -146,11 +146,13 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
+        // تهيئة الـ Worker بشكل آمن وصارم للتوافق الكامل مع قراءة ملفات PDF المرفوعة سحابياً ومحلياً
         if (typeof pdfjsLib !== 'undefined') {
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         } else {
             console.warn("PDF.js لم يتم تحميله بشكل صحيح، وظيفة رفع PDF لن تعمل.");
         }
+
         const firebaseConfig = {
             apiKey: "AIzaSyDdpSqPSOMteKvZKKWMYKyGUuLuW44aKoM",
             authDomain: "askdent-532f4.firebaseapp.com",
@@ -365,11 +367,9 @@
                 const expandedTerms = this.expandQueryTerms(query);
                 for (const id in this.articles) {
                     const doc = this.articles[id];
-                    // تم التغيير للتقسيم بالسطر (\n) بدلاً من علامات الترقيم القصيرة لمنع بتر الجمل الطويلة
                     const sentences = doc.content.split(/\n+/);
                     sentences.forEach(sentence => {
                         const cleanSentence = sentence.trim();
-                        // تم رفع الحد الأقصى لطول الفقرة المقبولة إلى 1500 حرف لاستيعاب النصوص الطويلة
                         if (cleanSentence.length < 10 || cleanSentence.length > 1500) return;
                         const normalizedSentence = this.normalizeArabicText(cleanSentence);
                         const sentenceContext = this.detectContext(cleanSentence);
@@ -407,7 +407,6 @@
             return Array.from(sources).slice(0,3);
         }
 
-        // تحويل محتوى الـ Markdown الأساسي ليعرض بشكل طبيعي ومنسق في شاشة الدردشة
         function formatMarkdownToHTML(text) {
             let html = text;
             html = html.replace(/###\s+(.*)/g, '<h4 class="font-bold text-blue-700 text-md mt-3 mb-1">$1</h4>');
@@ -416,14 +415,12 @@
             return html.split('\n').join('<br>');
         }
 
-        // التعديل الرئيسي: توسيع الإجابة وجلب الفقرات الكافية بناءً على الطلب
         function generateCoherentAnswer(query, results) {
             if (results.length === 0) return "";
             const filteredResults = results.filter(r => r.confidence > 15);
             if (filteredResults.length === 0) return "";
             
             const sortedResults = filteredResults.sort((a,b) => b.confidence - a.confidence);
-            // زيادة عدد النتائج المدمجة من النتيجة الأولى المباشرة والنتائج المكملة الشبيهة
             const topResults = sortedResults.slice(0, 5); 
             let coherentText = "";
             const usedSentences = new Set();
@@ -440,7 +437,6 @@
 
             let sentenceCount = 0;
             for (const result of topResults) {
-                // السماح بجلب ما يصل إلى 10 فقرات متتالية بدلاً من جملتين فقط لإعطاء إجابة شاملة وافية
                 if (sentenceCount >= 10) break;
                 let sentence = result.text.trim();
                 if (usedSentences.has(sentence) || sentence.length < 10) continue;
@@ -515,6 +511,9 @@
             } catch (e) { alert("خطأ: " + e.message); }
         }
 
+        // ========================================================
+        // التحديث الإستراتيجي: دالة قراءة وتفكيك ملفات الـ PDF المتقدمة
+        // ========================================================
         document.getElementById('fileInput').addEventListener('change', async function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -522,10 +521,13 @@
             const docContent = document.getElementById('docContent');
             const readingStatus = document.getElementById('readingStatus');
             const saveBtn = document.getElementById('saveBtn');
+            
             docTitle.value = file.name.split('.').slice(0, -1).join('.');
-            isReadingFile = true; saveBtn.disabled = true;
-            readingStatus.innerHTML = '⏳ جاري استخراج النص...';
+            isReadingFile = true; 
+            saveBtn.disabled = true;
+            readingStatus.innerHTML = '⏳ جاري بدء استخراج محتويات الملف...';
             docContent.value = '';
+            
             try {
                 if (file.type === "text/plain") {
                     const reader = new FileReader();
@@ -536,26 +538,60 @@
                     };
                     reader.readAsText(file);
                 } else if (file.type === "application/pdf") {
-                    if (typeof pdfjsLib === 'undefined') throw new Error("مكتبة PDF غير محملة");
-                    const fr = new FileReader();
-                    fr.onload = async function() {
+                    if (typeof pdfjsLib === 'undefined') throw new Error("مكتبة PDF غير محملة برمجياً في المتصفح.");
+                    
+                    const fileReader = new FileReader();
+                    fileReader.onload = async function() {
                         try {
-                            const pdf = await pdfjsLib.getDocument(new Uint8Array(this.result)).promise;
-                            let text = "";
+                            const typedarray = new Uint8Array(this.result);
+                            // تحميل وثيقة الـ PDF بتهيئة متكاملة
+                            const loadingTask = pdfjsLib.getDocument({ data: typedarray });
+                            const pdf = await loadingTask.promise;
+                            
+                            let fullText = "";
+                            // مصفوفة أمان لتجميع محتويات الصفحات تدريجياً
                             for (let i = 1; i <= pdf.numPages; i++) {
-                                readingStatus.innerHTML = `⏳ معالجة الصفحة ${i}/${pdf.numPages}`;
+                                readingStatus.innerHTML = `⏳ جاري معالجة واستخلاص نصوص الصفحات: ${i} من أصل ${pdf.numPages}`;
                                 const page = await pdf.getPage(i);
-                                const t = await page.getTextContent();
-                                text += t.items.map(it => it.str).join(" ") + "\n";
+                                const textContent = await page.getTextContent();
+                                
+                                // إصلاح الخلل: دمج الكلمات بشكل محاذي وسليم متوافق مع تصدير Google Docs
+                                let lastY = null;
+                                let pageText = "";
+                                
+                                for (const item of textContent.items) {
+                                    if (lastY !== null && Math.abs(item.transform[5] - lastY) > 5) {
+                                        pageText += "\n";
+                                    }
+                                    pageText += item.str + " ";
+                                    lastY = item.transform[5];
+                                }
+                                fullText += pageText + "\n";
                             }
-                            docContent.value = text;
-                            readingStatus.innerHTML = `✅ جاهز (${pdf.numPages} صفحة)`;
-                        } catch (err) { alert("خطأ في تحليل الـ PDF: " + err.message); }
-                        finally { isReadingFile = false; saveBtn.disabled = false; }
+                            
+                            docContent.value = fullText.trim();
+                            readingStatus.innerHTML = `✅ تم استخراج نصوص مستند Google Docs المرفوع بنجاح (${pdf.numPages} صفحة)`;
+                        } catch (err) { 
+                            console.error(err);
+                            alert("خطأ أثناء تفكيك وقراءة محتوى الـ PDF المعقد: " + err.message); 
+                            readingStatus.innerHTML = '❌ فشل استخراج النص';
+                        } finally { 
+                            isReadingFile = false; 
+                            saveBtn.disabled = false; 
+                        }
                     };
-                    fr.readAsArrayBuffer(file);
-                } else { alert("الملفات النصية و PDF فقط هي المدعومة حالياً."); isReadingFile = false; saveBtn.disabled = false; }
-            } catch (err) { alert("خطأ: " + err.message); isReadingFile = false; saveBtn.disabled = false; }
+                    fileReader.readAsArrayBuffer(file);
+                } else { 
+                    alert("الرجاء رفع ملف نصي .txt أو ملف وثيقة .pdf فقط."); 
+                    isReadingFile = false; 
+                    saveBtn.disabled = false; 
+                }
+            } catch (err) { 
+                alert("خطأ عام: " + err.message); 
+                isReadingFile = false; 
+                saveBtn.disabled = false; 
+                readingStatus.innerHTML = '❌ خطأ';
+            }
         });
 
         async function saveDocument() {
