@@ -100,8 +100,9 @@
     
     <div class="w-full max-w-4xl mx-auto">
         
-        <!-- الهيدر -->
+        <!-- الهيدر المحدث: أنيق، عصري، ومتوازن بصرياً -->
         <header class="mb-8 bg-white/95 backdrop-blur-md p-4 md:p-5 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/50 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all duration-300">
+            <!-- الشعار والعنوان -->
             <div class="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start">
                 <div class="w-11 h-11 bg-blue-50 rounded-xl flex items-center justify-center text-2xl shadow-inner border border-blue-100">🦷</div>
                 <div class="text-center sm:text-right">
@@ -110,11 +111,19 @@
                 </div>
             </div>
             
+            <!-- أزرار التنقل -->
             <nav class="flex flex-wrap justify-center gap-2 w-full sm:w-auto">
-                <button id="navLoginBtn" onclick="switchTab('login')" class="nav-btn bg-blue-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 shadow-md shadow-blue-600/20 hover:shadow-lg hover:shadow-blue-600/30 hover:-translate-y-0.5">🔐 دخول طبيب</button>
-                <button id="navRegisterBtn" onclick="switchTab('register')" class="nav-btn bg-slate-50 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 border border-slate-200 hover:bg-slate-100 hover:border-slate-300 hover:text-slate-800">📝 تسجيل طبيب</button>
-                <button id="navAdminBtn" onclick="checkAdminAccess()" class="nav-btn bg-slate-50 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 border border-slate-200 hover:bg-slate-100 hover:border-slate-300 hover:text-slate-800">⚙️ الإدارة</button>
-                <button id="navLogoutBtn" onclick="doctorLogout()" class="nav-btn hidden bg-red-50 text-red-600 px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 border border-red-100 hover:bg-red-600 hover:text-white hover:border-red-600 hover:shadow-md hover:shadow-red-600/20">🚪 خروج</button>
+                <button id="navLoginBtn" onclick="switchTab('login')" class="nav-btn bg-blue-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 shadow-md shadow-blue-600/20 hover:shadow-lg hover:shadow-blue-600/30 hover:-translate-y-0.5">                    🔐 دخول طبيب
+                </button>
+                <button id="navRegisterBtn" onclick="switchTab('register')" class="nav-btn bg-slate-50 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 border border-slate-200 hover:bg-slate-100 hover:border-slate-300 hover:text-slate-800">
+                    📝 تسجيل طبيب
+                </button>
+                <button id="navAdminBtn" onclick="checkAdminAccess()" class="nav-btn bg-slate-50 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 border border-slate-200 hover:bg-slate-100 hover:border-slate-300 hover:text-slate-800">
+                    ⚙️ الإدارة
+                </button>
+                <button id="navLogoutBtn" onclick="doctorLogout()" class="nav-btn hidden bg-red-50 text-red-600 px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 border border-red-100 hover:bg-red-600 hover:text-white hover:border-red-600 hover:shadow-md hover:shadow-red-600/20">
+                    🚪 خروج
+                </button>
             </nav>
         </header>
 
@@ -153,8 +162,7 @@
             <div id="chatContainer" class="flex flex-col h-[480px] md:h-[520px] border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
                 <div id="chatMessages" class="flex-1 overflow-y-auto p-3 md:p-4 space-y-4"></div>
                 <div class="border-t border-slate-200 bg-white p-3">
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="text" id="chatQuestion" placeholder="اكتب المرض، العَرَض، أو المصطلح الطبي..." class="flex-1 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-base md:text-lg focus:ring-2 focus:ring-blue-500" onkeypress="if(event.key==='Enter') sendChatMessage()">
+                    <div class="flex flex-col sm:flex-row gap-2">                        <input type="text" id="chatQuestion" placeholder="اكتب المرض، العَرَض، أو المصطلح الطبي..." class="flex-1 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-base md:text-lg focus:ring-2 focus:ring-blue-500" onkeypress="if(event.key==='Enter') sendChatMessage()">
                         <button id="chatSendBtn" onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-lg shadow-sm cursor-pointer transition text-base md:text-lg whitespace-nowrap">بحث واستخلاص</button>
                     </div>
                 </div>
@@ -206,8 +214,7 @@
                             <input type="file" id="txtFileInput" accept=".txt" class="hidden">
                             <input type="file" id="pdfFileInput" accept=".pdf" class="hidden">
                         </div>
-                        <div id="readingStatus" class="text-xs text-blue-600 mt-1.5"></div>
-                    </div>
+                        <div id="readingStatus" class="text-xs text-blue-600 mt-1.5"></div>                    </div>
                 </div>
                 <div class="mb-4">
                     <label class="block text-xs font-semibold mb-1 text-slate-600">المحتوى المستخرج (قابل للتعديل):</label>
@@ -225,7 +232,8 @@
                         <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
                             <tr><th class="px-4 py-3">الاسم</th><th class="px-4 py-3">كلمة السر</th><th class="px-4 py-3">الحالة</th><th class="px-4 py-3 text-center">التحكم</th></tr>
                         </thead>
-                        <tbody id="doctorsTableBody"><tr><td colspan="4" class="px-4 py-4 text-center text-slate-400">جاري تحميل الأطباء...</td></tr></tbody>
+                        <tbody id="doctorsTableBody"><tr><td colspan="4" class="px-4 py-4 text-center text-slate-400">جاري تحميل الأطباء...</td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -236,7 +244,8 @@
                         <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
                             <tr><th class="px-4 py-3">العنوان</th><th class="px-4 py-3">الحجم البنيوي</th><th class="px-4 py-3 text-center">الإجراءات</th></tr>
                         </thead>
-                        <tbody id="filesTableBody"><tr><td colspan="3" class="px-4 py-4 text-center text-slate-400">جاري تحميل المراجع...</td></tr></tbody>
+                        <tbody id="filesTableBody"><tr><td colspan="3" class="px-4 py-4 text-center text-slate-400">جاري تحميل المراجع...</td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -247,7 +256,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         // ============================================
-        // PWA Setup
+        // PWA Setup - إنشاء Manifest و Service Worker ديناميكياً
         // ============================================
         (function setupPWA() {
             const iconSvg = `data:image/svg+xml,${encodeURIComponent(`
@@ -305,7 +314,7 @@
                     event.respondWith(caches.match(event.request).then(response => response || fetch(event.request)).catch(() => caches.match('./')));
                 });
             `;
-            const swBlob = new Blob([swCode], { type: 'application/javascript' });
+                        const swBlob = new Blob([swCode], { type: 'application/javascript' });
             const swUrl = URL.createObjectURL(swBlob);
             
             if ('serviceWorker' in navigator) {
@@ -370,67 +379,30 @@
         const adminPassword = "salem1959";
         let currentLoggedInDoctor = null;
         
-        // ========== إدارة الجلسات بشكل آمن ==========
         function saveSession(doctorName) {
-            if (!doctorName) return;
             localStorage.setItem('dentai_session', JSON.stringify({ doctor: doctorName, timestamp: Date.now() }));
         }
-        
         function loadSession() {
             try {
                 const session = localStorage.getItem('dentai_session');
-                if (session) {
-                    const parsed = JSON.parse(session);
-                    if (parsed.doctor) return parsed.doctor;
-                }
+                if (session) return JSON.parse(session).doctor;
             } catch (e) { console.error(e); }
             return null;
         }
-        
         function clearSession() {
             localStorage.removeItem('dentai_session');
-            currentLoggedInDoctor = null;
         }
         
-        function ensureValidSession() {
-            // إذا لم يكن هناك طبيب مسجل، نحاول استعادة الجلسة
-            if (!currentLoggedInDoctor) {
-                const saved = loadSession();
-                if (saved) {
-                    currentLoggedInDoctor = saved;
-                    document.getElementById('welcomeUser').innerText = `مرحباً د. ${saved}، اطرح سؤالك الإكلينيكي مباشرة.`;
-                    return true;
-                } else {
-                    // لا توجد جلسة صالحة -> إعادة توجيه إلى تسجيل الدخول
-                    switchTab('login');
-                    return false;
-                }
-            }
-            return true;
-        }
-        
-        // ========== التبديل بين التبويبات مع حماية كاملة ==========
         function switchTab(tab) {
-            // حماية الوصول المباشر للمستخدمين غير المسجلين
             if (tab === 'user' && !currentLoggedInDoctor) {
-                const saved = loadSession();
-                if (saved) {
-                    currentLoggedInDoctor = saved;
-                    document.getElementById('welcomeUser').innerText = `مرحباً د. ${saved}، اطرح سؤالك الإكلينيكي مباشرة.`;
+                const savedDoctor = loadSession();
+                if (savedDoctor) {
+                    currentLoggedInDoctor = savedDoctor;
+                    document.getElementById('welcomeUser').innerText = `مرحباً د. ${savedDoctor}، اطرح سؤالك الإكلينيكي مباشرة.`;
                 } else {
                     tab = 'login';
                 }
             }
-            
-            // حماية الإدارة: لا يمكن الوصول إليها بدون كلمة مرور الإدارة (تتم عبر checkAdminAccess)
-            if (tab === 'admin' && !currentLoggedInDoctor && !window._adminOverride) {
-                // إذا حاول أحد فتح adminTab بدون صلاحية، نطلب كلمة المرور
-                if (confirm('هذه المنطقة خاصة بالإدارة. هل تريد إدخال كلمة المرور؟')) {
-                    checkAdminAccess();
-                }
-                return;
-            }
-            
             const tabs = ['loginTab', 'userTab', 'registerTab', 'adminTab'];
             tabs.forEach(t => {
                 const el = document.getElementById(t);
@@ -463,7 +435,6 @@
         function checkAdminAccess() {
             const pass = prompt("كلمة مرور الإدارة الأكاديمية:");
             if (pass === adminPassword) { 
-                window._adminOverride = true;
                 switchTab('admin'); 
                 if (db) { 
                     fetchUploadedFiles(); 
@@ -476,6 +447,7 @@
             } else if (pass !== null) { alert("كلمة المرور خاطئة!"); }
         }
         
+        // دالة لتحديد البيانات يدوياً في لوحة الإدارة
         window.refreshAdminData = function() {
             if(db && document.getElementById('adminTab') && !document.getElementById('adminTab').classList.contains('hidden')) {
                 fetchUploadedFiles();
@@ -484,7 +456,6 @@
             }
         };
         
-        // ========== تسجيل الدخول مع حفظ الجلسة ==========
         async function doctorLogin() {
             if (!db) { alert("❌ خطأ في الاتصال بقاعدة البيانات، حاول لاحقاً."); return; }
             const name = document.getElementById('loginName').value.trim();
@@ -516,6 +487,7 @@
         
         function doctorLogout() {
             if (!confirm("هل تريد تسجيل الخروج؟")) return;
+            currentLoggedInDoctor = null;
             clearSession();
             document.getElementById('chatMessages').innerHTML = '';
             switchTab('login');
@@ -534,7 +506,7 @@
         }
         
         // ============================================
-        // محرك البحث الذكي المتقدم (بدون تغيير)
+        // محرك البحث الذكي المتقدم
         // ============================================
         class AdvancedArabicSearchEngine {
             constructor(articlesMap) { 
@@ -554,8 +526,7 @@
                     'adult_dental': ['عقل', 'ثالثة', 'ثالث', 'بلوغ', 'مراهق', 'بالغ', '18', '20', '25', '30'],
                     'infant_dental': ['رضيع', 'طفل', 'صغير', 'لثة', 'حليب', 'مؤقت', 'أولي', '6 أشهر', 'سنة']
                 };
-            }
-            normalizeArabicText(text) {
+            }            normalizeArabicText(text) {
                 return text.replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي').replace(/ء/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
             }
             tokenize(text) {
@@ -604,8 +575,7 @@
             search(query) {
                 const results = [];
                 const queryContext = this.detectContext(query);
-                const expandedTerms = this.expandQueryTerms(query);
-                for (const id in this.articles) {
+                const expandedTerms = this.expandQueryTerms(query);                for (const id in this.articles) {
                     const doc = this.articles[id];
                     const sentences = doc.content.split(/\n+/);
                     sentences.forEach(sentence => {
@@ -654,15 +624,16 @@
             html = html.replace(/^\*\s+(.*)/gm, '<li class="list-disc list-inside mr-2 text-slate-700">$1</li>');
             return html.split('\n').join('<br>');
         }
-        function generateCoherentAnswer(query, results) {
-            if (results.length === 0) return "";
+        function generateCoherentAnswer(query, results) {            if (results.length === 0) return "";
             const filteredResults = results.filter(r => r.confidence > 15);
             if (filteredResults.length === 0) return "";
+            
             const sortedResults = filteredResults.sort((a,b) => b.confidence - a.confidence);
-            const topResults = sortedResults.slice(0, 5);
+            const topResults = sortedResults.slice(0, 5); 
             let coherentText = "";
             const usedSentences = new Set();
             const queryType = detectQueryType(query);
+            
             const intros = {
                 'definition': 'بناءً على المراجع الطبية المتاحة، ',
                 'treatment': 'وفقاً للمصادر الطبية المعتمدة، ',
@@ -688,11 +659,8 @@
             return coherentText;
         }
         
-        function sendChatMessage() {
-            // حماية: يجب أن يكون الطبيب مسجلاً
-            if (!ensureValidSession()) return;
+        function sendChatMessage() {            
             if (!currentLoggedInDoctor) { switchTab('login'); return; }
-            
             const questionInput = document.getElementById('chatQuestion');
             const query = questionInput.value.trim();
             if (!query) return;
@@ -705,8 +673,7 @@
             userMsg.className = 'flex justify-end';
             userMsg.innerHTML = `<div class="bg-blue-600 text-white rounded-lg p-3 max-w-[85%] shadow-sm"><p class="text-base md:text-lg font-medium">${query}</p></div>`;
             chatMessages.appendChild(userMsg);
-            questionInput.value = '';
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            questionInput.value = '';            chatMessages.scrollTop = chatMessages.scrollHeight;
             
             const searchEngine = new AdvancedArabicSearchEngine(articlesMap);
             const results = searchEngine.search(query);
@@ -750,13 +717,12 @@
         }
         
         // ============================================
-        // نظام الرفع (نفس الكود السابق دون تغيير)
+        // نظام الرفع المبسط (زرين فقط) مع تحسين استخراج نص PDF
         // ============================================
         async function handleFileUpload(file, type) {
             if (!file) return;
             const docTitle = document.getElementById('docTitle');
-            const docContent = document.getElementById('docContent');
-            const readingStatus = document.getElementById('readingStatus');
+            const docContent = document.getElementById('docContent');            const readingStatus = document.getElementById('readingStatus');
             const saveBtn = document.getElementById('saveBtn');
             
             docTitle.value = file.name.replace(/\.[^/.]+$/, "");
@@ -773,21 +739,24 @@
                     const arrayBuffer = await file.arrayBuffer();
                     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
                     let fullText = "";
+                    
                     for (let i = 1; i <= pdf.numPages; i++) {
                         readingStatus.innerHTML = `⏳ معالجة الصفحة ${i}/${pdf.numPages}...`;
                         const page = await pdf.getPage(i);
                         const textContent = await page.getTextContent();
+                        
                         let lines = [];
                         let currentLine = [];
                         let lastY = -1;
                         const threshold = 10;
+
                         textContent.items.forEach(item => {
                             if (!item.str || item.str.trim() === '') return;
                             if (lastY === -1) lastY = item.transform[5];
                             if (Math.abs(item.transform[5] - lastY) < threshold) {
                                 currentLine.push(item);
                             } else {
-                                currentLine.sort((a, b) => b.transform[4] - a.transform[4]);
+                                currentLine.sort((a, b) => b.transform[4] - a.transform[4]); 
                                 lines.push(currentLine.map(i => i.str).join(' '));
                                 currentLine = [item];
                                 lastY = item.transform[5];
@@ -802,8 +771,7 @@
                     docContent.value = fullText.trim();
                     readingStatus.innerHTML = `✅ تم استخراج النص (${pdf.numPages} صفحة)`;
                 }
-            } catch (err) {
-                console.error(err);
+            } catch (err) {                console.error(err);
                 readingStatus.innerHTML = '❌ فشل الاستخراج: ' + err.message;
                 alert("حدث خطأ أثناء قراءة الملف: " + err.message);
             } finally {
@@ -817,7 +785,7 @@
         document.getElementById('pdfFileInput').addEventListener('change', function(e) {
             handleFileUpload(e.target.files[0], 'pdf');
         });
-        
+
         async function saveDocument() {
             if (!db) { alert("قاعدة البيانات غير متصلة."); return; }
             const id = document.getElementById('currentDocId').value;
@@ -833,13 +801,16 @@
                 resetForm(); 
                 await fetchUploadedFiles(); 
                 await loadArticles();
-                if(currentLoggedInDoctor) loadArticles();
+                if(currentLoggedInDoctor) loadArticles(); // تحديث للمستخدم
             } catch (err) { alert("❌ فشل الحفظ: " + err.message); }
             finally { saveBtn.innerText = "حفظ سحابي مؤكد"; saveBtn.disabled = false; }
         }
         
         async function fetchUploadedFiles() {
-            if (!db) return;
+            if (!db) {
+                console.warn("db not ready");
+                return;
+            }
             const tbody = document.getElementById('filesTableBody');
             if(!tbody) return;
             tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-slate-400">جاري تحميل المراجع...</td></tr>';
@@ -864,8 +835,9 @@
                                      </td>`;
                     tbody.appendChild(tr);
                 });
+                console.log(`✅ تم عرض ${snapshot.size} مرجع في الجدول`);
             } catch (e) { 
-                console.error(e); 
+                console.error("خطأ في fetchUploadedFiles:", e); 
                 tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-red-500">⚠️ خطأ في التحميل: ${e.message}</td></tr>`;
             }
         }
@@ -896,8 +868,9 @@
                                      </td>`;
                     tbody.appendChild(tr);
                 });
+                console.log(`✅ تم عرض ${snapshot.size} طبيب في الجدول`);
             } catch (e) { 
-                console.error(e); 
+                console.error("خطأ في fetchRegisteredDoctors:", e); 
                 tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-red-500">⚠️ خطأ: ${e.message}</td></tr>`;
             }
         }
@@ -939,8 +912,7 @@
         
         function resetForm() {
             document.getElementById('currentDocId').value = "";
-            document.getElementById('docTitle').value = "";
-            document.getElementById('docContent').value = "";
+            document.getElementById('docTitle').value = "";            document.getElementById('docContent').value = "";
             document.getElementById('txtFileInput').value = "";
             document.getElementById('pdfFileInput').value = "";
             document.getElementById('formTitle').innerHTML = "<span>➕</span> إضافة / تعديل مرجع طبي";
@@ -949,13 +921,17 @@
             document.getElementById('readingStatus').innerHTML = '';
         }
         
-        // ========== بدء التطبيق ==========
         window.addEventListener('DOMContentLoaded', async () => {
-            await loadArticles();
+            // أولاً: استعادة الجلسة قبل أي شيء
             const savedDoctor = loadSession();
             if (savedDoctor) {
                 currentLoggedInDoctor = savedDoctor;
                 document.getElementById('welcomeUser').innerText = `مرحباً د. ${savedDoctor}، اطرح سؤالك الإكلينيكي مباشرة.`;
+            }
+            // ثم تحميل المراجع
+            await loadArticles();
+            // ثم الانتقال إلى التبويب المناسب
+            if (currentLoggedInDoctor) {
                 switchTab('user');
             } else {
                 switchTab('login');
