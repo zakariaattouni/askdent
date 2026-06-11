@@ -47,8 +47,7 @@
         }
         #installBtn:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(37, 99, 235, 0.4); }
         #installBtn:active { transform: translateY(0); }
-        #installBtn.show { display: flex; }        
-        /* إشعار التثبيت */
+        #installBtn.show { display: flex; }                /* إشعار التثبيت */
         .install-toast {
             position: fixed;
             top: 24px;
@@ -97,7 +96,6 @@
     
     <!-- إشعار التثبيت -->
     <div id="installToast" class="install-toast">✅ تم تثبيت التطبيق بنجاح!</div>
-    
     <div class="w-full max-w-4xl mx-auto">
         
         <!-- الهيدر المحدث: أنيق، عصري، ومتوازن بصرياً -->
@@ -148,7 +146,6 @@
                 </div>
             </div>
         </div>
-
         <div id="userTab" class="hidden bg-white rounded-2xl shadow-md p-4 md:p-10 border border-slate-200">
             <div class="text-center mb-6 pb-4 border-b border-slate-100">
                 <div class="flex items-center justify-center gap-2 mb-2">
@@ -197,8 +194,7 @@
         <div id="adminTab" class="hidden space-y-8">
             <div class="bg-white rounded-2xl p-4 md:p-6 border border-slate-200 shadow-md">
                 <div class="flex items-center justify-between mb-3">
-                    <h2 id="formTitle" class="text-sm md:text-md font-bold text-blue-600 flex items-center gap-2"><span>➕</span> إضافة / تعديل مرجع طبي للمنصة</h2>
-                    <button onclick="refreshAdminData()" class="refresh-btn" title="تحديث البيانات">⟳ تحديث</button>
+                    <h2 id="formTitle" class="text-sm md:text-md font-bold text-blue-600 flex items-center gap-2"><span>➕</span> إضافة / تعديل مرجع طبي للمنصة</h2>                    <button onclick="refreshAdminData()" class="refresh-btn" title="تحديث البيانات">⟳ تحديث</button>
                 </div>
                 <input type="hidden" id="currentDocId">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -247,8 +243,7 @@
                         <tbody id="filesTableBody"><tr><td colspan="3" class="px-4 py-4 text-center text-slate-400">جاري تحميل المراجع...</td></tr>
                         </tbody>
                     </table>
-                </div>
-            </div>
+                </div>            </div>
         </div>
     </div>
 
@@ -256,99 +251,100 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         // ============================================
-        // PWA Setup - إنشاء Manifest و Service Worker ديناميكياً
+        // PWA Setup - إنشاء Manifest و Service Worker ديناميكياً (مع حماية الأخطاء)
         // ============================================
         (function setupPWA() {
-            const iconSvg = `data:image/svg+xml,${encodeURIComponent(`
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                    <defs>
-                        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#1e40af;stop-opacity:1" />
-                        </linearGradient>                    </defs>
-                    <rect width="512" height="512" rx="100" fill="url(#grad)"/>
-                    <text x="256" y="340" font-size="280" text-anchor="middle" fill="white" font-family="Arial">🦷</text>
-                </svg>
-            `)}`;
-            
-            const manifest = {
-                name: "منصة طب الأسنان المعرفية",
-                short_name: "AskDent",
-                description: "منصة طبية معتمدة للأطباء - البحث والاستخلاص من المراجع الطبية",
-                start_url: "./",
-                scope: "./",
-                display: "standalone",
-                orientation: "portrait",
-                background_color: "#f8fafc",
-                theme_color: "#2563eb",
-                lang: "ar",
-                dir: "rtl",
-                categories: ["medical", "education"],
-                icons: [
-                    { src: iconSvg, sizes: "192x192", type: "image/svg+xml", purpose: "any" },
-                    { src: iconSvg, sizes: "512x512", type: "image/svg+xml", purpose: "any" },
-                    { src: iconSvg, sizes: "192x192", type: "image/svg+xml", purpose: "maskable" },
-                    { src: iconSvg, sizes: "512x512", type: "image/svg+xml", purpose: "maskable" }
-                ]
-            };
-            
-            const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-            const manifestUrl = URL.createObjectURL(manifestBlob);
-            
-            const manifestLink = document.createElement('link');
-            manifestLink.rel = 'manifest';
-            manifestLink.href = manifestUrl;
-            document.head.appendChild(manifestLink);
-            
-            const swCode = `
-                const CACHE_NAME = 'askdent-v1';
-                const urlsToCache = ['./', '${manifestUrl}'];
-                self.addEventListener('install', event => {
-                    self.skipWaiting();
-                    event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)).catch(err => console.log('Cache failed:', err)));
-                });
-                self.addEventListener('activate', event => {
-                    event.waitUntil(caches.keys().then(names => Promise.all(names.filter(n => n !== CACHE_NAME).map(n => caches.delete(n)))).then(() => self.clients.claim()));
-                });
-                self.addEventListener('fetch', event => {
-                    event.respondWith(caches.match(event.request).then(response => response || fetch(event.request)).catch(() => caches.match('./')));
-                });
-            `;
-                        const swBlob = new Blob([swCode], { type: 'application/javascript' });
-            const swUrl = URL.createObjectURL(swBlob);
-            
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register(swUrl, { scope: './' })
-                    .then(reg => console.log('✅ Service Worker مسجل'))
-                    .catch(err => console.log('⚠️ SW registration failed:', err));
-            }
-            
-            let deferredPrompt;
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                document.getElementById('installBtn').classList.add('show');
-            });
-            
-            window.addEventListener('appinstalled', () => {
-                document.getElementById('installBtn').classList.remove('show');
-                const toast = document.getElementById('installToast');
-                toast.style.display = 'block';
-                setTimeout(() => toast.style.display = 'none', 3000);
-                deferredPrompt = null;
-            });
-            
-            window.installApp = async function() {
-                if (!deferredPrompt) {
-                    alert('للتثبيت على iPhone: اضغط على زر المشاركة ⬇️ ثم "إضافة إلى الشاشة الرئيسية"\nللتثبيت على Android: اضغط على ⋮ ثم "تثبيت التطبيق"');
-                    return;
+            try {
+                const iconSvg = `data:image/svg+xml,${encodeURIComponent(`
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <defs>
+                            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#1e40af;stop-opacity:1" />
+                            </linearGradient>                    </defs>
+                        <rect width="512" height="512" rx="100" fill="url(#grad)"/>
+                        <text x="256" y="340" font-size="280" text-anchor="middle" fill="white" font-family="Arial">🦷</text>
+                    </svg>
+                `)}`;
+                
+                const manifest = {
+                    name: "منصة طب الأسنان المعرفية",
+                    short_name: "AskDent",
+                    description: "منصة طبية معتمدة للأطباء - البحث والاستخلاص من المراجع الطبية",
+                    start_url: "./",
+                    scope: "./",
+                    display: "standalone",
+                    orientation: "portrait",
+                    background_color: "#f8fafc",
+                    theme_color: "#2563eb",
+                    lang: "ar",
+                    dir: "rtl",
+                    categories: ["medical", "education"],
+                    icons: [
+                        { src: iconSvg, sizes: "192x192", type: "image/svg+xml", purpose: "any" },
+                        { src: iconSvg, sizes: "512x512", type: "image/svg+xml", purpose: "any" },
+                        { src: iconSvg, sizes: "192x192", type: "image/svg+xml", purpose: "maskable" },
+                        { src: iconSvg, sizes: "512x512", type: "image/svg+xml", purpose: "maskable" }
+                    ]
+                };
+                
+                const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+                const manifestUrl = URL.createObjectURL(manifestBlob);
+                
+                const manifestLink = document.createElement('link');
+                manifestLink.rel = 'manifest';
+                manifestLink.href = manifestUrl;            document.head.appendChild(manifestLink);
+                
+                const swCode = `
+                    const CACHE_NAME = 'askdent-v1';
+                    const urlsToCache = ['./', '${manifestUrl}'];
+                    self.addEventListener('install', event => {
+                        self.skipWaiting();
+                        event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)).catch(err => console.log('Cache failed:', err)));
+                    });
+                    self.addEventListener('activate', event => {
+                        event.waitUntil(caches.keys().then(names => Promise.all(names.filter(n => n !== CACHE_NAME).map(n => caches.delete(n)))).then(() => self.clients.claim()));
+                    });
+                    self.addEventListener('fetch', event => {
+                        event.respondWith(caches.match(event.request).then(response => response || fetch(event.request)).catch(() => caches.match('./')));
+                    });
+                `;
+                const swBlob = new Blob([swCode], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(swBlob);
+                
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register(swUrl, { scope: './' })
+                        .then(reg => console.log('✅ Service Worker مسجل'))
+                        .catch(err => console.log('⚠️ SW registration failed:', err));
                 }
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') console.log('✅ تم تثبيت التطبيق');
-                deferredPrompt = null;
-                document.getElementById('installBtn').classList.remove('show');
-            };
+                
+                let deferredPrompt;
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    document.getElementById('installBtn').classList.add('show');
+                });
+                
+                window.addEventListener('appinstalled', () => {
+                    document.getElementById('installBtn').classList.remove('show');
+                    const toast = document.getElementById('installToast');
+                    toast.style.display = 'block';
+                    setTimeout(() => toast.style.display = 'none', 3000);
+                    deferredPrompt = null;
+                });
+                
+                window.installApp = async function() {
+                    if (!deferredPrompt) {
+                        alert('للتثبيت على iPhone: اضغط على زر المشاركة ⬇️ ثم "إضافة إلى الشاشة الرئيسية"\nللتثبيت على Android: اضغط على ⋮ ثم "تثبيت التطبيق"');
+                        return;
+                    }
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') console.log('✅ تم تثبيت التطبيق');
+                    deferredPrompt = null;
+                    document.getElementById('installBtn').classList.remove('show');
+                };
+            } catch(e) { console.warn("PWA setup error:", e); }
         })();
         
         // ============================================
@@ -397,8 +393,7 @@
             if (tab === 'user' && !currentLoggedInDoctor) {
                 const savedDoctor = loadSession();
                 if (savedDoctor) {
-                    currentLoggedInDoctor = savedDoctor;
-                    document.getElementById('welcomeUser').innerText = `مرحباً د. ${savedDoctor}، اطرح سؤالك الإكلينيكي مباشرة.`;
+                    currentLoggedInDoctor = savedDoctor;                    document.getElementById('welcomeUser').innerText = `مرحباً د. ${savedDoctor}، اطرح سؤالك الإكلينيكي مباشرة.`;
                 } else {
                     tab = 'login';
                 }
@@ -447,7 +442,7 @@
             } else if (pass !== null) { alert("كلمة المرور خاطئة!"); }
         }
         
-        // دالة لتحديد البيانات يدوياً في لوحة الإدارة
+        // دالة لتحديد البيانات يدوياً في لوحة الإدارة        
         window.refreshAdminData = function() {
             if(db && document.getElementById('adminTab') && !document.getElementById('adminTab').classList.contains('hidden')) {
                 fetchUploadedFiles();
@@ -497,8 +492,7 @@
             if (!db) return;
             articlesMap = {};
             try {
-                const snapshot = await db.collection('medical_docs').get();
-                snapshot.forEach(doc => { articlesMap[doc.id] = { title: doc.data().title, content: doc.data().content }; });
+                const snapshot = await db.collection('medical_docs').get();                snapshot.forEach(doc => { articlesMap[doc.id] = { title: doc.data().title, content: doc.data().content }; });
                 const rc = document.getElementById('refsCount'), rn = document.getElementById('refsNumber');
                 if (rc && rn) { rn.textContent = snapshot.size; if (snapshot.size > 0) rc.classList.remove('hidden'); else rc.classList.add('hidden'); }
                 console.log(`📚 تم تحميل ${snapshot.size} مرجع طبي`);
@@ -547,8 +541,7 @@
                 return Array.from(expandedTokens);
             }
             detectContext(query) {
-                const normalizedQuery = this.normalizeArabicText(query);
-                let adultScore = 0, infantScore = 0;
+                const normalizedQuery = this.normalizeArabicText(query);                let adultScore = 0, infantScore = 0;
                 this.contextKeywords.adult_dental.forEach(keyword => { if (normalizedQuery.includes(keyword)) adultScore += 10; });
                 this.contextKeywords.infant_dental.forEach(keyword => { if (normalizedQuery.includes(keyword)) infantScore += 10; });
                 return adultScore > infantScore ? 'adult' : infantScore > adultScore ? 'infant' : 'general';
@@ -597,8 +590,7 @@
                             results.push({ title: doc.title, text: cleanSentence, score: score, confidence: confidence, exactMatchScore: exactMatchScore });
                         }
                     });
-                }
-                return results.sort((a,b) => {
+                }                return results.sort((a,b) => {
                     if (Math.abs(b.exactMatchScore - a.exactMatchScore) > 20) return b.exactMatchScore - a.exactMatchScore;
                     return b.score - a.score;
                 });
@@ -647,8 +639,7 @@
                 if (sentenceCount >= 10) break;
                 let sentence = result.text.trim();
                 if (usedSentences.has(sentence) || sentence.length < 10) continue;
-                sentence = sentence.replace(/^[""]|[""]$/g, '').trim();
-                if (sentenceCount === 0) {
+                sentence = sentence.replace(/^[""]|[""]$/g, '').trim();                if (sentenceCount === 0) {
                     coherentText += formatMarkdownToHTML(sentence);
                 } else {
                     coherentText += "<br>" + formatMarkdownToHTML(sentence);
@@ -697,8 +688,7 @@
                 chatMessages.appendChild(botMsg);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }, 150);
-        }
-        
+        }        
         async function submitDoctorRegistration() {
             if (!db) { alert("❌ خطأ في قاعدة البيانات."); return; }
             const name = document.getElementById('regName').value.trim();
@@ -736,6 +726,7 @@
                     docContent.value = text;
                     readingStatus.innerHTML = '✅ تم استخراج النص بنجاح';
                 } else if (type === 'pdf') {
+                    if (typeof pdfjsLib === 'undefined') throw new Error("مكتبة PDF لم يتم تحميلها");
                     const arrayBuffer = await file.arrayBuffer();
                     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
                     let fullText = "";
@@ -747,8 +738,7 @@
                         
                         let lines = [];
                         let currentLine = [];
-                        let lastY = -1;
-                        const threshold = 10;
+                        let lastY = -1;                        const threshold = 10;
 
                         textContent.items.forEach(item => {
                             if (!item.str || item.str.trim() === '') return;
@@ -797,8 +787,7 @@
             try {
                 if (id) await db.collection('medical_docs').doc(id).set({ title, content, updatedAt: new Date() }, { merge: true });
                 else await db.collection('medical_docs').add({ title, content, createdAt: new Date() });
-                alert("✅ تم حفظ المرجع بنجاح!");
-                resetForm(); 
+                alert("✅ تم حفظ المرجع بنجاح!");                resetForm(); 
                 await fetchUploadedFiles(); 
                 await loadArticles();
                 if(currentLoggedInDoctor) loadArticles(); // تحديث للمستخدم
@@ -832,7 +821,7 @@
                                     <td class="px-4 py-3 text-center flex justify-center gap-2">
                                         <button onclick="editDocument('${doc.id}','${encodeURIComponent(d.title || '')}','${encodeURIComponent(d.content || '')}')" class="bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-blue-600 hover:text-white transition">تعديل</button>
                                         <button onclick="deleteDocument('${doc.id}')" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-red-600 hover:text-white transition">حذف</button>
-                                     </td>`;
+                                      </td>`;
                     tbody.appendChild(tr);
                 });
                 console.log(`✅ تم عرض ${snapshot.size} مرجع في الجدول`);
@@ -847,8 +836,7 @@
             const tbody = document.getElementById('doctorsTableBody');
             if(!tbody) return;
             tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-400">جاري تحميل الأطباء...</td></tr>';
-            try {
-                const snapshot = await db.collection('doctors_registry').get();
+            try {                const snapshot = await db.collection('doctors_registry').get();
                 if (snapshot.empty) { 
                     tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-400">لا توجد طلبات مسجلة.</td></tr>'; 
                     return; 
@@ -865,7 +853,7 @@
                                     <td class="px-4 py-3 text-center flex justify-center gap-2">
                                         ${isAct ? `<button onclick="toggleDoctorStatus('${doc.id}','معلق وبانتظار التفعيل')" class="bg-amber-50 text-amber-600 border border-amber-200 px-2.5 py-1 rounded text-xs cursor-pointer">تعطيل</button>` : `<button onclick="toggleDoctorStatus('${doc.id}','مفعل ومصرح')" class="bg-green-50 text-green-600 border border-green-200 px-2.5 py-1 rounded text-xs cursor-pointer">✔️ تفعيل</button>`}
                                         <button onclick="deleteDoctorRequest('${doc.id}')" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded text-xs cursor-pointer">حذف</button>
-                                     </td>`;
+                                      </td>`;
                     tbody.appendChild(tr);
                 });
                 console.log(`✅ تم عرض ${snapshot.size} طبيب في الجدول`);
@@ -897,7 +885,6 @@
             document.getElementById('cancelBtn').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        
         async function deleteDocument(id) {
             if (!db) return;
             if (!confirm("هل تريد حذف هذا المرجع نهائياً؟")) return;
@@ -928,13 +915,19 @@
                 currentLoggedInDoctor = savedDoctor;
                 document.getElementById('welcomeUser').innerText = `مرحباً د. ${savedDoctor}، اطرح سؤالك الإكلينيكي مباشرة.`;
             }
-            // ثم تحميل المراجع
-            await loadArticles();
-            // ثم الانتقال إلى التبويب المناسب
+            
+            // الانتقال للتبويب المناسب فوراً (قبل تحميل المقالات)
             if (currentLoggedInDoctor) {
                 switchTab('user');
             } else {
                 switchTab('login');
+            }
+            
+            // ثم تحميل المراجع في الخلفية
+            try {
+                await loadArticles();
+            } catch(e) {
+                console.error("فشل تحميل المقالات:", e);
             }
         });
     </script>
