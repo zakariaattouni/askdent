@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>منصة طب الأسنان المعرفية</title>
     
+    <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#2563eb">
     <meta name="description" content="منصة طبية معتمدة للأطباء - البحث والاستخلاص من المراجع الطبية">
     <meta name="mobile-web-app-capable" content="yes">
@@ -12,6 +13,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="AskDent">
     
+    <!-- الأيقونة المدمجة (SVG كـ data URL) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232563eb'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='white'%3E🦷%3C/text%3E%3C/svg%3E">
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232563eb'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='white'%3E🦷%3C/text%3E%3C/svg%3E">
     
@@ -87,16 +89,20 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen p-3 md:p-6">
     
+    <!-- زر تثبيت التطبيق -->
     <button id="installBtn" onclick="installApp()">
         <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
         <span>تثبيت التطبيق</span>
     </button>
     
+    <!-- إشعار التثبيت -->
     <div id="installToast" class="install-toast">✅ تم تثبيت التطبيق بنجاح!</div>
     
     <div class="w-full max-w-4xl mx-auto">
         
+        <!-- الهيدر المحدث: أنيق، عصري، ومتوازن بصرياً -->
         <header class="mb-8 bg-white/95 backdrop-blur-md p-4 md:p-5 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/50 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all duration-300">
+            <!-- الشعار والعنوان -->
             <div class="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start">
                 <div class="w-11 h-11 bg-blue-50 rounded-xl flex items-center justify-center text-2xl shadow-inner border border-blue-100">🦷</div>
                 <div class="text-center sm:text-right">
@@ -105,6 +111,7 @@
                 </div>
             </div>
             
+            <!-- أزرار التنقل -->
             <nav class="flex flex-wrap justify-center gap-2 w-full sm:w-auto">
                 <button id="navLoginBtn" onclick="switchTab('login')" class="nav-btn bg-blue-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 shadow-md shadow-blue-600/20 hover:shadow-lg hover:shadow-blue-600/30 hover:-translate-y-0.5">                    🔐 دخول طبيب
                 </button>
@@ -415,10 +422,6 @@
             if (tab === 'login') document.getElementById('navLoginBtn').className = `nav-btn ${activeClass}`;
             else if (tab === 'register') document.getElementById('navRegisterBtn').className = `nav-btn ${activeClass}`;
             else if (tab === 'admin') document.getElementById('navAdminBtn').className = `nav-btn ${activeClass}`;
-            else if (tab === 'user') {
-                // إذا كنا في واجهة المستخدم، لا نضيق اللون الأزرق على أزرار الدخول/التسجيل الأخرى لإبقاء المظهر متوازناً
-                document.getElementById('navLoginBtn').className = `nav-btn ${inactiveClass}`;
-            }
             
             const logoutBtn = document.getElementById('navLogoutBtn');
             if (logoutBtn) {
@@ -615,7 +618,7 @@
         function formatMarkdownToHTML(text) {
             let html = text;
             html = html.replace(/###\s+(.*)/g, '<h4 class="font-bold text-blue-700 text-md mt-3 mb-1">$1</h4>');
-            html = html.replace(/\*\*\s*(.*?)\s*\*\"/g, '<strong class="font-bold text-slate-900">$1</strong>');
+            html = html.replace(/\*\*\s*(.*?)\s*\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>');
             html = html.replace(/^\*\s+(.*)/gm, '<li class="list-disc list-inside mr-2 text-slate-700">$1</li>');
             return html.split('\n').join('<br>');
         }
@@ -796,7 +799,7 @@
                 resetForm(); 
                 await fetchUploadedFiles(); 
                 await loadArticles();
-                if(currentLoggedInDoctor) loadArticles(); // تحديث للمخدم
+                if(currentLoggedInDoctor) loadArticles(); // تحديث للمستخدم
             } catch (err) { alert("❌ فشل الحفظ: " + err.message); }
             finally { saveBtn.innerText = "حفظ سحابي مؤكد"; saveBtn.disabled = false; }
         }
@@ -827,7 +830,7 @@
                                     <td class="px-4 py-3 text-center flex justify-center gap-2">
                                         <button onclick="editDocument('${doc.id}','${encodeURIComponent(d.title || '')}','${encodeURIComponent(d.content || '')}')" class="bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-blue-600 hover:text-white transition">تعديل</button>
                                         <button onclick="deleteDocument('${doc.id}')" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-red-600 hover:text-white transition">حذف</button>
-                                    </td>`;
+                                     </td>`;
                     tbody.appendChild(tr);
                 });
                 console.log(`✅ تم عرض ${snapshot.size} مرجع في الجدول`);
@@ -860,7 +863,7 @@
                                     <td class="px-4 py-3 text-center flex justify-center gap-2">
                                         ${isAct ? `<button onclick="toggleDoctorStatus('${doc.id}','معلق وبانتظار التفعيل')" class="bg-amber-50 text-amber-600 border border-amber-200 px-2.5 py-1 rounded text-xs cursor-pointer">تعطيل</button>` : `<button onclick="toggleDoctorStatus('${doc.id}','مفعل ومصرح')" class="bg-green-50 text-green-600 border border-green-200 px-2.5 py-1 rounded text-xs cursor-pointer">✔️ تفعيل</button>`}
                                         <button onclick="deleteDoctorRequest('${doc.id}')" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded text-xs cursor-pointer">حذف</button>
-                                    </td>`;
+                                     </td>`;
                     tbody.appendChild(tr);
                 });
                 console.log(`✅ تم عرض ${snapshot.size} طبيب في الجدول`);
