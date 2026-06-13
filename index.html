@@ -25,6 +25,50 @@
         body { font-family: 'Tajawal', sans-serif; }
         textarea { direction: rtl; text-align: right; }
         
+        /* عداد الزوار */
+        #visitorCounter {
+            text-align: center;
+            margin: -12px 0 20px 0;
+            padding: 8px 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: #94a3b8;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+        
+        #visitorCounter:hover {
+            opacity: 1;
+            color: #64748b;
+        }
+        
+        #visitorCount {
+            display: inline-block;
+            font-weight: 700;
+            color: #64748b;
+            font-size: 14px;            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        #visitorCount.animating {
+            animation: countPulse 0.6s ease-out;
+        }
+        
+        @keyframes countPulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.15);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+        }
+        
         /* زر تثبيت التطبيق */
         #installBtn {
             position: fixed;
@@ -47,11 +91,12 @@
         }
         #installBtn:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(37, 99, 235, 0.4); }
         #installBtn:active { transform: translateY(0); }
-        #installBtn.show { display: flex; }                /* إشعار التثبيت */
+        #installBtn.show { display: flex; }
+        
+        /* إشعار التثبيت */
         .install-toast {
             position: fixed;
-            top: 24px;
-            left: 50%;
+            top: 24px;            left: 50%;
             transform: translateX(-50%);
             background: #10b981;
             color: white;
@@ -67,6 +112,7 @@
             from { transform: translate(-50%, -100%); opacity: 0; }
             to { transform: translate(-50%, 0); opacity: 1; }
         }
+        
         /* زر تحديث صغير داخل لوحة الإدارة */
         .refresh-btn {
             background: #f1f5f9;
@@ -84,6 +130,7 @@
             background: #e2e8f0;
             transform: scale(0.98);
         }
+        
         /* تنبيه سريري */
         .clinical-alert {
             background-color: #fef3c7;
@@ -98,8 +145,7 @@
             align-items: center;
             gap: 8px;
         }
-        .clinical-alert::before {
-            content: "⚠️";
+        .clinical-alert::before {            content: "⚠️";
             font-size: 1.1rem;
         }
         .emergency-alert {
@@ -112,6 +158,7 @@
             margin-bottom: 12px;
             font-size: 1rem;
         }
+        
         /* تذييل الأمان الطبي */
         .medical-safety-footer {
             background-color: #f8fafc;
@@ -136,6 +183,7 @@
     
     <!-- إشعار التثبيت -->
     <div id="installToast" class="install-toast">✅ تم تثبيت التطبيق بنجاح!</div>
+    
     <div class="w-full max-w-4xl mx-auto">
         
         <!-- الهيدر المحدث: أنيق، عصري، ومتوازن بصرياً -->
@@ -146,8 +194,7 @@
                 <div class="text-center sm:text-right">
                     <h1 class="font-extrabold text-blue-700 text-base md:text-lg tracking-tight leading-tight">منصة طب الأسنان المعرفية</h1>
                     <p class="text-[11px] text-slate-400 font-semibold tracking-wide">AskDent Pro</p>
-                </div>
-            </div>
+                </div>            </div>
             
             <!-- أزرار التنقل -->
             <nav class="flex flex-wrap justify-center gap-2 w-full sm:w-auto">
@@ -164,6 +211,12 @@
                 </button>
             </nav>
         </header>
+        
+        <!-- عداد الزوار -->
+        <div id="visitorCounter">
+            <span id="visitorCount">1935</span>
+        </div>
+        
         <div id="loginTab" class="bg-white rounded-2xl shadow-md p-6 md:p-10 border border-slate-200">
             <div class="text-center mb-8 pb-6 border-b border-slate-100">
                 <div class="text-5xl mb-3">🔐</div>
@@ -190,8 +243,7 @@
                 <div class="flex items-center justify-center gap-2 mb-2">
                     <span class="text-2xl">📚</span>
                     <h1 class="text-xl md:text-2xl font-bold text-blue-600">الموجز الطبي المعرفي</h1>
-                </div>
-                <p id="welcomeUser" class="text-xs text-slate-500">مرحباً بك دكتور، اكتب مصطلح البحث أو السؤال الإكلينيكي لاستخراج الإجابة فوراً.</p>
+                </div>                <p id="welcomeUser" class="text-xs text-slate-500">مرحباً بك دكتور، اكتب مصطلح البحث أو السؤال الإكلينيكي لاستخراج الإجابة فوراً.</p>
                 <div id="refsCount" class="text-xs text-green-600 mt-2 hidden">📚 المراجع المفهرسة سحابياً: <span id="refsNumber">0</span></div>
             </div>
             
@@ -240,8 +292,7 @@
                         <input type="text" id="docTitle" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded outline-none text-xs focus:ring-1 focus:ring-blue-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold mb-1 text-slate-600">رفع ملف (يملأ المحتوى تلقائياً):</label>
-                        <div class="flex gap-2">
+                        <label class="block text-xs font-semibold mb-1 text-slate-600">رفع ملف (يملأ المحتوى تلقائياً):</label>                        <div class="flex gap-2">
                             <button type="button" onclick="document.getElementById('txtFileInput').click()" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-3 py-2 rounded text-xs font-bold cursor-pointer transition flex items-center gap-1">📄 رفع TXT</button>
                             <button type="button" onclick="document.getElementById('pdfFileInput').click()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3 py-2 rounded text-xs font-bold cursor-pointer transition flex items-center gap-1">📕 رفع PDF</button>
                             <input type="file" id="txtFileInput" accept=".txt" class="hidden">
@@ -290,8 +341,7 @@
         // PWA Setup - إنشاء Manifest و Service Worker ديناميكياً (مع حماية الأخطاء)
         // ============================================
         (function setupPWA() {
-            try {
-                const iconSvg = `data:image/svg+xml,${encodeURIComponent(`
+            try {                const iconSvg = `data:image/svg+xml,${encodeURIComponent(`
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                         <defs>
                             <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -340,12 +390,11 @@
                     });
                     self.addEventListener('activate', event => {
                         event.waitUntil(caches.keys().then(names => Promise.all(names.filter(n => n !== CACHE_NAME).map(n => caches.delete(n)))).then(() => self.clients.claim()));
-                    });
-                    self.addEventListener('fetch', event => {
+                    });                    self.addEventListener('fetch', event => {
                         event.respondWith(caches.match(event.request).then(response => response || fetch(event.request)).catch(() => caches.match('./')));
                     });
                 `;
-                const swBlob = new Blob([swCode], { type: 'application/javascript' });
+                const swBlob = new Blob([swCode], { type: 'text/javascript' });
                 const swUrl = URL.createObjectURL(swBlob);
                 
                 if ('serviceWorker' in navigator) {
@@ -390,8 +439,7 @@
             apiKey: "AIzaSyDdpSqPSOMteKvZKKWMYKyGUuLuW44aKoM",
             authDomain: "askdent-532f4.firebaseapp.com",
             databaseURL: "https://askdent-532f4-default-rtdb.firebaseio.com",
-            projectId: "askdent-532f4",
-            storageBucket: "askdent-532f4.firebasestorage.app",
+            projectId: "askdent-532f4",            storageBucket: "askdent-532f4.firebasestorage.app",
             messagingSenderId: "310490517111",
             appId: "1:310490517111:web:655b527b64a766f05e4072"
         };
@@ -411,6 +459,170 @@
         const adminPassword = "salem1959";
         let currentLoggedInDoctor = null;
         
+        // ============================================
+        // نظام عداد الزوار الحقيقي
+        // ============================================
+        const VISITOR_COUNTER_DOC = 'visitor_stats/main';
+        const VISITOR_CHECK_KEY = 'askdent_last_visit';
+        const VISIT_INTERVAL_HOURS = 24;
+        
+        async function initializeVisitorCounter() {
+            if (!db) {
+                console.warn("Firebase غير متاح - لن يعمل عداد الزوار");
+                return;
+            }
+            
+            try {
+                // التحقق مما إذا كان المستند موجوداً
+                const counterRef = db.collection('visitor_stats').doc('main');
+                const counterDoc = await counterRef.get();
+                
+                if (!counterDoc.exists) {
+                    // إنشاء المستند بالقيمة الابتدائية
+                    await counterRef.set({
+                        count: 1935,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    console.log("✅ تم إنشاء عداد الزوار بالقيمة الابتدائية: 1935");
+                }
+                
+                // عرض العدد الحالي
+                await displayVisitorCount();                
+                // التحقق مما إذا كانت هذه زيارة جديدة
+                await checkAndIncrementVisitor();
+                
+            } catch (error) {
+                console.error("❌ خطأ في تهيئة عداد الزوار:", error);
+            }
+        }
+        
+        async function displayVisitorCount() {
+            try {
+                const counterRef = db.collection('visitor_stats').doc('main');
+                const counterDoc = await counterRef.get();
+                
+                if (counterDoc.exists) {
+                    const count = counterDoc.data().count || 1935;
+                    updateCounterDisplay(count);
+                }
+            } catch (error) {
+                console.error("خطأ في عرض العدد:", error);
+            }
+        }
+        
+        function updateCounterDisplay(count) {
+            const counterElement = document.getElementById('visitorCount');
+            if (!counterElement) return;
+            
+            const currentCount = parseInt(counterElement.textContent) || 1935;
+            
+            if (currentCount !== count) {
+                // إضافة حركة انتقالية
+                counterElement.classList.add('animating');
+                
+                // تأثير العد التصاعدي
+                animateCount(currentCount, count, counterElement);
+                
+                setTimeout(() => {
+                    counterElement.classList.remove('animating');
+                }, 600);
+            } else {
+                counterElement.textContent = count.toLocaleString('ar-EG');
+            }
+        }
+        
+        function animateCount(start, end, element) {
+            const duration = 500;
+            const startTime = performance.now();
+            const diff = end - start;
+            
+            function update(currentTime) {                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // استخدام easing function للحركة السلسة
+                const easeOutQuad = 1 - (1 - progress) * (1 - progress);
+                const current = Math.floor(start + (diff * easeOutQuad));
+                
+                element.textContent = current.toLocaleString('ar-EG');
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        async function checkAndIncrementVisitor() {
+            try {
+                const now = Date.now();
+                const lastVisit = localStorage.getItem(VISITOR_CHECK_KEY);
+                
+                // التحقق مما إذا كانت آخر زيارة خلال 24 ساعة
+                if (lastVisit) {
+                    const lastVisitTime = parseInt(lastVisit);
+                    const hoursSinceLastVisit = (now - lastVisitTime) / (1000 * 60 * 60);
+                    
+                    if (hoursSinceLastVisit < VISIT_INTERVAL_HOURS) {
+                        console.log(`⏭️ الزيارة الحالية ضمن فترة ${VISIT_INTERVAL_HOURS} ساعة - لن يتم الزيادة`);
+                        return;
+                    }
+                }
+                
+                // زيادة العداد
+                const counterRef = db.collection('visitor_stats').doc('main');
+                
+                // استخدام transaction لضمان عدم التضارب
+                await db.runTransaction(async (transaction) => {
+                    const counterDoc = await transaction.get(counterRef);
+                    
+                    if (!counterDoc.exists) {
+                        throw new Error("مستند العداد غير موجود");
+                    }
+                    
+                    const currentCount = counterDoc.data().count || 1935;
+                    const newCount = currentCount + 1;
+                    
+                    transaction.update(counterRef, {
+                        count: newCount,
+                        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()                    });
+                    
+                    console.log(`✅ تم زيادة العداد: ${currentCount} → ${newCount}`);
+                    
+                    // تحديث العرض
+                    updateCounterDisplay(newCount);
+                });
+                
+                // حفظ وقت الزيارة الحالي
+                localStorage.setItem(VISITOR_CHECK_KEY, now.toString());
+                
+            } catch (error) {
+                console.error("❌ خطأ في زيادة العداد:", error);
+            }
+        }
+        
+        // الاستماع للتغييرات في الوقت الفعلي
+        function subscribeToVisitorCounter() {
+            if (!db) return;
+            
+            const counterRef = db.collection('visitor_stats').doc('main');
+            
+            counterRef.onSnapshot((doc) => {
+                if (doc.exists) {
+                    const count = doc.data().count || 1935;
+                    const counterElement = document.getElementById('visitorCount');
+                    const currentCount = parseInt(counterElement.textContent) || 1935;
+                    
+                    if (currentCount !== count) {
+                        updateCounterDisplay(count);
+                    }
+                }
+            }, (error) => {
+                console.error("خطأ في الاستماع للعداد:", error);
+            });
+        }
+        
         function saveSession(doctorName) {
             localStorage.setItem('dentai_session', JSON.stringify({ doctor: doctorName, timestamp: Date.now() }));
         }
@@ -423,8 +635,7 @@
         }
         function clearSession() {
             localStorage.removeItem('dentai_session');
-        }
-        
+        }        
         function switchTab(tab) {
             if (tab === 'user' && !currentLoggedInDoctor) {
                 const savedDoctor = loadSession();
@@ -473,12 +684,11 @@
                 } else { 
                     alert("⚠️ لا يمكن الوصول إلى قاعدة البيانات حالياً.");
                     const tbody = document.getElementById('filesTableBody');
-                    if(tbody) tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-red-500">❌ فشل الاتصال بقاعدة البيانات<\/td></tr>';
-                }
+                    if(tbody) tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-red-500">❌ فشل الاتصال بقاعدة البيانات<\/td></tr>';                }
             } else if (pass !== null) { alert("كلمة المرور خاطئة!"); }
         }
         
-        // دالة لتحديد البيانات يدوياً في لوحة الإدارة        
+        // دالة لتحديث البيانات يدوياً في لوحة الإدارة        
         window.refreshAdminData = function() {
             if(db && document.getElementById('adminTab') && !document.getElementById('adminTab').classList.contains('hidden')) {
                 fetchUploadedFiles();
@@ -523,8 +733,7 @@
             document.getElementById('chatMessages').innerHTML = '';
             switchTab('login');
         }
-        
-        async function loadArticles() {
+                async function loadArticles() {
             if (!db) return;
             articlesMap = {};
             try {
@@ -573,8 +782,7 @@
                             expandedTokens.add(key);
                         }
                     }
-                });
-                return Array.from(expandedTokens);
+                });                return Array.from(expandedTokens);
             }
             detectContext(query) {
                 const normalizedQuery = this.normalizeArabicText(query);                let adultScore = 0, infantScore = 0;
@@ -623,8 +831,7 @@
                         if (queryContext === 'infant' && this.contextKeywords.infant_dental.some(k => normalizedSentence.includes(k))) score += 40;
                         if (score > 15) {
                             const confidence = Math.min(Math.round((score / 300) * 100), 100);
-                            results.push({ title: doc.title, text: cleanSentence, score: score, confidence: confidence, exactMatchScore: exactMatchScore });
-                        }
+                            results.push({ title: doc.title, text: cleanSentence, score: score, confidence: confidence, exactMatchScore: exactMatchScore });                        }
                     });
                 }                return results.sort((a,b) => {
                     if (Math.abs(b.exactMatchScore - a.exactMatchScore) > 20) return b.exactMatchScore - a.exactMatchScore;
@@ -673,8 +880,7 @@
                 modified = modified.replace(pattern, replacement);
             }
             // إضافة صياغات احتمالية إذا انتهت الجملة بشكل حاسم
-            if (modified.includes('يسبب')) modified = modified.replace(/يسبب/g, 'قد يسبب');
-            if (modified.includes('تسبب')) modified = modified.replace(/تسبب/g, 'قد تسبب');
+            if (modified.includes('يسبب')) modified = modified.replace(/يسبب/g, 'قد يسبب');            if (modified.includes('تسبب')) modified = modified.replace(/تسبب/g, 'قد تسبب');
             if (modified.includes('يؤدي')) modified = modified.replace(/يؤدي/g, 'قد يؤدي');
             if (modified.includes('هو علامة')) modified = modified.replace(/هو علامة/g, 'قد يكون علامة');
             return modified;
@@ -723,8 +929,7 @@
             }
             if (definitionText === "") definitionText = "لم يتم العثور على تعريف محدد.<br>";
             if (symptomsText === "") symptomsText = "لم يتم العثور على أعراض محددة.<br>";
-            if (treatmentText === "") treatmentText = "لم يتم العثور على علاج محدد.<br>";
-            // تطبيق طبقة الأمان الطبي على جميع النصوص
+            if (treatmentText === "") treatmentText = "لم يتم العثور على علاج محدد.<br>";            // تطبيق طبقة الأمان الطبي على جميع النصوص
             definitionText = applyMedicalSafetyLanguage(definitionText);
             symptomsText = applyMedicalSafetyLanguage(symptomsText);
             treatmentText = applyMedicalSafetyLanguage(treatmentText);
@@ -773,8 +978,7 @@
                         <div class="font-bold text-red-800 mb-2 flex items-center gap-2">
                             <span>🟥</span> علامات الخطر / طوارئ (يجب تقييمها سريرياً)
                         </div>
-                        <div class="text-red-700">${emergencyText}</div>
-                    </div>
+                        <div class="text-red-700">${emergencyText}</div>                    </div>
                 `;
             }
             structuredHTML += `
@@ -823,8 +1027,7 @@
         function sendChatMessage() {            
             if (!currentLoggedInDoctor) { switchTab('login'); return; }
             const questionInput = document.getElementById('chatQuestion');
-            const query = questionInput.value.trim();
-            if (!query) return;
+            const query = questionInput.value.trim();            if (!query) return;
             
             if (isEmergencyQuery(query)) {
                 const chatMessages = document.getElementById('chatMessages');
@@ -873,8 +1076,7 @@
                     </div>
                     ${MEDICAL_SAFETY_FOOTER}
                 `;
-            }
-            setTimeout(() => {
+            }            setTimeout(() => {
                 const botMsg = document.createElement('div');
                 botMsg.className = 'flex justify-start';
                 botMsg.innerHTML = `<div class="bg-white border border-slate-200 rounded-lg p-3.5 w-full max-w-[95%] shadow-sm">${answerHTML}</div>`;
@@ -923,8 +1125,7 @@
                     if (typeof pdfjsLib === 'undefined') throw new Error("مكتبة PDF لم يتم تحميلها");
                     const arrayBuffer = await file.arrayBuffer();
                     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                    let fullText = "";
-                    
+                    let fullText = "";                    
                     for (let i = 1; i <= pdf.numPages; i++) {
                         readingStatus.innerHTML = `⏳ معالجة الصفحة ${i}/${pdf.numPages}...`;
                         const page = await pdf.getPage(i);
@@ -973,8 +1174,7 @@
             const id = document.getElementById('currentDocId').value;
             const title = document.getElementById('docTitle').value.trim();
             const content = document.getElementById('docContent').value.trim();
-            if (!title || !content) { alert("⚠️ يرجى إدخال العنوان والتأكد من وجود محتوى."); return; }
-            const saveBtn = document.getElementById('saveBtn');
+            if (!title || !content) { alert("⚠️ يرجى إدخال العنوان والتأكد من وجود محتوى."); return; }            const saveBtn = document.getElementById('saveBtn');
             saveBtn.innerText = "جاري الحفظ السحابي المباشر..."; saveBtn.disabled = true;
             try {
                 if (id) await db.collection('medical_docs').doc(id).set({ title, content, updatedAt: new Date() }, { merge: true });
@@ -1006,7 +1206,7 @@
                     const d = doc.data();
                     const tr = document.createElement('tr');
                     tr.className = "border-b border-slate-200 hover:bg-slate-50";
-                    const titleText = d.title ? d.title.replace(/</g, '&lt;') : "بدون عنوان";
+                    const titleText = d.title ? d.title.replace(/</g, '<') : "بدون عنوان";
                     const contentLen = (d.content || '').length;
                     tr.innerHTML = `<td class="px-4 py-3 font-medium text-slate-800">${titleText}<\/td>
                                     <td class="px-4 py-3 text-slate-500">${contentLen} حرف<\/td>
@@ -1023,8 +1223,7 @@
             }
         }
         
-        async function fetchRegisteredDoctors() {
-            if (!db) return;
+        async function fetchRegisteredDoctors() {            if (!db) return;
             const tbody = document.getElementById('doctorsTableBody');
             if(!tbody) return;
             tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-400">جاري تحميل الأطباء...<\/td></tr>';
@@ -1039,7 +1238,7 @@
                     const isAct = d.status === "مفعل ومصرح";
                     const tr = document.createElement('tr');
                     tr.className = "border-b border-slate-200 hover:bg-slate-50";
-                    tr.innerHTML = `<td class="px-4 py-3 font-semibold">${d.name.replace(/</g, '&lt;')}<\/td>
+                    tr.innerHTML = `<td class="px-4 py-3 font-semibold">${d.name.replace(/</g, '<')}<\/td>
                                     <td class="px-4 py-3 font-mono text-xs">${d.password || '—'}<\/td>
                                     <td class="px-4 py-3 font-bold ${isAct ? 'text-green-600' : 'text-amber-600'}">${d.status}<\/td>
                                     <td class="px-4 py-3 text-center flex justify-center gap-2">
@@ -1073,8 +1272,7 @@
             document.getElementById('docTitle').value = decodeURIComponent(t);
             document.getElementById('docContent').value = decodeURIComponent(c);
             document.getElementById('formTitle').innerHTML = "<span>📝</span> تعديل المرجع الحالي";
-            document.getElementById('saveBtn').innerText = "تحديث البيانات سحابياً";
-            document.getElementById('cancelBtn').classList.remove('hidden');
+            document.getElementById('saveBtn').innerText = "تحديث البيانات سحابياً";            document.getElementById('cancelBtn').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         async function deleteDocument(id) {
@@ -1116,7 +1314,14 @@
             } catch(e) {
                 console.error("فشل تحميل المقالات:", e);
             }
-        });
+            
+            // تهيئة عداد الزوار
+            try {
+                await initializeVisitorCounter();
+                subscribeToVisitorCounter();
+            } catch(e) {
+                console.error("فشل تهيئة عداد الزوار:", e);
+            }        });
     </script>
 </body>
 </html>
