@@ -112,6 +112,18 @@
             margin-bottom: 12px;
             font-size: 1rem;
         }
+        /* تذييل الأمان الطبي */
+        .medical-safety-footer {
+            background-color: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 12px 16px;
+            font-size: 0.75rem;
+            color: #475569;
+            text-align: center;
+            border-radius: 12px;
+            margin-top: 16px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen p-3 md:p-6">
@@ -265,7 +277,7 @@
                         <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
                             <tr><th class="px-4 py-3">العنوان</th><th class="px-4 py-3">الحجم البنيوي</th><th class="px-4 py-3 text-center">الإجراءات</th></tr>
                         </thead>
-                        <tbody id="filesTableBody"><tr><td colspan="3" class="px-4 py-4 text-center text-slate-400">جاري تحميل المراجع...<\/td></tr>
+                        <tbody id="filesTableBody"><tr><td colspan="3" class="px-4 py-4 text-center text-slate-400">جاري تحميل المراجع...</td></tr>
                         </tbody>
                     </table>
                 </div>            </div>
@@ -641,94 +653,100 @@
             return html.split('\n').join('<br>');
         }
         
-        // --- التحسين المطلوب: هيكلة النتائج إلى أقسام (تعريف، أعراض، علاج، طوارئ) ---
+        // ================= طبقة الأمان الطبي واللغة الاحتمالية =================
+        function applyMedicalSafetyLanguage(text) {
+            if (!text) return text;
+            // استبدال العبارات الحاسمة بعبارات احتمالية غير تشخيصية
+            const replacements = [
+                { pattern: /\b(التشخيص|تشخيص)\b/gi, replacement: "الاحتمال الطبي" },
+                { pattern: /\b(هذا يعني|ذلك يعني)\b/gi, replacement: "قد يعني هذا" },
+                { pattern: /\b(التشخيص هو)\b/gi, replacement: "من المحتمل أن يكون" },
+                { pattern: /\b(يؤكد وجود)\b/gi, replacement: "قد يرتبط بوجود" },
+                { pattern: /\b(بالتأكيد|لا شك|من المؤكد)\b/gi, replacement: "بدرجة عالية من الاحتمال" },
+                { pattern: /\b(الحالة هي)\b/gi, replacement: "قد توصف الحالة بأنها" },
+                { pattern: /\b(يعني)\b(?=\s+(أن|وجود|إصابة|مرض))/gi, replacement: "قد يشير إلى" },
+                { pattern: /\b(مؤكد|أكيد)\b/gi, replacement: "محتمل بقوة" },
+                { pattern: /\b(علاج فعال|العلاج المثالي|يُعالج قطعاً)\b/gi, replacement: "قد يكون من العلاجات المستخدمة" }
+            ];
+            let modified = text;
+            for (let {pattern, replacement} of replacements) {
+                modified = modified.replace(pattern, replacement);
+            }
+            // إضافة صياغات احتمالية إذا انتهت الجملة بشكل حاسم
+            if (modified.includes('يسبب')) modified = modified.replace(/يسبب/g, 'قد يسبب');
+            if (modified.includes('تسبب')) modified = modified.replace(/تسبب/g, 'قد تسبب');
+            if (modified.includes('يؤدي')) modified = modified.replace(/يؤدي/g, 'قد يؤدي');
+            if (modified.includes('هو علامة')) modified = modified.replace(/هو علامة/g, 'قد يكون علامة');
+            return modified;
+        }
+        
+        // --- تحسين النتائج إلى أقسام مع تطبيق الأمان الطبي ---
         function classifyTextIntoSections(text) {
             const definitionKeywords = ["يُعرّف", "تعريف", "هي حالة", "هو اضطراب", "يعني", "مصطلح", "الحالة هي", "تُمثل", "تُعرّف"];
             const symptomsKeywords = ["أعراض", "علامات", "تظهر", "يشعر", "يعاني", "يتظاهر", "مؤشرات", "شكوى", "ألم", "نزيف", "تورم", "احمرار", "حكة", "حرقة"];
             const treatmentKeywords = ["علاج", "معالجة", "إجراء", "خطوة", "ينصح", "يوصى", "يستخدم", "دواء", "مضاد", "مضادات", "جراحة", "خلع", "حشو", "تنظيف", "تعقيم", "مرهم"];
             const emergencyKeywordsList = ["طوارئ", "حالة خطيرة", "انتشار سريع", "صعوبة تنفس", "تورم شديد", "trismus", "حرارة عالية", "حمى شديدة", "نزيف حاد", "فقد وعي", "تحسس شديد", "صعوبة بلع"];
-
-            let definitionText = "";
-            let symptomsText = "";
-            let treatmentText = "";
-            let emergencyText = "";
-
+            let definitionText = "", symptomsText = "", treatmentText = "", emergencyText = "";
             const lowerText = text.toLowerCase();
             const sentences = text.split(/[.!?\n]+/);
-
             for (let sentence of sentences) {
                 if (sentence.trim().length < 5) continue;
                 const lowerSentence = sentence.toLowerCase();
                 let added = false;
-
-                // الكشف عن الطوارئ أولاً
                 for (let kw of emergencyKeywordsList) {
                     if (lowerSentence.includes(kw.toLowerCase())) {
                         emergencyText += `• ${sentence.trim()}<br>`;
-                        added = true;
-                        break;
+                        added = true; break;
                     }
                 }
                 if (added) continue;
-
-                // تصنيف التعريف
                 for (let kw of definitionKeywords) {
                     if (lowerSentence.includes(kw.toLowerCase()) && (lowerSentence.includes("هو") || lowerSentence.includes("هي") || sentence.length < 100)) {
                         definitionText += `${sentence.trim()}<br>`;
-                        added = true;
-                        break;
+                        added = true; break;
                     }
                 }
                 if (added) continue;
-
-                // تصنيف الأعراض
                 for (let kw of symptomsKeywords) {
                     if (lowerSentence.includes(kw.toLowerCase())) {
                         symptomsText += `• ${sentence.trim()}<br>`;
-                        added = true;
-                        break;
+                        added = true; break;
                     }
                 }
                 if (added) continue;
-
-                // تصنيف العلاج
                 for (let kw of treatmentKeywords) {
                     if (lowerSentence.includes(kw.toLowerCase())) {
                         treatmentText += `• ${sentence.trim()}<br>`;
-                        added = true;
-                        break;
+                        added = true; break;
                     }
                 }
-                if (added) continue;
             }
-
-            // إذا لم يتم العثور على نص في قسم معين، نضيف رسالة افتراضية
             if (definitionText === "") definitionText = "لم يتم العثور على تعريف محدد.<br>";
             if (symptomsText === "") symptomsText = "لم يتم العثور على أعراض محددة.<br>";
             if (treatmentText === "") treatmentText = "لم يتم العثور على علاج محدد.<br>";
-            // قسم الطوارئ يمكن أن يبقى فارغاً إذا لم يوجد شيء
-            
+            // تطبيق طبقة الأمان الطبي على جميع النصوص
+            definitionText = applyMedicalSafetyLanguage(definitionText);
+            symptomsText = applyMedicalSafetyLanguage(symptomsText);
+            treatmentText = applyMedicalSafetyLanguage(treatmentText);
+            emergencyText = applyMedicalSafetyLanguage(emergencyText);
             return { definitionText, symptomsText, treatmentText, emergencyText };
         }
-
         function removeDuplicateSentences(text) {
             const sentences = text.split('<br>');
             const uniqueSentences = [...new Set(sentences)];
             return uniqueSentences.join('<br>');
         }
-
+        
+        const MEDICAL_SAFETY_FOOTER = `<div class="medical-safety-footer">⚠️ هذه المعلومات مستخلصة من مصادر نصية داخل النظام فقط، ولا تمثل تقييمًا سريريًا مباشرًا أو بديلاً عن الفحص الطبي.</div>`;
+        
         function generateStructuredAnswer(query, results) {
             if (results.length === 0) return "";
             
-            // فلترة وحدة النتائج بناءً على الثقة
             const filteredResults = results.filter(r => r.confidence > 15);
             if (filteredResults.length === 0) return "";
             
-            // ترتيب حسب الثقة واختيار الأعلى
             const sortedResults = filteredResults.sort((a,b) => b.confidence - a.confidence);
-            const topResults = sortedResults.slice(0, 8); // أخذ المزيد من النصوص لتحسين التصنيف
-            
-            // دمج النصوص من النتائج العليا
+            const topResults = sortedResults.slice(0, 8);
             let combinedText = "";
             const usedSentences = new Set();
             for (const result of topResults) {
@@ -739,67 +757,56 @@
                 usedSentences.add(sentence);
             }
             
-            // تصنيف النص المدمج إلى أقسام
             let { definitionText, symptomsText, treatmentText, emergencyText } = classifyTextIntoSections(combinedText);
-            
-            // إزالة التكرارات
             definitionText = removeDuplicateSentences(definitionText);
             symptomsText = removeDuplicateSentences(symptomsText);
             treatmentText = removeDuplicateSentences(treatmentText);
             emergencyText = removeDuplicateSentences(emergencyText);
             
-            // بناء الهيكل النهائي حسب الأهمية الطبية (طوارئ -> تعريف -> أعراض -> علاج)
             let structuredHTML = `
                 <div class="structured-medical-answer space-y-4">
                     <div class="clinical-alert">تنبيه سريري: هذا المحتوى تعليمي فقط ولا يغني عن التقييم السريري المباشر</div>
             `;
-            
-            if (emergencyText && emergencyText.trim() !== "") {
+            if (emergencyText && emergencyText.trim() !== "" && emergencyText !== "لم يتم العثور على أعراض محددة.<br>") {
                 structuredHTML += `
                     <div class="bg-red-50 border-r-4 border-red-600 p-3 rounded">
                         <div class="font-bold text-red-800 mb-2 flex items-center gap-2">
-                            <span>🟥</span> علامات الخطر / طوارئ
+                            <span>🟥</span> علامات الخطر / طوارئ (يجب تقييمها سريرياً)
                         </div>
                         <div class="text-red-700">${emergencyText}</div>
                     </div>
                 `;
             }
-            
             structuredHTML += `
                 <div class="bg-blue-50 border-r-4 border-blue-600 p-3 rounded">
                     <div class="font-bold text-blue-800 mb-2 flex items-center gap-2">
-                        <span>🟦</span> تعريف الحالة
+                        <span>🟦</span> تعريف الحالة (استناداً إلى المراجع)
                     </div>
                     <div class="text-slate-700">${definitionText}</div>
                 </div>
-                
                 <div class="bg-amber-50 border-r-4 border-amber-600 p-3 rounded">
                     <div class="font-bold text-amber-800 mb-2 flex items-center gap-2">
-                        <span>🟨</span> الأعراض
+                        <span>🟨</span> الأعراض المحتملة
                     </div>
                     <div class="text-slate-700">${symptomsText}</div>
                 </div>
-                
                 <div class="bg-green-50 border-r-4 border-green-600 p-3 rounded">
                     <div class="font-bold text-green-800 mb-2 flex items-center gap-2">
-                        <span>🟩</span> العلاج
+                        <span>🟩</span> التدبير المقترح (استرشادي)
                     </div>
                     <div class="text-slate-700">${treatmentText}</div>
                 </div>
             `;
-            
-            // إضافة المصادر
             structuredHTML += `
                 <div class="text-xs text-slate-500 mt-4 pt-2 border-t border-slate-200">
                     📚 المصادر المستند عليها: ${getUniqueSources(results).join(' • ')}
                 </div>
             `;
+            structuredHTML += MEDICAL_SAFETY_FOOTER;
             structuredHTML += `</div>`;
-            
             return structuredHTML;
         }
-
-        // --- دالة كشف الحالات الطارئة (Emergency Detection) ---
+        
         function isEmergencyQuery(query) {
             const emergencyKeywords = [
                 "صعوبة تنفس", "اختناق", "صعوبة بلع", "تورم شديد", "منتشر", "trismus", "حمى شديدة", "نزيف حاد", "فقد وعي"
@@ -813,37 +820,33 @@
             return false;
         }
         
-        // دالة sendChatMessage المعدلة (مع التحسينات المطلوبة)
         function sendChatMessage() {            
             if (!currentLoggedInDoctor) { switchTab('login'); return; }
             const questionInput = document.getElementById('chatQuestion');
             const query = questionInput.value.trim();
             if (!query) return;
             
-            // ✅ 1) كشف الحالات الطارئة
             if (isEmergencyQuery(query)) {
                 const chatMessages = document.getElementById('chatMessages');
-                // عرض رسالة المستخدم كما هي
                 const userMsg = document.createElement('div');
                 userMsg.className = 'flex justify-end';
                 userMsg.innerHTML = `<div class="bg-blue-600 text-white rounded-lg p-3 max-w-[85%] shadow-sm"><p class="text-base md:text-lg font-medium">${query}</p></div>`;
                 chatMessages.appendChild(userMsg);
                 questionInput.value = '';
                 
-                // رسالة الطوارئ (بدون بحث)
                 const emergencyMsg = document.createElement('div');
                 emergencyMsg.className = 'flex justify-start';
                 emergencyMsg.innerHTML = `<div class="bg-white border border-red-200 rounded-lg p-4 w-full max-w-[95%] shadow-sm">
                                             <div class="emergency-alert">
                                                 🚨 حالة طارئة محتملة - يجب التوجه فوراً للطوارئ أو جراحة الوجه والفكين
                                             </div>
+                                            ${MEDICAL_SAFETY_FOOTER}
                                           </div>`;
                 chatMessages.appendChild(emergencyMsg);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-                return; // إيقاف المعالجة تماماً
+                return;
             }
             
-            // إذا لم تكن طوارئ، نواصل التنفيذ العادي
             if (Object.keys(articlesMap).length === 0) {
                 alert("⚠️ لا توجد مراجع مرفوعة بالمنصة للبحث بداخلها حالياً.");
                 return;
@@ -859,7 +862,6 @@
             const results = searchEngine.search(query);
             let answerHTML = "";
             
-            // ✅ 2) توليد الإجابة بهيكل طبي منظم
             if (results.length > 0) {
                 const structuredAnswer = generateStructuredAnswer(query, results);
                 answerHTML = structuredAnswer;
@@ -869,6 +871,7 @@
                     <div class="bg-amber-50 border-r-4 border-amber-600 p-4 rounded">
                         <p class="text-amber-800 font-semibold text-base">⚠️ لم يتم العثور على معلومات كافية للإجابة على سؤالك. جرب استخدام مصطلحات أكثر تحديداً.</p>
                     </div>
+                    ${MEDICAL_SAFETY_FOOTER}
                 `;
             }
             setTimeout(() => {
@@ -878,7 +881,8 @@
                 chatMessages.appendChild(botMsg);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }, 150);
-        }        
+        }
+        
         async function submitDoctorRegistration() {
             if (!db) { alert("❌ خطأ في قاعدة البيانات."); return; }
             const name = document.getElementById('regName').value.trim();
@@ -978,7 +982,7 @@
                 alert("✅ تم حفظ المرجع بنجاح!");                resetForm(); 
                 await fetchUploadedFiles(); 
                 await loadArticles();
-                if(currentLoggedInDoctor) loadArticles(); // تحديث للمستخدم
+                if(currentLoggedInDoctor) loadArticles();
             } catch (err) { alert("❌ فشل الحفظ: " + err.message); }
             finally { saveBtn.innerText = "حفظ سحابي مؤكد"; saveBtn.disabled = false; }
         }
@@ -1015,7 +1019,7 @@
                 console.log(`✅ تم عرض ${snapshot.size} مرجع في الجدول`);
             } catch (e) { 
                 console.error("خطأ في fetchUploadedFiles:", e); 
-                tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-red-500">⚠️ خطأ في التحميل: ${e.message}<\/td><\/tr>`;
+                tbody.innerHTML = `<td><td colspan="3" class="text-center py-4 text-red-500">⚠️ خطأ في التحميل: ${e.message}<\/td><\/tr>`;
             }
         }
         
@@ -1026,7 +1030,7 @@
             tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-400">جاري تحميل الأطباء...<\/td></tr>';
             try {                const snapshot = await db.collection('doctors_registry').get();
                 if (snapshot.empty) { 
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-400">لا توجد طلبات مسجلة.<\/td></td>'; 
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-400">لا توجد طلبات مسجلة.<\/td><tr>'; 
                     return; 
                 }
                 tbody.innerHTML = "";
@@ -1097,21 +1101,16 @@
         }
         
         window.addEventListener('DOMContentLoaded', async () => {
-            // أولاً: استعادة الجلسة قبل أي شيء
             const savedDoctor = loadSession();
             if (savedDoctor) {
                 currentLoggedInDoctor = savedDoctor;
                 document.getElementById('welcomeUser').innerText = `مرحباً د. ${savedDoctor}، اطرح سؤالك الإكلينيكي مباشرة.`;
             }
-            
-            // الانتقال للتبويب المناسب فوراً (قبل تحميل المقالات)
             if (currentLoggedInDoctor) {
                 switchTab('user');
             } else {
                 switchTab('login');
             }
-            
-            // ثم تحميل المراجع في الخلفية
             try {
                 await loadArticles();
             } catch(e) {
