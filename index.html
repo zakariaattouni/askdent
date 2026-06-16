@@ -515,14 +515,7 @@
             articlesMap = {};
             try {
                 const snapshot = await db.collection('medical_docs').get();
-                snapshot.forEach(doc => { 
-                    const data = doc.data();
-                    articlesMap[doc.id] = { 
-                        title: data.title, 
-                        content: data.content,
-                        keywords: data.keywords || '' // إضافة حقل الكلمات المفتاحية
-                    }; 
-                });
+                snapshot.forEach(doc => { articlesMap[doc.id] = { title: doc.data().title, content: doc.data().content }; });
                 const rc = document.getElementById('refsCount'), rn = document.getElementById('refsNumber');
                 if (rc && rn) { rn.textContent = snapshot.size; if (snapshot.size > 0) rc.classList.remove('hidden'); else rc.classList.add('hidden'); }
                 console.log(`📚 تم تحميل ${snapshot.size} مرجع طبي`);
@@ -530,51 +523,38 @@
         }
         
         // ============================================
-        // محرك البحث الذكي المتقدم v2.0
+        // محرك البحث الذكي المتقدم (المطلوب)
         // ============================================
         class AdvancedArabicSearchEngine {
             constructor(articlesMap) { 
                 this.articles = articlesMap;
                 this.arabicStopWords = new Set(['من', 'إلى', 'في', 'عن', 'على', 'مع', 'ك', 'ل', 'ب', 'ف', 'ثم', 'أو', 'أم', 'ال', 'هذا', 'هذه', 'ذلك', 'تلك', 'الذي', 'التي', 'الذين', 'اللواتي', 'هو', 'هي', 'هما', 'هم', 'هن', 'أنا', 'نحن', 'أنت', 'أنتم', 'أنتن', 'كان', 'كانت', 'يكون', 'تكون', 'قد', 'سوف', 'س', 'ما', 'لا', 'لم', 'لن', 'هل', 'أين', 'متى', 'كيف', 'لماذا', 'ماذا', 'أي', 'كل', 'جميع', 'بعض', 'عدة', 'كثير', 'قليل', 'هناك', 'حيث', 'لأن', 'لكي', 'حتى', 'أن', 'إن', 'أنه', 'إنه', 'و', 'أو', 'ثم', 'لكن']);
-                // ✅ 1) استبدال قاموس المرادفات بالكامل
-                this.medicalSynonyms = { 
-                    'ضرس العقل': [ 'ضرس العقل', 'الرحى الثالثة', 'الضرس الثالث', 'third molar', 'wisdom tooth' ], 
-                    'التهاب حول التاج': [ 'التهاب حول التاج', 'التهاب حول ضرس العقل', 'pericoronitis' ], 
-                    'تسوس': [ 'تسوس', 'نخر', 'caries', 'dental caries' ], 
-                    'التهاب اللب': [ 'التهاب اللب', 'التهاب عصب السن', 'pulpitis' ], 
-                    'لب': [ 'لب', 'عصب', 'pulp' ], 
-                    'خراج': [ 'خراج', 'abscess' ], 
-                    'زرعة': [ 'زرعة', 'implant', 'dental implant' ], 
-                    'قلع': [ 'قلع', 'خلع', 'extraction' ], 
-                    'التهاب اللثة': [ 'التهاب اللثة', 'gingivitis' ], 
-                    'التهاب دواعم السن': [ 'التهاب دواعم السن', 'periodontitis' ], 
-                    'لثة': [ 'لثة', 'gingiva', 'gingival' ], 
-                    'رحى': [ 'رحى', 'ضرس', 'مولار', 'molar' ], 
-                    'قناة جذر': [ 'root canal', 'معالجة لبية', 'معالجة الجذور' ] 
+                this.medicalSynonyms = {
+                    'رحى': ['رحى', 'ضرس', 'طاحنة', 'مولار'],
+                    'ثالثة': ['ثالثة', 'ثالث', 'عقل', 'الضرس الثالث'],
+                    'ضرس العقل': ['ضرس العقل', 'الرحى الثالثة', 'الرحى الثالثة', 'ضرس ثالث'],
+                    'بزوغ': ['بزوغ', 'ظهور', 'طلوع', 'خروج', 'نمو'],
+                    'لثة': ['لثة', 'لثّة', 'صماخ'],
+                    'أسنان': ['أسنان', 'سن', 'ضرس', 'ناجذ'],
+                    'رضيع': ['رضيع', 'طفل', 'صغير', 'لثة', 'حليب', 'مؤقت', 'أولي', '6 أشهر', 'سنة'],
+                    'تنظيف': ['تنظيف', 'نظافة', 'عناية', 'غسل']
                 };
                 this.contextKeywords = {
                     'adult_dental': ['عقل', 'ثالثة', 'ثالث', 'بلوغ', 'مراهق', 'بالغ', '18', '20', '25', '30'],
                     'infant_dental': ['رضيع', 'طفل', 'صغير', 'لثة', 'حليب', 'مؤقت', 'أولي', '6 أشهر', 'سنة']
                 };
             }
+            
+            // ========== الدوال المساعدة للبحث ==========
             normalizeArabicText(text) {
                 return text.replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي').replace(/ء/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
             }
+            
             tokenize(text) {
                 const normalized = this.normalizeArabicText(text);
                 return normalized.split(/[\s،,._\-\/\(\)\[\]{}:""''؛]+/).filter(token => token.length > 2 && !this.arabicStopWords.has(token) && !/^[0-9]+$/.test(token));
             }
-            // ✅ 7) إضافة بحث تقريبي للكلمات
-            similarity(a,b){ 
-                a=this.normalizeArabicText(a); 
-                b=this.normalizeArabicText(b); 
-                if(a===b) return 1; 
-                let matches=0; 
-                for(let i=0;i<Math.min(a.length,b.length);i++){ 
-                    if(a[i]===b[i]) matches++; 
-                } 
-                return matches / Math.max(a.length,b.length); 
-            } 
+            
             expandQueryTerms(query) {
                 const tokens = this.tokenize(query);
                 const expandedTokens = new Set(tokens);
@@ -588,6 +568,7 @@
                 });
                 return Array.from(expandedTokens);
             }
+            
             detectContext(query) {
                 const normalizedQuery = this.normalizeArabicText(query);
                 let adultScore = 0, infantScore = 0;
@@ -595,6 +576,8 @@
                 this.contextKeywords.infant_dental.forEach(keyword => { if (normalizedQuery.includes(keyword)) infantScore += 10; });
                 return adultScore > infantScore ? 'adult' : infantScore > adultScore ? 'infant' : 'general';
             }
+            
+            // ========== دالة حساب التطابق الدقيق ==========
             calculateExactMatchScore(query, sentence) {
                 const normalizedQuery = this.normalizeArabicText(query);
                 const normalizedSentence = this.normalizeArabicText(sentence);
@@ -608,12 +591,15 @@
                 if (matchCount === queryWords.length) return 80 + (positionScore * 20);
                 return (matchCount / queryWords.length) * 60;
             }
+            
             getBigrams(text) {
                 const words = this.tokenize(text);
                 const bigrams = [];
                 for (let i = 0; i < words.length - 1; i++) bigrams.push(words[i] + ' ' + words[i+1]);
                 return bigrams;
             }
+            
+            // ========== دالة البحث الرئيسية ==========
             search(query) {
                 const results = [];
                 const queryContext = this.detectContext(query);
@@ -621,63 +607,53 @@
                 
                 for (const id in this.articles) {
                     const doc = this.articles[id];
-                    
-                    // ✅ 4) تحويل البحث من سطور إلى فقرات
-                    const sentences = doc.content.split(/\n\s*\n/);
+                    // دمج كل بيانات البطاقة في نص واحد مؤقت
+                    const fullText = doc.title + " " + doc.content;
+                    const sentences = fullText.split(/\n+/);
                     
                     sentences.forEach(sentence => {
                         const cleanSentence = sentence.trim();
                         if (cleanSentence.length < 10 || cleanSentence.length > 1500) return;
+                        
                         const normalizedSentence = this.normalizeArabicText(cleanSentence);
                         const sentenceContext = this.detectContext(cleanSentence);
+                        
                         if (queryContext !== 'general' && sentenceContext !== 'general' && queryContext !== sentenceContext) return;
                         
                         let score = 0;
-                        
-                        // ✅ 2) إضافة البحث داخل عنوان المرجع
-                        const normalizedTitle = this.normalizeArabicText(doc.title || ''); 
-                        expandedTerms.forEach(term => { 
-                            if (normalizedTitle.includes( this.normalizeArabicText(term) )) { 
-                                score += 150; 
-                            } 
-                        }); 
-                        
-                        // ✅ 3) إضافة البحث داخل الكلمات المفتاحية
-                        const keywords = this.normalizeArabicText( doc.keywords || '' ); 
-                        expandedTerms.forEach(term => { 
-                            if ( keywords.includes( this.normalizeArabicText(term) ) ) { 
-                                score += 300; 
-                            } 
-                        }); 
-                        
+                        // حساب درجة التطابق الدقيق
                         let exactMatchScore = this.calculateExactMatchScore(query, cleanSentence);
-                        // ✅ 6) إعطاء وزن أكبر للتطابق الكامل
-                        score += exactMatchScore * 4;
+                        score += exactMatchScore * 2;
                         
-                        expandedTerms.forEach(term => { if (normalizedSentence.includes(term)) score += 30; });
-                        
-                        // ✅ 7) إضافة بحث تقريبي للكلمات
-                        const words = this.tokenize(normalizedSentence);
-                        expandedTerms.forEach(term=>{ 
-                            words.forEach(word=>{ 
-                                if( this.similarity( word, term ) > 0.85 ){ 
-                                    score += 20; 
-                                } 
-                            }); 
+                        // البحث عن المصطلحات الموسعة
+                        expandedTerms.forEach(term => { 
+                            if (normalizedSentence.includes(term)) score += 30; 
                         });
                         
+                        // البحث عن bi-grams
                         const queryBigrams = this.getBigrams(query);
-                        queryBigrams.forEach(bigram => { if (normalizedSentence.includes(bigram)) score += 50; });
+                        queryBigrams.forEach(bigram => { 
+                            if (normalizedSentence.includes(bigram)) score += 50; 
+                        });
+                        
+                        // ترتيب النتائج حسب الأولوية
                         if (queryContext === 'adult' && this.contextKeywords.adult_dental.some(k => normalizedSentence.includes(k))) score += 40;
                         if (queryContext === 'infant' && this.contextKeywords.infant_dental.some(k => normalizedSentence.includes(k))) score += 40;
                         
-                        // ✅ 5) رفع دقة النتائج
-                        if (score > 40) {
+                        if (score > 15) {
                             const confidence = Math.min(Math.round((score / 300) * 100), 100);
-                            results.push({ title: doc.title, text: cleanSentence, score: score, confidence: confidence, exactMatchScore: exactMatchScore });
+                            results.push({ 
+                                title: doc.title, 
+                                text: cleanSentence, 
+                                score: score, 
+                                confidence: confidence, 
+                                exactMatchScore: exactMatchScore 
+                            });
                         }
                     });
                 }
+                
+                // ترتيب النتائج حسب الأولوية
                 return results.sort((a,b) => {
                     if (Math.abs(b.exactMatchScore - a.exactMatchScore) > 20) return b.exactMatchScore - a.exactMatchScore;
                     return b.score - a.score;
@@ -685,6 +661,7 @@
             }
         }
         
+        // ========== دوال مساعدة لتوليد الإجابة ==========
         function detectQueryType(query) {
             const q = query.toLowerCase();
             if (q.includes('ما هو') || q.includes('ما هي') || q.includes('عرّف') || q.includes('تعريف')) return 'definition';
@@ -692,11 +669,13 @@
             if (q.includes('أعراض') || q.includes('علامات') || q.includes('كيف يظهر') || q.includes('ألم')) return 'symptoms';
             return 'general';
         }
+        
         function getUniqueSources(results) {
             const sources = new Set();
             results.forEach(r => { if (r.title) sources.add(r.title); });
             return Array.from(sources).slice(0,3);
         }
+        
         function formatMarkdownToHTML(text) {
             let html = text;
             html = html.replace(/###\s+(.*)/g, '<h4 class="font-bold text-blue-700 text-md mt-3 mb-1">$1</h4>');
@@ -704,13 +683,13 @@
             html = html.replace(/^\*\s+(.*)/gm, '<li class="list-disc list-inside mr-2 text-slate-700">$1</li>');
             return html.split('\n').join('<br>');
         }
+        
         function generateCoherentAnswer(query, results) {
             if (results.length === 0) return "";
             const filteredResults = results.filter(r => r.confidence > 15);
             if (filteredResults.length === 0) return "";
             const sortedResults = filteredResults.sort((a,b) => b.confidence - a.confidence);
-            // ✅ 8) تحسين الإجابة النهائية - تغيير من 5 إلى 3
-            const topResults = sortedResults.slice(0, 3);
+            const topResults = sortedResults.slice(0, 5);
             let coherentText = "";
             const usedSentences = new Set();
             const queryType = detectQueryType(query);
@@ -739,7 +718,7 @@
             return coherentText;
         }
         
-        // ========== دالة الإرسال الرئيسية (مع إضافة إخلاء المسؤولية) ==========
+        // ========== دالة الإرسال الرئيسية ==========
         function sendChatMessage() {
             if (!ensureValidSession()) return;
             if (!currentLoggedInDoctor) { switchTab('login'); return; }
@@ -759,6 +738,7 @@
             questionInput.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
             
+            // استخدام محرك البحث المطلوب
             const searchEngine = new AdvancedArabicSearchEngine(articlesMap);
             const results = searchEngine.search(query);
             let answerHTML = "";
@@ -876,36 +856,11 @@
             const title = document.getElementById('docTitle').value.trim();
             const content = document.getElementById('docContent').value.trim();
             if (!title || !content) { alert("⚠️ يرجى إدخال العنوان والتأكد من وجود محتوى."); return; }
-            
-            // ✅ 9) تعديل قاعدة البيانات - إضافة حقل keywords
-            // استخراج الكلمات المفتاحية من المحتوى (أول 5 كلمات مميزة)
-            const words = content.split(/[\s،،\n]+/).filter(w => w.length > 3);
-            const keywordSet = new Set();
-            // محاولة استخراج كلمات مفتاحية من المحتوى
-            const commonMedicalTerms = ['ضرس', 'سن', 'لثة', 'عصب', 'تسوس', 'التهاب', 'علاج', 'جراحة', 'زرع', 'قلع', 'تاج', 'جسر', 'تقويم', 'أسنان', 'فم', 'فك', 'ألم', 'نزيف', 'ورم', 'خراج', 'نخر', 'حشو', 'معالجة', 'تشخيص'];
-            words.forEach(w => {
-                const normalized = w.replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي');
-                if (commonMedicalTerms.some(term => normalized.includes(term) || term.includes(normalized))) {
-                    if (keywordSet.size < 10) keywordSet.add(w);
-                }
-            });
-            // إذا لم يتم العثور على كلمات مفتاحية، استخدم الكلمات الأكثر تكراراً
-            if (keywordSet.size === 0) {
-                const wordCount = {};
-                words.forEach(w => {
-                    const clean = w.replace(/[^\u0600-\u06FFa-zA-Z]/g, '');
-                    if (clean.length > 3) wordCount[clean] = (wordCount[clean] || 0) + 1;
-                });
-                const sorted = Object.entries(wordCount).sort((a,b) => b[1] - a[1]);
-                sorted.slice(0, 5).forEach(([word]) => keywordSet.add(word));
-            }
-            const keywords = Array.from(keywordSet).join(',');
-            
             const saveBtn = document.getElementById('saveBtn');
             saveBtn.innerText = "جاري الحفظ السحابي المباشر..."; saveBtn.disabled = true;
             try {
-                if (id) await db.collection('medical_docs').doc(id).set({ title, content, keywords, updatedAt: new Date() }, { merge: true });
-                else await db.collection('medical_docs').add({ title, content, keywords, createdAt: new Date() });
+                if (id) await db.collection('medical_docs').doc(id).set({ title, content, updatedAt: new Date() }, { merge: true });
+                else await db.collection('medical_docs').add({ title, content, createdAt: new Date() });
                 alert("✅ تم حفظ المرجع بنجاح!");
                 resetForm(); 
                 await fetchUploadedFiles(); 
@@ -919,12 +874,11 @@
             if (!db) return;
             const tbody = document.getElementById('filesTableBody');
             if(!tbody) return;
-            // ✅ 10) إصلاح خطأ يمنع تحميل قائمة المراجع
-            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-slate-400">جاري تحميل المراجع...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-slate-400">جاري تحميل المراجع...<\/td></tr>';
             try {
                 const snapshot = await db.collection('medical_docs').get();
                 if (snapshot.empty) { 
-                    tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-slate-400">لا توجد مراجع محفوظة حالياً.</td></tr>'; 
+                    tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-slate-400">لا توجد مراجع محفوظة حالياً.<\/td></tr>'; 
                     return; 
                 }
                 tbody.innerHTML = "";
@@ -934,18 +888,17 @@
                     tr.className = "border-b border-slate-200 hover:bg-slate-50";
                     const titleText = d.title ? d.title.replace(/</g, '&lt;') : "بدون عنوان";
                     const contentLen = (d.content || '').length;
-                    const keywordDisplay = d.keywords ? ` (🔑 ${d.keywords.split(',').length} كلمة)` : '';
-                    tr.innerHTML = `<td class="px-4 py-3 font-medium text-slate-800">${titleText}${keywordDisplay}</td>
-                                    <td class="px-4 py-3 text-slate-500">${contentLen} حرف</td>
+                    tr.innerHTML = `<td class="px-4 py-3 font-medium text-slate-800">${titleText}<\/td>
+                                    <td class="px-4 py-3 text-slate-500">${contentLen} حرف<\/td>
                                     <td class="px-4 py-3 text-center flex justify-center gap-2">
                                         <button onclick="editDocument('${doc.id}','${encodeURIComponent(d.title || '')}','${encodeURIComponent(d.content || '')}')" class="bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-blue-600 hover:text-white transition">تعديل</button>
                                         <button onclick="deleteDocument('${doc.id}')" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded text-xs cursor-pointer hover:bg-red-600 hover:text-white transition">حذف</button>
-                                      </td>`;
+                                      <\/td>`;
                     tbody.appendChild(tr);
                 });
             } catch (e) { 
                 console.error(e); 
-                tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-red-500">⚠️ خطأ في التحميل: ${e.message}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-red-500">⚠️ خطأ في التحميل: ${e.message}<\/td><\/tr>`;
             }
         }
         
@@ -953,11 +906,11 @@
             if (!db) return;
             const tbody = document.getElementById('doctorsTableBody');
             if(!tbody) return;
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-400">جاري تحميل الأطباء...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-400">جاري تحميل الأطباء...<\/td></tr>';
             try {
                 const snapshot = await db.collection('doctors_registry').get();
                 if (snapshot.empty) { 
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-400">لا توجد طلبات مسجلة.</td></tr>'; 
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-400">لا توجد طلبات مسجلة.<\/td></tr>'; 
                     return; 
                 }
                 tbody.innerHTML = "";
@@ -966,18 +919,18 @@
                     const isAct = d.status === "مفعل ومصرح";
                     const tr = document.createElement('tr');
                     tr.className = "border-b border-slate-200 hover:bg-slate-50";
-                    tr.innerHTML = `<td class="px-4 py-3 font-semibold">${d.name.replace(/</g, '&lt;')}</td>
-                                    <td class="px-4 py-3 font-mono text-xs">${d.password || '—'}</td>
-                                    <td class="px-4 py-3 font-bold ${isAct ? 'text-green-600' : 'text-amber-600'}">${d.status}</td>
+                    tr.innerHTML = `<td class="px-4 py-3 font-semibold">${d.name.replace(/</g, '&lt;')}<\/td>
+                                    <td class="px-4 py-3 font-mono text-xs">${d.password || '—'}<\/td>
+                                    <td class="px-4 py-3 font-bold ${isAct ? 'text-green-600' : 'text-amber-600'}">${d.status}<\/td>
                                     <td class="px-4 py-3 text-center flex justify-center gap-2">
                                         ${isAct ? `<button onclick="toggleDoctorStatus('${doc.id}','معلق وبانتظار التفعيل')" class="bg-amber-50 text-amber-600 border border-amber-200 px-2.5 py-1 rounded text-xs cursor-pointer">تعطيل</button>` : `<button onclick="toggleDoctorStatus('${doc.id}','مفعل ومصرح')" class="bg-green-50 text-green-600 border border-green-200 px-2.5 py-1 rounded text-xs cursor-pointer">✔️ تفعيل</button>`}
                                         <button onclick="deleteDoctorRequest('${doc.id}')" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded text-xs cursor-pointer">حذف</button>
-                                      </td>`;
+                                      <\/td>`;
                     tbody.appendChild(tr);
                 });
             } catch (e) { 
                 console.error(e); 
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-red-500">⚠️ خطأ: ${e.message}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-red-500">⚠️ خطأ: ${e.message}<\/td><\/tr>`;
             }
         }
         
