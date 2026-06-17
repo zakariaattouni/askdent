@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>منصة طب الأسنان المعرفية</title>
+    <title>منصة معارف طب الأسنان </title>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#2563eb">
@@ -105,7 +105,7 @@
             <div class="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start">
                 <div class="w-11 h-11 bg-blue-50 rounded-xl flex items-center justify-center text-2xl shadow-inner border border-blue-100">🦷</div>
                 <div class="text-center sm:text-right">
-                    <h1 class="font-extrabold text-blue-700 text-base md:text-lg tracking-tight leading-tight">منصة طب الأسنان المعرفية</h1>
+                    <h1 class="font-extrabold text-blue-700 text-base md:text-lg tracking-tight leading-tight">منصة معارف طب الأسنان </h1>
                     <p class="text-[11px] text-slate-400 font-semibold tracking-wide">AskDent Pro</p>
                 </div>
             </div>
@@ -142,9 +142,9 @@
             <div class="text-center mb-6 pb-4 border-b border-slate-100">
                 <div class="flex items-center justify-center gap-2 mb-2">
                     <span class="text-2xl">📚</span>
-                    <h1 class="text-xl md:text-2xl font-bold text-blue-600">الموجز الطبي المعرفي</h1>
+                    <h1 class="text-xl md:text-2xl font-bold text-blue-600">موجز البحث الطبي </h1>
                 </div>
-                <p id="welcomeUser" class="text-xs text-slate-500">مرحباً بك دكتور، اكتب مصطلح البحث أو السؤال الإكلينيكي لاستخراج الإجابة فوراً.</p>
+                <p id="welcomeUser" class="text-xs text-slate-500">مرحباً بك دكتور، اكتب مصطلح البحث أو السؤال السريري لاستخراج الإجابة فوراً.</p>
                 <div id="refsCount" class="text-xs text-green-600 mt-2 hidden">📚 المراجع المفهرسة سحابياً: <span id="refsNumber">0</span></div>
             </div>
             
@@ -258,7 +258,7 @@
             `)}`;
             
             const manifest = {
-                name: "منصة طب الأسنان المعرفية",
+                name: "منصة معارف طب الأسنان ",
                 short_name: "AskDent",
                 description: "منصة طبية معتمدة للأطباء - البحث والاستخلاص من المراجع الطبية",
                 start_url: "./",
@@ -392,7 +392,7 @@
                 const saved = loadSession();
                 if (saved) {
                     currentLoggedInDoctor = saved;
-                    document.getElementById('welcomeUser').innerText = `مرحباً د. ${saved}، اطرح سؤالك الإكلينيكي مباشرة.`;
+                    document.getElementById('welcomeUser').innerText = `مرحباً د. ${saved}، اطرح سؤالك السريري مباشرة.`;
                     return true;
                 } else {
                     switchTab('login');
@@ -408,7 +408,7 @@
                 const saved = loadSession();
                 if (saved) {
                     currentLoggedInDoctor = saved;
-                    document.getElementById('welcomeUser').innerText = `مرحباً د. ${saved}، اطرح سؤالك الإكلينيكي مباشرة.`;
+                    document.getElementById('welcomeUser').innerText = `مرحباً د. ${saved}، اطرح سؤالك السريري مباشرة.`;
                 } else {
                     tab = 'login';
                 }
@@ -494,7 +494,7 @@
                 
                 currentLoggedInDoctor = matched.name;
                 saveSession(matched.name);
-                document.getElementById('welcomeUser').innerText = `مرحباً د. ${matched.name}، اطرح سؤالك الإكلينيكي مباشرة.`;
+                document.getElementById('welcomeUser').innerText = `مرحباً د. ${matched.name}، اطرح سؤالك السريري مباشرة.`;
                 document.getElementById('loginName').value = ''; 
                 document.getElementById('loginPassword').value = '';                
                 await loadArticles(); 
